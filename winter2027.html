@@ -116,8 +116,26 @@
   .budget-table th:first-child { text-align: left; }
   .budget-table td { padding: 9px 12px; border-bottom: 1px solid #e2e8f0; text-align: center; }
   .budget-table td:first-child { text-align: left; font-weight: 600; }
-  .budget-table .total-row td { background: #1a365d; color: white; font-weight: 700; }
+  .budget-table .total-row td { background: #2d3748; color: #f6e05e; font-weight: 700; font-size: 0.95rem; border-bottom: none; }
   .budget-table tr:hover td { background: #f7fafc; }
+  .budget-table .total-row:hover td { background: #2d3748; }
+
+  /* ===== TAB 系統 ===== */
+  .tab-nav {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    background: #1a365d; padding: 14px 20px; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .tab-btn {
+    background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8);
+    border: none; border-radius: 20px; padding: 7px 16px;
+    font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+    font-family: "Segoe UI","Microsoft JhengHei",sans-serif;
+  }
+  .tab-btn:hover { background: rgba(255,255,255,0.22); color: white; }
+  .tab-btn.active { background: white; color: #1a365d; font-weight: 700; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
 
   .footer { background: #2d3748; color: #a0aec0; text-align: center; padding: 20px; font-size: 0.82rem; }
   .footer strong { color: white; }
@@ -150,8 +168,19 @@
   <small>資料來源：<a href="https://www.businesstoday.com.tw/article/category/183030/post/202605030005/" target="_blank">今周刊 2027行事曆</a> ／ <a href="https://naozhong.tw/jishiqi/chunjie/2027/" target="_blank">2027春節計時器</a></small>
 </div>
 
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="showTab('compare')">📊 綜合比較</button>
+  <button class="tab-btn" onclick="showTab('spots')">🗺️ 景點攻略</button>
+  <button class="tab-btn" onclick="showTab('schedule')">📅 行程規劃</button>
+  <button class="tab-btn" onclick="showTab('budget')">💵 費用試算</button>
+  <button class="tab-btn" onclick="showTab('booking')">🏨 訂房機票</button>
+  <button class="tab-btn" onclick="showTab('discuss')">💡 討論清單</button>
+</nav>
+
 <div class="container">
 
+  <!-- TAB 1: 綜合比較 -->
+  <div class="tab-panel active" id="tab-compare">
   <!-- ===== 評分總覽 ===== -->
   <h2>📊 綜合評分總覽</h2>
   <table class="score-table">
@@ -257,8 +286,12 @@
       </div>
       <div class="card-body">
         <div class="info-grid">
-          <div class="info-item"><div class="label">飛行時間</div><div class="value">約 4h25min（直飛）<br><small style="color:#e53e3e">⚠️ 原標示3.5h有誤</small></div></div>
-          <div class="info-item"><div class="label">航空選擇</div><div class="value">台灣虎航、酷航、泰航、泰獅航、AirAsia X（每週約2班）</div></div>
+          <div class="info-item"><div class="label">飛行時間</div><div class="value">約 4h25min（直飛）</div></div>
+          <div class="info-item"><div class="label">航空選擇</div><div class="value">
+            <span style="color:#2b6cb0; font-weight:600">傳統航空：</span>中華航空 CI、長榮航空 BR、泰國國際航空 TG<br>
+            <span style="color:#718096; font-weight:600">廉價航空：</span>台灣虎航、酷航、泰獅航<br>
+            <small style="color:#718096">資料：<a href="https://flights.china-airlines.com/zh-tw/flights-from-taipei-to-phuket" target="_blank">中華航空官網</a></small>
+          </div></div>
           <div class="info-item"><div class="label">推薦住宿區</div><div class="value">Kata / Karon / Kamala</div></div>
           <div class="info-item"><div class="label">匯率參考</div><div class="value">1 TWD ≈ 1.02 THB（2026.08實測）<br><small style="color:#718096">資料：<a href="https://www.xe.com/currencyconverter/convert/?Amount=1&From=TWD&To=THB" target="_blank">XE.com</a></small></div></div>
         </div>
@@ -317,7 +350,7 @@
           </ul>
         </div>
         <div class="verdict recommend">
-          ✅ <strong>推薦理由：</strong>直飛省時、Grab自助最方便、親子活動最豐富、6-7天玩不完。住Kata/Karon一個區域全程不換房。
+          ✅ <strong>推薦理由：</strong>直飛省時、Grab自助最方便、親子活動最豐富、7天完全排得滿。住Kata/Karon一個區域全程不換房。
         </div>
       </div>
     </div>
@@ -487,6 +520,10 @@
 
   </div><!-- end dest-grid -->
 
+  </div><!-- end tab-compare -->
+
+  <!-- TAB 2: 景點攻略 -->
+  <div class="tab-panel" id="tab-spots">
   <!-- ===== 景點比較大表 ===== -->
   <h2>🔍 景點類型對照比較</h2>
   <table class="attr-compare">
@@ -627,6 +664,10 @@
     </tbody>
   </table>
 
+  </div><!-- end tab-spots -->
+
+  <!-- TAB 3: 行程規劃 -->
+  <div class="tab-panel" id="tab-schedule">
   <!-- ===== 出發日期建議 ===== -->
   <h2>📅 出發日期比較</h2>
   <div class="itinerary-section">
@@ -658,7 +699,7 @@
       <small>2/3回程，2/4（除夕小年夜）抵台剛好有一天緩衝準備過年。週三回程票比週五/六便宜，位子也好搶。</small>
     </div>
     <div style="margin-top:10px; background:#fff5f5; border-radius:8px; padding:12px; font-size:0.85rem;">
-      ⚠️ <strong>回程特別提醒：</strong>2/4（除夕小年夜）台灣放年假，出境/入境人潮都很大，候機時間可能拉長。如果選2/4回台，建議選早上班機，避免晚班延誤影響年夜飯。<br>
+      ⚠️ <strong>回程提醒：</strong>2/3（週三）回程，2/4（除夕小年夜）抵台，剛好有一天緩衝準備過年。2/4台灣年假人潮大，入境通關可能較慢，建議選早上班機。<br>
       <small>資料來源：<a href="https://www.goodaytw.com/calendar/2027" target="_blank">2027行事曆 goodaytw</a></small>
     </div>
   </div>
@@ -740,6 +781,10 @@
 
   </div>
 
+  </div><!-- end tab-schedule -->
+
+  <!-- TAB 4: 費用試算 -->
+  <div class="tab-panel" id="tab-budget">
   <!-- ===== 費用試算 ===== -->
   <h2>💵 4人7天費用粗估比較（台幣）</h2>
   <table class="budget-table">
@@ -806,6 +851,10 @@
   </table>
   <p style="color:#718096; font-size:0.82rem; margin-bottom:30px;">※ 春節旺季估算，實際價格依訂房時間和選擇飯店等級而異。蘇美島因轉機和壟斷航班，費用明顯偏高。</p>
 
+  </div><!-- end tab-budget -->
+
+  <!-- TAB 5: 訂房機票 -->
+  <div class="tab-panel" id="tab-booking">
   <!-- ===== 最終建議 ===== -->
   <h2>🏆 最終建議</h2>
   <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:30px;">
@@ -1231,6 +1280,10 @@
     💡 <strong>防動態漲價技巧：</strong>用<strong>無痕視窗</strong>查價（避免被Cookie追蹤漲價）。Agoda / Booking.com 查完後，同樣日期去 <strong>Traveloka 和 Wego</strong> 再比一次，常有驚喜。最後去飯店官網確認有無更低官網價。
   </div>
 
+  </div><!-- end tab-booking -->
+
+  <!-- TAB 6: 討論清單 -->
+  <div class="tab-panel" id="tab-discuss">
   <!-- 太太討論區 -->
   <div style="background:#fffaf0; border:2px dashed #ed8936; border-radius:12px; padding:20px; margin-bottom:30px;">
     <h3 style="color:#c05621; margin-bottom:12px;">👩‍👩‍👧‍👦 跟太太討論前，先問這幾個問題：</h3>
@@ -1243,6 +1296,8 @@
       <li>春節期間人潮多，還是要去熱門地？還是願意去較冷門的甲米？</li>
     </ol>
   </div>
+
+  </div><!-- end tab-discuss -->
 
 </div><!-- end container -->
 
@@ -1262,5 +1317,14 @@
   </span>
 </div>
 
+<script>
+  function showTab(name) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.currentTarget.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
 </body>
 </html>
