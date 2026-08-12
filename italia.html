@@ -1,0 +1,4159 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=2.0" name="viewport"/>
+  <title>
+   🇮🇹 義大利深情十五天・旅遊手冊
+  </title>
+  <style>
+   :root {
+    --green: #2d6a4f;
+    --red: #c1121f;
+    --gold: #d4a017;
+    --cream: #fdf6e3;
+    --bg: #1a1a2e;
+    --card: #ffffff;
+    --text: #2d2d2d;
+    --muted: #666;
+    --border: #e0d8c0;
+    --shadow: 0 2px 12px rgba(0,0,0,0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  /* HEADER */
+  .hero {
+    background: linear-gradient(135deg, #1a1a2e 0%, #2d6a4f 60%, #c1121f 100%);
+    color: white;
+    padding: 32px 20px 24px;
+    text-align: center;
+  }
+  .hero-flag { font-size: 48px; }
+  .hero h1 { font-size: 22px; font-weight: 700; margin: 8px 0 4px; letter-spacing: 1px; }
+  .hero p { font-size: 13px; opacity: 0.85; }
+  .hero-dates { margin-top: 12px; background: rgba(255,255,255,0.15); border-radius: 20px; display: inline-block; padding: 6px 20px; font-size: 13px; }
+
+  /* NAV */
+  nav {
+    background: white;
+    border-bottom: 2px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 0 12px;
+    box-shadow: var(--shadow);
+  }
+  nav a {
+    display: inline-block;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--green);
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 3px solid transparent;
+  }
+  nav a:hover { border-bottom-color: var(--red); color: var(--red); }
+
+  /* SECTION */
+  section { padding: 20px 16px 0; }
+  .section-title {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--green);
+    border-left: 5px solid var(--red);
+    padding-left: 12px;
+    margin-bottom: 16px;
+    margin-top: 24px;
+  }
+  .section-title .emoji { margin-right: 6px; }
+
+  /* CARD */
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--red);
+    margin-bottom: 8px;
+  }
+  .card-title .icon { margin-right: 6px; }
+
+  /* TAGS / BADGES */
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin: 2px 2px 4px 0;
+    font-weight: 600;
+  }
+  .tag-green { background: #d8f3dc; color: #1b4332; }
+  .tag-red { background: #ffe5e5; color: #9b1a1a; }
+  .tag-gold { background: #fff3cd; color: #856404; }
+  .tag-blue { background: #dbeafe; color: #1e3a8a; }
+  .tag-purple { background: #f3e8ff; color: #5b21b6; }
+
+  /* WEATHER TABLE */
+  .weather-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 12px 0;
+  }
+  .weather-item {
+    background: white;
+    border-radius: 10px;
+    padding: 12px 8px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .weather-item .city { font-size: 12px; font-weight: 700; color: var(--green); }
+  .weather-item .temp { font-size: 20px; font-weight: 700; color: var(--red); margin: 4px 0; }
+  .weather-item .desc { font-size: 11px; color: var(--muted); }
+
+  /* CLOTHING CHECKLIST */
+  .checklist { list-style: none; }
+  .checklist li {
+    padding: 7px 0 7px 28px;
+    position: relative;
+    border-bottom: 1px dashed #e8e0cc;
+    font-size: 14px;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li::before {
+    content: '☐';
+    position: absolute;
+    left: 4px;
+    font-size: 16px;
+    color: var(--gold);
+  }
+
+  /* ITINERARY */
+  .day-card {
+    background: white;
+    border-radius: 14px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .day-header {
+    background: linear-gradient(90deg, var(--green), #40916c);
+    color: white;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .day-header .day-num { font-size: 22px; font-weight: 800; }
+  .day-header .day-date { font-size: 12px; opacity: 0.85; }
+  .day-header .day-title { font-size: 14px; font-weight: 700; text-align: right; max-width: 65%; }
+  .day-body { padding: 14px 16px; }
+  .spot-entry {
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed #e8e0cc;
+  }
+  .spot-entry:last-child { border-bottom: none; margin-bottom: 0; }
+  .spot-name { font-size: 15px; font-weight: 700; color: var(--red); margin-bottom: 4px; }
+  .spot-desc { font-size: 13px; color: var(--text); line-height: 1.6; }
+  .spot-tips { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .tip-box {
+    background: #fff9e6;
+    border-left: 4px solid var(--gold);
+    border-radius: 0 8px 8px 0;
+    padding: 8px 12px;
+    font-size: 13px;
+    margin: 8px 0;
+  }
+  .mom-tip {
+    background: #e8f5e9;
+    border-left: 4px solid #43a047;
+    border-radius: 0 8px 8px 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    margin: 6px 0;
+  }
+  .meal-row {
+    background: #fdf6e3;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    margin-top: 8px;
+    color: var(--green);
+  }
+
+  /* FOOD */
+  .food-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .food-item {
+    background: white;
+    border-radius: 10px;
+    padding: 12px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .food-item .name { font-size: 14px; font-weight: 700; color: var(--red); }
+  .food-item .desc { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ITALIAN PHRASES */
+  .phrase-table { width: 100%; border-collapse: collapse; }
+  .phrase-table th {
+    background: var(--green);
+    color: white;
+    padding: 8px 12px;
+    text-align: left;
+    font-size: 13px;
+  }
+  .phrase-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    vertical-align: top;
+  }
+  .phrase-table tr:nth-child(even) td { background: #fafaf5; }
+  .italian { color: var(--red); font-weight: 600; font-style: italic; }
+  .pronunciation { color: var(--muted); font-size: 11px; }
+
+  /* SHOPPING */
+  .shop-card {
+    background: white;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--gold);
+  }
+  .shop-card .brand { font-size: 14px; font-weight: 700; color: #856404; }
+  .shop-card .items { font-size: 13px; color: var(--text); margin-top: 4px; }
+  .shop-card .price { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* FLIGHT */
+  .flight-timeline {
+    position: relative;
+    padding-left: 28px;
+  }
+  .flight-timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--red);
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px var(--red);
+  }
+  .timeline-item .time { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .timeline-item .event { font-size: 14px; font-weight: 600; }
+  .timeline-item .detail { font-size: 12px; color: var(--muted); }
+
+  /* PACKING */
+  .pack-section { margin-bottom: 12px; }
+  .pack-section h4 { font-size: 14px; font-weight: 700; color: var(--green); margin-bottom: 6px; }
+  .pack-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .pack-item {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* ALERT */
+  .alert {
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin: 10px 0;
+    font-size: 13px;
+  }
+  .alert-warning { background: #fff3cd; border: 1px solid #ffc107; color: #856404; }
+  .alert-info { background: #dbeafe; border: 1px solid #93c5fd; color: #1e3a8a; }
+  .alert-success { background: #d1fae5; border: 1px solid #6ee7b7; color: #065f46; }
+  .alert-danger { background: #fee2e2; border: 1px solid #fca5a5; color: #7f1d1d; }
+
+  /* BACK TO TOP */
+  .back-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    z-index: 200;
+  }
+  .divider { height: 2px; background: linear-gradient(90deg, var(--green), var(--red)); border-radius: 2px; margin: 24px 0 0; }
+  footer { text-align: center; padding: 24px 16px; color: var(--muted); font-size: 12px; }
+  </style>
+ </head>
+ <body>
+  <!-- HERO -->
+  <div class="hero">
+   <div class="hero-flag">
+    🇮🇹
+   </div>
+   <h1>
+    義大利深情十五天・旅遊手冊
+   </h1>
+   <p>
+    太一國際旅行社・豪經艙
+   </p>
+   <div class="hero-dates">
+    ✈ 2026年5月9日～5月23日
+   </div>
+  </div>
+  <!-- NAV -->
+  <nav>
+   <a href="#weather">
+    ☀️天氣
+   </a>
+   <a href="#clothing">
+    👗衣物
+   </a>
+   <a href="#flight">
+    ✈️搭機
+   </a>
+   <a href="#packing">
+    🧳行李
+   </a>
+   <a href="#itinerary">
+    📅行程
+   </a>
+   <a href="#food">
+    🍝美食
+   </a>
+   <a href="#shopping">
+    🛍️採購
+   </a>
+   <a href="#supermarket">
+    🏪超市
+   </a>
+   <a href="#phrases">
+    🗣️義語
+   </a>
+   <a href="#tips">
+    💡注意事項
+   </a>
+   <a href="#taxrefund">
+    💰退稅
+   </a>
+  </nav>
+  <!-- ===== OVERVIEW ===== -->
+  <section>
+   <div class="section-title">
+    <span class="emoji">
+     📋
+    </span>
+    行程總覽
+   </div>
+   <div class="card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+     <div>
+      <div class="tag tag-green">
+       去程
+      </div>
+      <div style="font-size:13px;margin-top:4px;">
+       5/9 BR095 台北→米蘭
+       <br/>
+       23:45 出發 / 07:35+1 抵達
+      </div>
+     </div>
+     <div>
+      <div class="tag tag-red">
+       回程
+      </div>
+      <div style="font-size:13px;margin-top:4px;">
+       5/22 BR096 米蘭→台北
+       <br/>
+       11:15 出發 / 05:55+1 抵達
+      </div>
+     </div>
+    </div>
+    <div style="margin-top:12px;border-top:1px dashed #e0d8c0;padding-top:10px;">
+     <strong>
+      走訪城市：
+     </strong>
+     米蘭→馬特拉→阿貝羅貝羅→拿坡里→卡布里島→阿瑪菲→龐貝→羅馬→天空之城→西恩納→托斯卡納→聖吉米安諾→比薩→佛羅倫斯→威尼斯→彩色島→西米歐尼（加達湖）→米蘭
+    </div>
+    <div style="margin-top:8px;">
+     <span class="tag tag-gold">
+      ⭐ 世界遺產9處
+     </span>
+     <span class="tag tag-blue">
+      🍽️ 米其林4餐
+     </span>
+     <span class="tag tag-purple">
+      🚄 高速火車2段
+     </span>
+     <span class="tag tag-green">
+      🏨 含3晚五星級飯店
+     </span>
+    </div>
+   </div>
+  </section>
+  <!-- ===== WEATHER ===== -->
+  <div class="divider">
+  </div>
+  <section id="weather">
+   <div class="section-title">
+    <span class="emoji">
+     ☀️
+    </span>
+    5月義大利天氣
+   </div>
+   <div class="alert alert-info">
+    📌 出發時間5月上中旬，正值春末入夏，義大利全國天氣宜人但南北差異明顯。白天陽光充足，早晚略涼，偶有雷陣雨。
+   </div>
+   <div class="weather-grid">
+    <div class="weather-item">
+     <div class="city">
+      🌊 南義
+      <br/>
+      （馬特拉・拿坡里・阿瑪菲）
+     </div>
+     <div class="temp">
+      16–24°C
+     </div>
+     <div class="desc">
+      ☀️ 陽光溫熱
+      <br/>
+      濕度中等，少雨
+     </div>
+    </div>
+    <div class="weather-item">
+     <div class="city">
+      🏛️ 中義
+      <br/>
+      （羅馬・天空之城・西恩納）
+     </div>
+     <div class="temp">
+      11–23°C
+     </div>
+     <div class="desc">
+      🌤️ 溫暖舒適
+      <br/>
+      每月約10天有雨
+     </div>
+    </div>
+    <div class="weather-item">
+     <div class="city">
+      🌷 北義
+      <br/>
+      （佛羅倫斯・威尼斯・米蘭）
+     </div>
+     <div class="temp">
+      14–26°C
+     </div>
+     <div class="desc">
+      🌥️ 舒爽宜人
+      <br/>
+      午後雷陣雨機率高
+     </div>
+    </div>
+   </div>
+   <!-- Per-city weather detail -->
+   <div class="card">
+    <div class="card-title"><span class="icon">📍</span>各景點天氣預報（5月行程期間）</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+     <tr style="background:#2d6a4f;color:white;">
+      <th style="padding:8px 6px;text-align:left;">景點城市</th>
+      <th style="padding:8px 6px;text-align:center;">日高／夜低</th>
+      <th style="padding:8px 6px;text-align:center;">日照</th>
+      <th style="padding:8px 6px;text-align:left;">注意</th>
+     </tr>
+     <tr style="background:#f9f9f2;">
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;font-weight:700;">✈️ 米蘭（Day1・13）</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;text-align:center;color:#c1121f;font-weight:700;">18–27°C / 11–17°C</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;text-align:center;">☀️ 良好</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">午後偶有雷陣雨，備折疊傘</td>
+     </tr>
+     <tr>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;font-weight:700;">🪨 馬特拉（Day2）</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;text-align:center;color:#c1121f;font-weight:700;">16–22°C / 10–14°C</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;text-align:center;">🌤️ 尚可</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">洞穴石城夜間明顯涼，薄外套必備</td>
+     </tr>
+     <tr style="background:#f9f9f2;">
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;font-weight:700;">🏠 阿貝羅貝羅（Day3）</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;text-align:center;color:#c1121f;font-weight:700;">18–24°C / 12–15°C</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;text-align:center;">☀️ 充足</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">南義普利亞氣候佳，適合戶外遊覽</td>
+     </tr>
+     <tr>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;font-weight:700;">🌊 拿坡里／阿瑪菲（Day4-5）</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;text-align:center;color:#c1121f;font-weight:700;">16–21°C / 13–16°C</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;text-align:center;">☀️ 9–11小時</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">臨海風大，防曬帽＋墨鏡必備</td>
+     </tr>
+     <tr style="background:#f9f9f2;">
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;font-weight:700;">🏛️ 羅馬（Day6-7）</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;text-align:center;color:#c1121f;font-weight:700;">11–23°C / 10–14°C</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;text-align:center;">☀️ 9小時</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">每月約10天有雨，防曬乳＋雨傘並備</td>
+     </tr>
+     <tr>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;font-weight:700;">🏙️ 天空之城（Day8）</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;text-align:center;color:#c1121f;font-weight:700;">12–20°C / 8–12°C</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;text-align:center;">🌤️ 尚可</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">山頂入霧後溫差大，多帶一件外套</td>
+     </tr>
+     <tr style="background:#f9f9f2;">
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;font-weight:700;">🌿 西恩納／托斯卡納（Day8-9）</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;text-align:center;color:#c1121f;font-weight:700;">13–22°C / 9–13°C</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;text-align:center;">🌤️ 良好</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">鄉村晚間降溫明顯，薄針織必備</td>
+     </tr>
+     <tr>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;font-weight:700;">🌸 佛羅倫斯（Day10）</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;text-align:center;color:#c1121f;font-weight:700;">14–24°C / 10–14°C</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;text-align:center;">☀️ 充足</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">石板路日曬強，防曬乳＋遮陽帽</td>
+     </tr>
+     <tr style="background:#f9f9f2;">
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;font-weight:700;">🚤 威尼斯（Day11-12）</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;text-align:center;color:#c1121f;font-weight:700;">14–22°C / 10–14°C</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;text-align:center;">🌥️ 偶陰</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">水氣重，潮濕感強；5月Acqua Alta機率低</td>
+     </tr>
+     <tr>
+      <td style="padding:8px 6px;font-weight:700;">🏰 加達湖西米歐尼（Day13）</td>
+      <td style="padding:8px 6px;text-align:center;color:#c1121f;font-weight:700;">15–24°C / 10–14°C</td>
+      <td style="padding:8px 6px;text-align:center;">☀️ 良好</td>
+      <td style="padding:8px 6px;">湖區傍晚風涼，需備薄外套</td>
+     </tr>
+    </table>
+    <div class="tip-box" style="margin-top:10px;">
+     🌡️ <b>資料來源：</b>weather25.com / weather2visit.com 5月歷史均值（2026年實際天氣以出發當天最新預報為準）
+    </div>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      🌡️
+     </span>
+     各地實況小提醒
+    </div>
+    <ul style="padding-left:18px;font-size:13px;line-height:2;">
+     <li>
+      <b>
+       馬特拉（Day2）：
+      </b>
+      洞穴石城，晚間涼爽，建議備薄外套
+     </li>
+     <li>
+      <b>
+       阿瑪菲海岸（Day4）：
+      </b>
+      臨海，風大，防曬帽和墨鏡必備
+     </li>
+     <li>
+      <b>
+       羅馬（Day5-6）：
+      </b>
+      室外行走多，防曬乳、遮陽帽關鍵
+     </li>
+     <li>
+      <b>
+       天空之城（Day7）：
+      </b>
+      山頂城鎮，入霧後溫差大，多備一層
+     </li>
+     <li>
+      <b>
+       托斯卡納農莊（Day7-8）：
+      </b>
+      鄉村區，晚間降溫明顯
+     </li>
+     <li>
+      <b>
+       威尼斯（Day10-12）：
+      </b>
+      水氣重，5月偶有水淹（Acqua Alta）機率低但需注意
+     </li>
+     <li>
+      <b>
+       加達湖（Day12）：
+      </b>
+      湖區風涼，傍晚需外套
+     </li>
+    </ul>
+   </div>
+   <div class="alert alert-warning">
+    ☔ 5月義大利下午偶有雷陣雨（尤其北義與羅馬），建議隨身攜帶輕便折疊雨傘，不需厚雨衣。
+   </div>
+  </section>
+  <!-- ===== CLOTHING ===== -->
+  <div class="divider">
+  </div>
+  <section id="clothing">
+   <div class="section-title">
+    <span class="emoji">
+     👗
+    </span>
+    衣物準備建議
+   </div>
+   <div class="alert alert-success">
+    💡 核心原則：輕薄疊穿。以薄T恤為底，搭配薄外套/薄針織衫，早晚穿脫方便。避免厚重衣物佔行李空間。
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      🌸
+     </span>
+     建議攜帶衣物數量（15天）
+    </div>
+    <div class="pack-grid">
+     <div class="pack-item">
+      👕 短袖T恤 × 6件
+     </div>
+     <div class="pack-item">
+      👚 薄長袖 / 薄針織 × 3件
+     </div>
+     <div class="pack-item">
+      🧥 輕量防風薄外套 × 1件
+     </div>
+     <div class="pack-item">
+      👖 長褲 × 2條
+     </div>
+     <div class="pack-item">
+      🩳 薄長裙/七分褲 × 2條
+     </div>
+     <div class="pack-item">
+      🧣 薄圍巾/披肩 × 1條
+     </div>
+     <div class="pack-item">
+      🧦 棉質薄襪 × 8雙
+     </div>
+     <div class="pack-item">
+      👙 內衣 × 8套
+     </div>
+    </div>
+   </div>
+   <!-- 男生衣物清單 -->
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">👔</span>
+     男生衣物準備清單（15天・5月義大利）
+    </div>
+    <div class="alert alert-info" style="margin-bottom:12px;">
+     👕 核心策略：以機能性為主，能「疊穿」的輕薄款為優先。米蘭有米其林二星晚餐，建議帶一套整齊的領子衫+長褲應對正式場合。
+    </div>
+
+    <!-- 上衣 -->
+    <div class="pack-section">
+     <h4>👕 上衣</h4>
+     <div class="pack-grid">
+      <div class="pack-item">👕 短袖T恤（素色/簡單款）× 5件</div>
+      <div class="pack-item">👔 短袖POLO衫（正式場合用）× 2件</div>
+      <div class="pack-item">👕 薄長袖排汗衫 × 2件</div>
+      <div class="pack-item">🧥 輕量防風薄外套 × 1件</div>
+     </div>
+     <div class="tip-box" style="margin-top:8px;">
+      💡 <b>POLO衫的功用：</b>米蘭文華東方米其林二星午餐（Day13）、米其林餐廳，建議穿POLO衫+長褲，不需打領帶但避免純運動服。
+     </div>
+    </div>
+
+    <!-- 下身 -->
+    <div class="pack-section" style="margin-top:12px;">
+     <h4>👖 下身</h4>
+     <div class="pack-grid">
+      <div class="pack-item">👖 輕薄長褲（深色，百搭）× 2條</div>
+      <div class="pack-item">🩳 薄短褲（休閒/海邊用）× 2條</div>
+      <div class="pack-item">🧦 棉質薄短襪 × 8雙</div>
+      <div class="pack-item">🩲 內褲 × 8件</div>
+     </div>
+     <div class="alert alert-danger" style="margin-top:8px;">
+      ⚠️ <b>教堂規定：梵蒂岡、佛羅倫斯百花大教堂等禁止穿短褲入場！</b>進教堂必須換長褲，短褲場合：海邊（卡布里島、阿瑪菲）、加達湖散步、休閒自由活動。
+     </div>
+    </div>
+
+    <!-- 鞋子 -->
+    <div class="pack-section" style="margin-top:12px;">
+     <h4>👟 鞋子（男生版）</h4>
+     <div class="pack-grid">
+      <div class="pack-item">👟 氣墊運動鞋（主力）× 1雙</div>
+      <div class="pack-item">👞 帆布鞋/休閒皮鞋（正式）× 1雙</div>
+      <div class="pack-item">🩴 涼鞋/拖鞋（海邊/飯店）× 1雙</div>
+     </div>
+     <div class="mom-tip">
+      👔 鞋子建議：運動鞋走遍80%行程；帆布鞋或乾淨的深色休閒鞋應付米蘭精品街逛街和正式晚餐；涼鞋用於阿瑪菲、加達湖湖邊。共3雙，控制重量。
+     </div>
+    </div>
+
+    <!-- 配件 -->
+    <div class="pack-section" style="margin-top:12px;">
+     <h4>🕶️ 配件 & 防曬</h4>
+     <div class="pack-grid">
+      <div class="pack-item">🧢 棒球帽/鴨舌帽（防曬必備）× 1頂</div>
+      <div class="pack-item">🕶️ UV防曬太陽眼鏡 × 1副</div>
+      <div class="pack-item">🧣 薄圍巾（進教堂備用）× 1條</div>
+      <div class="pack-item">👜 腰包/小斜背包（防扒）× 1個</div>
+      <div class="pack-item">🪥 防曬乳 SPF50+ × 2條</div>
+      <div class="pack-item">☂️ 輕便折疊傘 × 1把</div>
+     </div>
+    </div>
+
+    <!-- 行李箱打包建議 -->
+    <div class="pack-section" style="margin-top:12px;">
+     <h4>🧳 打包建議（男生版）</h4>
+     <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+      <tr style="background:#2d6a4f;color:white;">
+       <th style="padding:6px 8px;text-align:left;">類別</th>
+       <th style="padding:6px 8px;text-align:center;">數量</th>
+       <th style="padding:6px 8px;text-align:left;">備註</th>
+      </tr>
+      <tr style="background:#f9f9f2;">
+       <td style="padding:6px 8px;border-bottom:1px solid #e8e0cc;">短袖T恤</td>
+       <td style="padding:6px 8px;border-bottom:1px solid #e8e0cc;text-align:center;font-weight:700;color:#c1121f;">5件</td>
+       <td style="padding:6px 8px;border-bottom:1px solid #e8e0cc;">可在旅館洗、晾乾快</td>
+      </tr>
+      <tr>
+       <td style="padding:6px 8px;border-bottom:1px solid #e8e0cc;">短袖POLO衫</td>
+       <td style="padding:6px 8px;border-bottom:1px solid #e8e0cc;text-align:center;font-weight:700;color:#c1121f;">2件</td>
+       <td style="padding:6px 8px;border-bottom:1px solid #e8e0cc;">米蘭米其林+正式場合</td>
+      </tr>
+      <tr style="background:#f9f9f2;">
+       <td style="padding:6px 8px;border-bottom:1px solid #e8e0cc;">薄長袖排汗衫</td>
+       <td style="padding:6px 8px;border-bottom:1px solid #e8e0cc;text-align:center;font-weight:700;color:#c1121f;">2件</td>
+       <td style="padding:6px 8px;border-bottom:1px solid #e8e0cc;">早晚涼時疊穿，天空之城/加達湖</td>
+      </tr>
+      <tr>
+       <td style="padding:6px 8px;border-bottom:1px solid #e8e0cc;">輕量防風薄外套</td>
+       <td style="padding:6px 8px;border-bottom:1px solid #e8e0cc;text-align:center;font-weight:700;color:#c1121f;">1件</td>
+       <td style="padding:6px 8px;border-bottom:1px solid #e8e0cc;">雨天兼用，可折疊放包包</td>
+      </tr>
+      <tr style="background:#f9f9f2;">
+       <td style="padding:6px 8px;border-bottom:1px solid #e8e0cc;">輕薄長褲</td>
+       <td style="padding:6px 8px;border-bottom:1px solid #e8e0cc;text-align:center;font-weight:700;color:#c1121f;">2條</td>
+       <td style="padding:6px 8px;border-bottom:1px solid #e8e0cc;">深色百搭，進教堂必備</td>
+      </tr>
+      <tr>
+       <td style="padding:6px 8px;border-bottom:1px solid #e8e0cc;">薄短褲</td>
+       <td style="padding:6px 8px;border-bottom:1px solid #e8e0cc;text-align:center;font-weight:700;color:#c1121f;">2條</td>
+       <td style="padding:6px 8px;border-bottom:1px solid #e8e0cc;">卡布里島、阿瑪菲、加達湖</td>
+      </tr>
+      <tr style="background:#f9f9f2;">
+       <td style="padding:6px 8px;border-bottom:1px solid #e8e0cc;">內褲＋棉襪</td>
+       <td style="padding:6px 8px;border-bottom:1px solid #e8e0cc;text-align:center;font-weight:700;color:#c1121f;">各8件</td>
+       <td style="padding:6px 8px;border-bottom:1px solid #e8e0cc;">旅館洗時至少有4天備用</td>
+      </tr>
+      <tr>
+       <td style="padding:6px 8px;">鞋子</td>
+       <td style="padding:6px 8px;text-align:center;font-weight:700;color:#c1121f;">共3雙</td>
+       <td style="padding:6px 8px;">運動鞋穿上飛機，2雙放行李</td>
+      </tr>
+     </table>
+    </div>
+
+    <div class="tip-box" style="margin-top:12px;">
+     ✈️ <b>行李重量估算：</b>男生衣物（以上全部）約 5–7 kg，加上盥洗用品、藥物、電器約 3–4 kg，留約 18–20 kg 空間給採買伴手禮（橄欖油、Bialetti、LV 等）。豪經艙每人 2 件各 30 kg，空間充裕！
+    </div>
+   </div>
+   <!-- /男生衣物清單 -->
+
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      ⛪
+     </span>
+     教堂入場重要規定
+    </div>
+    <div class="alert alert-danger" style="margin:0;">
+     ⚠️ 梵蒂岡（西斯汀禮拜堂、聖彼得教堂）、佛羅倫斯聖母百花大教堂等，
+     <b>
+      禁止穿無袖、短褲、迷你裙入場
+     </b>
+     ！
+    </div>
+    <div style="margin-top:8px;font-size:13px;">
+     建議：薄圍巾或披肩隨身攜帶，遮肩蓋膝即可入場，用完收入包包非常方便。
+    </div>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      👟
+     </span>
+     鞋子（非常重要！）
+    </div>
+    <ul style="padding-left:18px;font-size:13px;line-height:2.2;">
+     <li>
+      <b>
+       主力鞋：氣墊運動鞋 × 1雙（最重要！）
+      </b>
+      <br/>
+      羅馬、佛羅倫斯、威尼斯全是石板路，每天步行8,000-15,000步，腳底必須有緩衝。
+     </li>
+     <li>
+      <b>
+       輕便涼鞋 × 1雙
+      </b>
+      <br/>
+      阿瑪菲海岸、加達湖散步用，或休閒時穿。
+     </li>
+     <li>
+      <b>
+       ⚠️ 避免高跟鞋
+      </b>
+      ：石板路+坡道，高跟鞋非常危險。
+     </li>
+    </ul>
+    <div class="mom-tip">
+     👴 媽媽建議：選擇包覆性好、鞋底厚且防滑的步行鞋，如 New Balance 或 HOKA。石板路凹凸不平，防滑鞋底最重要。
+    </div>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      🌞
+     </span>
+     防曬及配件
+    </div>
+    <ul class="checklist">
+     <li>
+      防曬乳 SPF50+ × 2條（義大利日曬強）
+     </li>
+     <li>
+      遮陽帽（帽檐寬、輕便可折疊款最佳）
+     </li>
+     <li>
+      UV防曬太陽眼鏡
+     </li>
+     <li>
+      折疊雨傘（超輕量，防曬防雨兩用）
+     </li>
+     <li>
+      小腰包或斜背包（防扒手，放護照影本、現金）
+     </li>
+    </ul>
+   </div>
+  </section>
+  <!-- ===== FLIGHT ===== -->
+  <div class="divider">
+  </div>
+  <section id="flight">
+   <div class="section-title">
+    <span class="emoji">
+     ✈️
+    </span>
+    長程搭機準備
+   </div>
+   <div class="card">
+    <div class="card-title">
+     ✈️ 航班資訊
+    </div>
+    <div style="margin-bottom: 12px;">
+     <strong>
+      去程
+     </strong>
+     <br/>
+     日期: 2026年5月9日（星期六）
+     <br/>
+     班機: EVA Air BR095
+     <br/>
+     路線: 台北(TPE) → 米蘭(MXP)
+     <br/>
+     時間: 23:15 出發 → 07:35+1 抵達
+     <br/>
+     飛行時間: 14小時20分
+     <br/>
+     艙等: 豪經艙
+    </div>
+    <div style="border-top: 1px dashed #e8e0cc; padding-top: 12px;">
+     <strong>
+      回程
+     </strong>
+     <br/>
+     日期: 2026年5月22日（星期三）
+     <br/>
+     班機: EVA Air BR096
+     <br/>
+     路線: 米蘭(MXP) → 台北(TPE)
+     <br/>
+     時間: 11:15 出發 → 05:55+1 抵達
+     <br/>
+    </div>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      🛫
+     </span>
+     台北→米蘭・飛行約13小時
+    </div>
+    <div class="flight-timeline">
+     <div class="timeline-item">
+      <div class="time">
+       出發前3小時
+      </div>
+      <div class="event">
+       🕙 台北桃園機場報到
+      </div>
+      <div class="detail">
+       建議23:45前3小時，約20:45抵達機場；豪經艙可使用長榮商務貴賓室
+      </div>
+     </div>
+     <div class="timeline-item">
+      <div class="time">
+       登機後
+      </div>
+      <div class="event">
+       🍽️ 享用機上豪經艙餐食
+      </div>
+      <div class="detail">
+       豪經艙餐食多樣，酒精飲料請適量，保持水分攝取
+      </div>
+     </div>
+     <div class="timeline-item">
+      <div class="time">
+       飛行約4小時後
+      </div>
+      <div class="event">
+       🚶 起身活動筋骨
+      </div>
+      <div class="detail">
+       每2-3小時起身走動，做簡單腿部伸展，預防深靜脈血栓
+      </div>
+     </div>
+     <div class="timeline-item">
+      <div class="time">
+       飛行中
+      </div>
+      <div class="event">
+       😴 調整作息
+      </div>
+      <div class="detail">
+       建議上機後盡量睡眠，抵達米蘭時調整至義大利時區（台灣時間 -6小時）
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      🎒
+     </span>
+     隨身包（手提上機）必備物品
+    </div>
+    <div class="pack-grid">
+     <div class="pack-item">
+      💊 常備藥品（整包）
+     </div>
+     <div class="pack-item">
+      🧣 薄圍巾（機艙冷）
+     </div>
+     <div class="pack-item">
+      👗 換洗衣物 × 1套
+     </div>
+     <div class="pack-item">
+      🦷 盥洗小包
+     </div>
+     <div class="pack-item">
+      💧 補水噴霧/護唇膏
+     </div>
+     <div class="pack-item">
+      📱 充電線/行動電源
+     </div>
+     <div class="pack-item">
+      🎧 耳機/耳塞
+     </div>
+     <div class="pack-item">
+      😷 備用口罩
+     </div>
+     <div class="pack-item">
+      📄 護照/機票（紙本）
+     </div>
+     <div class="pack-item">
+      💰 少量歐元現金
+     </div>
+    </div>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      💊
+     </span>
+     飛行健康小撇步
+    </div>
+    <ul style="padding-left:18px;font-size:13px;line-height:2;">
+     <li>
+      每小時喝150-200ml水，避免咖啡因飲料
+     </li>
+     <li>
+      睡眠時換上舒適棉質衣物或睡眠頸枕
+     </li>
+     <li>
+      豪經艙座椅可全平躺，充分利用休息
+     </li>
+     <li>
+      如有耳壓不適，吞嚥口水或嚼口香糖可緩解
+     </li>
+     <li>
+      抵達米蘭後避免立即補眠，多曝曬自然光有助時差調整
+     </li>
+    </ul>
+    <div class="mom-tip">
+     👴 媽媽提醒：豪經艙座位寬敞，但長時間靜坐仍需注意腿部循環。可穿彈性機能壓縮襪（compression socks），並確認隨身藥物備齊。
+    </div>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      ⏰
+     </span>
+     時差資訊
+    </div>
+    <div style="font-size:14px;">
+     <p>
+      義大利（CEST，5月夏令時間）= 台灣時間
+      <b>
+       −6小時
+      </b>
+     </p>
+     <p style="margin-top:6px;font-size:13px;color:var(--muted);">
+      例：台灣下午3點 = 義大利早上9點
+     </p>
+     <div style="background:#f0f9ff;border-radius:8px;padding:10px;margin-top:8px;font-size:13px;">
+      ✈️
+      <b>
+       抵達米蘭當天（Day2）
+      </b>
+      ：07:35抵達，義大利時間。建議當日大量喝水、適度活動，不要午睡，晚上按義大利時間就寢，約2-3天調整好。
+     </div>
+    </div>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     🚪 機場集合資訊
+    </div>
+    <div style="margin-bottom: 12px;">
+     <strong>
+      集合時間:
+     </strong>
+     2026年5月9日 20:15
+     <br/>
+     <strong>
+      集合地點:
+     </strong>
+     桃園國際機場第二航廈
+     <br/>
+     <strong>
+      航空公司櫃檯:
+     </strong>
+     長榮航空 20號團體櫃檯前
+     <br/>
+     <strong>
+      🔴 重要提醒:
+     </strong>
+     <br/>
+     ✓ 務必攜帶手機，抵達機場時聯絡領隊
+     <br/>
+     ✓ 出國當日勿關機，找到領隊後再關機
+     <br/>
+     ✓ 護照正本需於出發前繳交領隊
+     <br/>
+    </div>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     👨‍💼 領隊聯絡資訊
+    </div>
+    <strong>
+     領隊姓名:
+    </strong>
+    吳政龍(Boss)
+    <br/>
+    <strong>
+     聯絡電話:
+    </strong>
+    0913-573-063
+    <br/>
+    <strong>
+     說明:
+    </strong>
+    抵達機場時務必與領隊聯絡，以免久候
+   </div>
+  </section>
+  <!-- ===== PACKING ===== -->
+  <div class="divider">
+  </div>
+  <section id="packing">
+   <div class="section-title">
+    <span class="emoji">
+     🧳
+    </span>
+    行李整理清單
+   </div>
+   <div class="alert alert-info">
+    📦 豪經艙托運行李限額：
+    <b>
+     每人2件，每件30公斤
+    </b>
+    。手提行李：1件23×40×55cm，重量約8kg以內（以實際航空公司規定為準）。
+   </div>
+   <div class="card">
+    <div class="pack-section">
+     <h4>
+      📄 重要證件
+     </h4>
+     <div class="pack-grid">
+      <div class="pack-item">
+       🛂 護照（效期6個月以上）
+      </div>
+      <div class="pack-item">
+       📷 護照影本 × 2份
+      </div>
+      <div class="pack-item">
+       💳 信用卡（Visa/Master）
+      </div>
+      <div class="pack-item">
+       💶 歐元現金（€300-500）
+      </div>
+      <div class="pack-item">
+       📱 海外旅遊保險卡
+      </div>
+      <div class="pack-item">
+       📋 行程確認單
+      </div>
+     </div>
+    </div>
+    <div class="pack-section" style="margin-top:12px;">
+     <h4>
+      💊 藥品（非常重要）
+     </h4>
+     <div class="pack-grid">
+      <div class="pack-item">
+       💊 腸胃藥（脹氣/腹瀉）
+      </div>
+      <div class="pack-item">
+       🤒 退燒止痛藥
+      </div>
+      <div class="pack-item">
+       🤧 感冒藥
+      </div>
+      <div class="pack-item">
+       🩹 OK繃+防蚊液
+      </div>
+      <div class="pack-item">
+       😮‍💨 外傷消毒藥水
+      </div>
+      <div class="pack-item">
+       💊 個人長期慢性藥
+      </div>
+      <div class="pack-item">
+       🦟 防蚊貼片/噴霧
+      </div>
+      <div class="pack-item">
+       🧴 曬後修護乳
+      </div>
+     </div>
+    </div>
+    <div class="pack-section" style="margin-top:12px;">
+     <h4>
+      🔌 電器與配件
+     </h4>
+     <div class="pack-grid">
+      <div class="pack-item">
+       🔌 萬國轉接插頭（義大利C/F型）
+      </div>
+      <div class="pack-item">
+       📱 行動電源（禁托運）
+      </div>
+      <div class="pack-item">
+       📸 相機+充電器
+      </div>
+      <div class="pack-item">
+       💻 自備SIM卡（已有）
+      </div>
+     </div>
+     <div class="tip-box" style="margin-top:8px;">
+      🔌 義大利插頭：Type C（兩圓孔）或 Type F（三孔），建議帶萬國轉接頭，電壓220V。
+     </div>
+    </div>
+    <div class="pack-section" style="margin-top:12px;">
+     <h4>
+      🧴 盥洗保養
+     </h4>
+     <div class="pack-grid">
+      <div class="pack-item">
+       🧴 洗面乳/乳液（小瓶）
+      </div>
+      <div class="pack-item">
+       🌿 乾洗髮（節省時間）
+      </div>
+      <div class="pack-item">
+       🧻 濕紙巾（必備！）
+      </div>
+      <div class="pack-item">
+       🪥 旅行牙刷組
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="alert alert-warning">
+    ⚠️
+    <b>
+     行程注意：Day2出發前
+    </b>
+    ，請只留3天的換洗衣物和洗漱品等小行李給馬特拉洞穴旅館使用，大行李另行處理。
+    <br/>
+    <b>
+     Day9佛羅倫斯
+    </b>
+    、
+    <b>
+     Day13米蘭
+    </b>
+    同樣需要準備3晚/2晚小行李給下一站旅館，請分裝好。
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      👜
+     </span>
+     小訣竅：分裝防扒
+    </div>
+    <ul style="padding-left:18px;font-size:13px;line-height:2;">
+     <li>
+      護照放飯店保險箱，外出帶護照影本即可
+     </li>
+     <li>
+      現金分開放：少量放隨身包，多餘的放行李箱
+     </li>
+     <li>
+      購物袋/購物用帆布袋折疊收入行李，在義大利逛超市/採購時非常方便
+     </li>
+     <li>
+      貴重物品（相機、手機）用斜背包，放胸前防扒
+     </li>
+    </ul>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     ⚠️ 禁帶與限制物品
+    </div>
+    <div style="margin-bottom: 10px;">
+     <strong style="color: #c1121f;">
+      🔴 禁止攜帶:
+     </strong>
+     <br/>
+     ✗ 2015年9月~2017年2月製造的Apple MacBook Pro 15-Inch
+     <br/>
+     ✗ 瑞士刀、指甲刀等尖銳利器（須放託運行李）
+     <br/>
+     ✗ 打火機（禁止放入託運行李）
+    </div>
+    <div style="margin-bottom: 10px; border-top: 1px dashed #e8e0cc; padding-top: 10px;">
+     <strong style="color: #d4a017;">
+      📌 液體限制:
+     </strong>
+     <br/>
+     • 單件容器 ≤ 100ml
+     <br/>
+     • 總容量 ≤ 1L
+     <br/>
+     • 必須放在透明塑膠袋內
+     <br/>
+     • 例: 眼藥水、化妝水、防曬乳等
+    </div>
+    <div style="background: #fff9e6; border-left: 4px solid #d4a017; border-radius: 0 8px 8px 0; padding: 8px 12px; font-size: 13px;">
+     <strong>
+      ✓ 特別提醒:
+     </strong>
+     請準備小行李/過夜包（馬特拉與威尼斯停留時使用）
+    </div>
+   </div>
+  </section>
+  <!-- ===== ITINERARY ===== -->
+  <div class="divider">
+  </div>
+  <section id="itinerary">
+   <div class="section-title">
+    <span class="emoji">
+     📅
+    </span>
+    每日行程・景點導覽
+   </div>
+   <!-- Day 1 -->
+   <div class="day-card">
+    <div class="day-header">
+     <div>
+      <div class="day-num">
+       Day 1
+      </div>
+      <div class="day-date">
+       5月9日（六）
+      </div>
+     </div>
+     <div class="day-title">
+      台北出發
+     </div>
+    </div>
+    <div class="day-body">
+     <div class="spot-entry">
+      <div class="spot-name">
+       ✈️ 台北桃園→米蘭 BR095
+      </div>
+      <div class="spot-desc">
+       23:45 出發，搭乘長榮航空豪經艙，飛行約13小時，次日07:35+1抵達米蘭馬爾本薩機場（MXP）。
+      </div>
+      <div class="tip-box">
+       💡 建議提早3小時到機場（約20:45），使用豪經艙專屬報到櫃台，並至長榮貴賓室休憩候機。
+      </div>
+     </div>
+     <div class="meal-row">
+      🍽️ 餐食：機上晚餐（豪經艙）
+     </div>
+    </div>
+   </div>
+   <!-- Day 2 -->
+   <div class="day-card">
+    <div class="day-header">
+     <div>
+      <div class="day-num">
+       Day 2
+      </div>
+      <div class="day-date">
+       5月10日（日）
+      </div>
+     </div>
+     <div class="day-title">
+      米蘭→馬特拉
+     </div>
+    </div>
+    <div class="day-body">
+     <div class="spot-entry">
+      <div class="spot-name">
+       🏙️ 米蘭 Milano（短暫停留）
+      </div>
+      <div class="spot-desc">
+       時尚之都！出機場後遊覽米蘭市區，走訪艾曼紐商業大街（Galleria Vittorio Emanuele II），這座建於1877年的玻璃拱廊購物中心，融合古典建築與頂級精品，是米蘭最美的室內空間。轉機前的短暫停留，先感受義大利的時尚氣息。
+      </div>
+      <div class="spot-tips">
+       📍 斯卡拉歌劇院（La Scala）世界頂級歌劇殿堂，外觀氣派莊嚴。達文西廣場上的達文西雕像也值得一拍。
+      </div>
+      <div class="mom-tip">
+       👴 媽媽提醒：行李寄放後輕裝參觀，艾曼紐大街有室內走道，平坦好走，可坐下喝咖啡休息。
+      </div>
+     </div>
+     <div class="spot-entry">
+      <div class="spot-name">
+       ⛪ 馬特拉 Matera【世界遺產】
+      </div>
+      <div class="spot-desc">
+       「世界上最古老的城市之一」，被稱為「地中海最美麗的石窟城」。散佈在喀斯特山谷（Gravina）間的沙西石屋（Sassi），是人類最早定居並至今仍有人住在石窟中的聚落，分為薩索卡維奧索（Sasso Caveoso）和薩索巴里薩諾（Sasso Barisano）兩個區域，連同對面的Murgia Timone考古公園，共同列入世界遺產。電影《007生死交戰》、《耶穌受難記》、《王者天下》都在此取景。今晚入住五星洞穴旅館！
+      </div>
+      <div class="tip-box">
+       🎤
+       <b>
+        導遊金句
+       </b>
+       ：「馬特拉被稱為『恥辱之城』——1952年義大利政府強制遷移居民，認為石窟生活太落後。但50年後，聯合國把它列為世界遺產，整個城市鹹魚翻身，現在最便宜的洞穴旅館一晚也要150歐元！」
+      </div>
+      <div class="spot-tips">
+       📌
+       <b>
+        快速重點
+       </b>
+       ：① 夜晚的馬特拉燈光亮起，比白天更夢幻，入住後務必傍晚出去走走 ② 最美觀景台：Belvedere di Murgia Timone（需開車）或市區 Piazza Pascoli 旁的觀景平台（步行可達）③ 石窟教堂 Santa Maria de Idris 可入內參觀 ④ 5月氣溫約20-25度，白天探索石城非常舒適
+      </div>
+     </div>
+     <div class="meal-row">
+      🍽️ 早：機上 ／ 午：自理（米蘭小吃） ／ 晚：米其林推薦料理（馬特拉）
+     </div>
+    </div>
+   </div>
+   <!-- Day 3 -->
+   <div class="day-card">
+    <div class="day-header">
+     <div>
+      <div class="day-num">
+       Day 3
+      </div>
+      <div class="day-date">
+       5月11日（一）
+      </div>
+     </div>
+     <div class="day-title">
+      馬特拉→阿貝羅貝羅→拿坡里
+     </div>
+    </div>
+    <div class="day-body">
+     <div class="spot-entry">
+      <div class="spot-name">
+       🍄 阿貝羅貝羅 Alberobello【世界遺產】
+      </div>
+      <div class="spot-desc">
+       義大利最夢幻的童話村！保存了1,400多棟獨特的傳統建築「土魯利（Trulli）」，以石頭堆砌的圓錐形尖頂構成，白牆灰頂在陽光下美得像插圖。阿貝羅貝羅在義大利文意為「美麗的樹」，被NatGeo選為一輩子必去的19個絕美小鎮之一，也是日本合掌村的姊妹村。這些Trulli以乾砌石法建造，完全不用砂漿，頂部石塊可輕易拆卸——傳說這樣設計是為了逃稅，當稅官來時快速拆屋充農田！
+      </div>
+      <div class="tip-box">
+       🎤
+       <b>
+        導遊金句
+       </b>
+       ：「Trulli的屋頂上有白色塗畫的神秘符號，有的是基督教十字架，有的是古代異教符號，至今沒有人完全解開它的含義。」
+      </div>
+      <div class="spot-tips">
+       📌
+       <b>
+        快速重點
+       </b>
+       ：① 里奧內蒙提區（Rione Monti）是主要拍照區，白色Trulli成片壯觀 ② 阿亞蒙提區（Rione Aia Piccola）商業化較少，更原汁原味 ③ 部分Trulli可付費入內參觀，感受只有10多平方米的迷你石屋生活 ④ 自由活動1小時：逛商店採購橄欖油、手工陶瓷、杏仁點心（Mandorle pugliesi）
+      </div>
+      <div class="tip-box">
+       🛍️ 採購好時機！在地橄欖油（Puglia DOP）、手工陶瓷、Trulli造型磁鐵。
+      </div>
+     </div>
+     <div class="spot-entry">
+      <div class="spot-name">
+       🌊 拿坡里 Napoli
+      </div>
+      <div class="spot-desc">
+       義大利最熱情豪邁的城市！拿坡里正宗瑪格麗特披薩的發源地，蘇連多（Sorrento）位於拿坡里灣旁，是通往卡布里島和阿瑪菲海岸的門戶。今晚住宿在此，準備明日的卡布里島之旅。
+      </div>
+     </div>
+     <div class="meal-row">
+      🍽️ 早：旅館西式 ／ 午：龍蝦義大利料理 ／ 晚：地方料理
+     </div>
+    </div>
+   </div>
+   <!-- Day 4 -->
+   <div class="day-card">
+    <div class="day-header">
+     <div>
+      <div class="day-num">
+       Day 4
+      </div>
+      <div class="day-date">
+       5月12日（二）
+      </div>
+     </div>
+     <div class="day-title">
+      拿坡里→卡布里島→阿瑪菲海岸
+     </div>
+    </div>
+    <div class="day-body">
+     <div class="spot-entry">
+      <div class="spot-name">
+       💎 卡布里島 Capri Island
+      </div>
+      <div class="spot-desc">
+       地中海最夢幻的度假天堂！搭輪船前往卡布里島，乘坐纜車俯瞰島嶼美景。最著名的景點是「藍洞（Grotta Azzurra）」——陽光從洞口透入，折射在水面上呈現夢幻的銀藍光芒，水底反光讓岩壁一片晶藍，世界七大奇景之一。（注意：藍洞能否進入依海浪狀況而定）
+      </div>
+      <div class="spot-tips">
+       🚡 斜坡纜車（Funicolare）可達主城鎮；精品街Via Camerelle有Prada、Gucci等名店；卡布里涼鞋（Capri sandals）是在地特色手工品。
+      </div>
+      <div class="tip-box">
+       🛍️ 卡布里涼鞋：在地工匠現場依腳型手工製作，是最正統的義大利紀念品！
+      </div>
+     </div>
+     <div class="spot-entry">
+      <div class="spot-name">
+       🌅 阿瑪菲海岸 Amalfi Coast【世界遺產】
+      </div>
+      <div class="spot-desc">
+       蜿蜒在懸崖間的世界最美海岸線！波西塔諾（Positano）是最迷人的山城，粉紅、黃色、白色的房屋疊落在陡峭山崖，俯瞰蔚藍海灣，被美國《Harper's Bazaar》選為「人生必去海岸」。沿途柳橙樹、檸檬樹蒼翠，空氣中充滿檸檬香氣。
+      </div>
+      <div class="spot-tips">
+       🍋 波西塔諾必買：Limoncello（檸檬甜酒）、檸檬造型陶瓷、當地手工涼鞋。
+      </div>
+      <div class="mom-tip">
+       👴 注意：阿瑪菲海岸道路狹窄彎曲，車行過程中建議勿在後座看書，避免暈車；準備暈車藥備用。
+      </div>
+     </div>
+     <div class="meal-row">
+      🍽️ 早：旅館西式 ／ 午：地方料理 ／ 晚：地方料理
+     </div>
+    </div>
+   </div>
+   <!-- Day 5 -->
+   <div class="day-card">
+    <div class="day-header">
+     <div>
+      <div class="day-num">
+       Day 5
+      </div>
+      <div class="day-date">
+       5月13日（三）
+      </div>
+     </div>
+     <div class="day-title">
+      拿坡里→龐貝→高鐵→羅馬
+     </div>
+    </div>
+    <div class="day-body">
+     <div class="spot-entry">
+      <div class="spot-name">
+       ⛏️ 龐貝古城 Pompeii【世界遺產】
+      </div>
+      <div class="spot-desc">
+       被維蘇威火山灰封存2000年的奇蹟之城！西元79年8月24日，維蘇威火山爆發，熔岩灰在18小時內掩蓋整座城池，保存了古羅馬2萬名居民的街道、神廟、浴場、酒吧、妓院（Lupanare）、麵包坊甚至塗鴉。火山灰凝固後形成人體空洞，考古學家往空洞注入石膏，還原出當年市民被困的最後姿態，至今仍展示在遺址中，令人動容。
+      </div>
+      <div class="tip-box">
+       🎤
+       <b>
+        導遊金句
+       </b>
+       ：「龐貝的酒吧（Thermopolium）牆上還有菜單！考古學家發現這裡賣烤肉和葡萄酒，有趣的是，牆上還有當年顧客留下的塗鴉——跟現在Instagram留言沒什麼兩樣。」
+      </div>
+      <div class="spot-tips">
+       📌
+       <b>
+        快速重點（趕行程時看這裡）
+       </b>
+       ：①
+       <b>
+        石膏人（Forum 廣場旁）
+       </b>
+       ：最震撼的展品，火山灰中的人體印痕 ②
+       <b>
+        阿波羅神廟（Tempio di Apollo）
+       </b>
+       ：城中最古老的神廟，廣場正前方 ③
+       <b>
+        悲劇詩人之家（Casa del Fauno）
+       </b>
+       ：保存最完整的羅馬貴族宅邸，入口有「小心惡犬」馬賽克 ④
+       <b>
+        麵包坊（Forno）
+       </b>
+       ：石磨和烤爐原封不動，甚至發現碳化麵包！
+      </div>
+      <div class="alert alert-warning" style="margin:6px 0;">
+       ☀️ 龐貝遺址66公頃，5月日曬強！帽子、水和防曬乳缺一不可。僅有少量遮蔭處，務必做好防曬。
+      </div>
+      <div class="mom-tip">
+       👴 遺址內多凹凸碎石路面，建議慢行，穿防滑鞋。不必走完全區，主入口周邊景點已非常豐富。
+      </div>
+     </div>
+     <div class="spot-entry">
+      <div class="spot-name">
+       🚄 搭乘法拉利私鐵抵達羅馬
+      </div>
+      <div class="spot-desc">
+       法拉利私鐵（Frecciarossa / Italo）是義大利高速鐵路，車速最高300km/h，從拿坡里到羅馬約70分鐘，座椅寬敞舒適，是義大利旅行的精華體驗之一。抵達羅馬後立即遊覽許願池、萬神殿、四河廣場。
+      </div>
+     </div>
+     <div class="spot-entry">
+      <div class="spot-name">
+       ⛲ 許願池 Fontana di Trevi
+      </div>
+      <div class="spot-desc">
+       羅馬最著名的巴洛克式噴泉（1762年完工），中央的海神涅普頓（Neptune）雕像高6米，兩旁各有一匹馬——馴服的那匹代表平靜的海，狂奔的代表洶湧的海浪。傳說背對水池用右手越過左肩扔一枚硬幣，就能再次回到羅馬；扔兩枚會墜入愛河；三枚則預示婚姻！每年從許願池撈出的硬幣超過100萬歐元，全部捐作慈善。
+      </div>
+      <div class="tip-box">
+       🎤
+       <b>
+        導遊金句
+       </b>
+       ：「許願池曾在電影《羅馬假期》和《甜蜜生活》中出現。但它其實是羅馬最古老的水道橋『阿格利帕水道橋』的終點站，西元前19年就開始供水。把古羅馬工程和巴洛克雕塑放在同一個地方，義大利人就是這麼大膽！」
+      </div>
+      <div class="spot-tips">
+       📌
+       <b>
+        快速重點
+       </b>
+       ：① 夜晚燈光照亮後更壯觀，人也較白天少（強烈推薦晚上來） ② 硬幣投法：背對水池，右手越過左肩投入 ③ ⚠️ 禁止碰水、進入噴泉區，違者罰款€250！ ④ 旁邊有小廣場和冰淇淋店，可以坐下欣賞
+      </div>
+     </div>
+     <div class="spot-entry">
+      <div class="spot-name">
+       🏛️ 萬神殿 Pantheon
+      </div>
+      <div class="spot-desc">
+       建於西元125年哈德良皇帝時期，至今接近2000年，是全球保存最完整的古羅馬建築。穹頂直徑43.3公尺，與地面到穹頂的高度完全相同——也就是說，整個內部空間可以放入一個直徑43.3公尺的完美球體！頂部9公尺的圓洞（Oculus，意為「眼睛」）是唯一採光和通風口，下雨時雨水落入地面，地板中央的排水孔默默解決。拉斐爾就安葬於此。
+      </div>
+      <div class="tip-box">
+       🎤
+       <b>
+        導遊金句
+       </b>
+       ：「萬神殿的穹頂混凝土至今成謎。靠近頂部越來越輕的混凝土配方，讓這個無支柱的穹頂撐了2000年。連現代工程師都說，以當代技術要複製一模一樣的建築，難如登天。」
+      </div>
+      <div class="spot-tips">
+       📌
+       <b>
+        快速重點
+       </b>
+       ：① 現為教堂，進入免費（但需排隊） ② 正午晴天時，陽光從Oculus直射入內，形成光柱，是最美時刻 ③ 拉斐爾墓在右側小禮拜堂 ④ 旁邊的Piazza della Rotonda有露天咖啡座，喝咖啡享受氛圍
+      </div>
+     </div>
+     <div class="meal-row">
+      🍽️ 早：旅館西式 ／ 午：自理 ／ 晚：米其林一星料理
+     </div>
+    </div>
+   </div>
+   <!-- Day 6 -->
+   <div class="day-card">
+    <div class="day-header">
+     <div>
+      <div class="day-num">
+       Day 6
+      </div>
+      <div class="day-date">
+       5月14日（四）
+      </div>
+     </div>
+     <div class="day-title">
+      羅馬・梵蒂岡【世界遺產】
+     </div>
+    </div>
+    <div class="day-body">
+     <div class="spot-entry">
+      <div class="spot-name">
+       🎨 梵蒂岡博物館 Musei del Vaticano
+      </div>
+      <div class="spot-desc">
+       全球最豐富的藝術館之一！館藏超過7萬件作品，參觀路線全長達7公里。必看亮點：拉斐爾廳（Stanze di Raffaello）的《雅典學院》——畫中描繪古希臘哲學家聚會，拉斐爾把達文西畫成柏拉圖，把自己也藏在畫裡；古典雕塑廳的《拉奧孔》雕像（西元前1世紀），展現了人類與蛇搏鬥的極致張力。
+      </div>
+      <div class="tip-box">
+       🎤
+       <b>
+        導遊金句
+       </b>
+       ：「梵蒂岡博物館的地圖畫廊（Galleria delle Carte Geografiche）長120米，全是16世紀手繪的義大利地圖壁畫，每一幅都精確得令人難以置信——那個年代他們是怎麼做到的？」
+      </div>
+      <div class="spot-tips">
+       📌
+       <b>
+        快速重點
+       </b>
+       ：① 拉斐爾廳《雅典學院》中達文西的形象是整幅畫的中心，找找看！ ② 松果庭院（Cortile della Pigna）有巨型青銅松果雕塑，象徵豐盛 ③ 館內走廊極長，穿舒適鞋子，保留體力給西斯汀！
+      </div>
+     </div>
+     <div class="spot-entry">
+      <div class="spot-name">
+       ⛪ 西斯汀禮拜堂 Cappella Sistina
+      </div>
+      <div class="spot-desc">
+       米開朗基羅用了4年（1508-1512）仰頭繪製的穹頂壁畫《創世紀》，共9幅場景，其中最著名的是《上帝創造亞當》——上帝與亞當的指尖幾乎相觸，象徵神靈給予人類生命的瞬間。壁畫完成時米開朗基羅37歲。後方祭壇的《最後的審判》則是他67歲時耗時7年完成的鉅作。進入時需完全肅靜。
+      </div>
+      <div class="tip-box">
+       🎤
+       <b>
+        導遊金句
+       </b>
+       ：「米開朗基羅其實是個雕刻家，教皇強迫他來畫天花板，他一開始拒絕了！他說：『我是個雕刻家，我不會畫畫。』教皇說：『你必須畫！』最後他仰頭畫了4年，頸椎受損終身沒痊癒。看著這幅畫，才能理解什麼叫做嘔心瀝血。」
+      </div>
+      <div class="spot-tips">
+       📌
+       <b>
+        快速重點
+       </b>
+       ：① ⚠️ 禁止大聲喧嘩和拍照（嚴格執行，工作人員會嗬止） ② 仰頭看壁畫頸部會酸，可帶一面小鏡子平視觀看！ ③ 最佳位置：進入後走到中央，讓視野涵蓋整幅穹頂
+      </div>
+     </div>
+     <div class="spot-entry">
+      <div class="spot-name">
+       ⛪ 聖彼得大教堂 Saint Peter's Basilica（免門票）
+      </div>
+      <div class="spot-desc">
+       世界最大教堂（面積15,160平方米），廣場可容納50萬人。米開朗基羅設計的穹頂高達136.57公尺，是羅馬天際線的最高點。教堂右側是他23歲時完成的《聖殤》（Pietà）——聖母懷抱被卸下十字架的耶穌，大理石的柔軟感令人難以相信是石頭雕成。廣場中央的方尖碑來自古埃及，由卡利古拉皇帝運到羅馬。
+      </div>
+      <div class="tip-box">
+       🔔 服裝規定：覆蓋肩膀和膝蓋（薄圍巾即可）。無法入場者可在廣場外觀賞整體建築之美。
+      </div>
+      <div class="spot-tips">
+       📌
+       <b>
+        快速重點
+       </b>
+       ：① 主祭壇下方是聖彼得（第一位教宗）的墓穴 ② 教堂地下室有歷代教宗陵墓 ③ 廣場貝尼尼設計的廊柱共284根，排成完美橢圓
+      </div>
+     </div>
+     <div class="spot-entry">
+      <div class="spot-name">
+       ⚔️ 羅馬鬥獸場 Colosseo
+      </div>
+      <div class="spot-desc">
+       建於西元72-80年的巨型鬥技場（Amphitheatrum Flavium），可容納55,000名觀眾，外牆高48.5公尺，是古羅馬工程學的奇蹟。古時在此舉行角鬥士決鬥、野獸搏鬥、海戰（灌水後進行）甚至斬首公開處決。入場有「vomitoria」通道（嘔吐口）——這些通道設計讓5.5萬名觀眾能在15分鐘內全部疏散！此詞至今仍是建築術語。
+      </div>
+      <div class="tip-box">
+       🎤
+       <b>
+        導遊金句
+       </b>
+       ：「鬥獸場免費門票時代已過去。但有個秘密——持有羅馬地鐵票可在購票時享折扣。更重要的是，旁邊的古羅馬廣場（Foro Romano）票是包含在同一張票裡的，千萬別錯過！」
+      </div>
+      <div class="spot-tips">
+       📌
+       <b>
+        快速重點
+       </b>
+       ：① 一樓競技場地板已被移除，可看到地下動物籠的構造 ② 旁邊的提圖斯凱旋門（Arco di Tito）紀念西元70年攻陷耶路撒冷 ③ 古羅馬廣場：凱撒遇刺地點就在這裡，每天仍有人放鮮花
+      </div>
+      <div class="mom-tip">
+       👴 鬥獸場內部有坡道，媽媽步行無礙。古羅馬廣場地面不平，建議走主要石板道路，不必進入偏僻區域。
+      </div>
+     </div>
+     <div class="meal-row">
+      🍽️ 早：旅館西式 ／ 午：中式料理 ／ 晚：自理（西班牙廣場自由活動）
+     </div>
+    </div>
+   </div>
+   <!-- Day 7 -->
+   <div class="day-card">
+    <div class="day-header">
+     <div>
+      <div class="day-num">
+       Day 7
+      </div>
+      <div class="day-date">
+       5月15日（五）
+      </div>
+     </div>
+     <div class="day-title">
+      羅馬→天空之城→西恩納→托斯卡納農莊
+     </div>
+    </div>
+    <div class="day-body">
+     <div class="spot-entry">
+      <div class="spot-name">
+       ☁️ 天空之城 Civita di Bagnoregio【世界遺產】
+      </div>
+      <div class="spot-desc">
+       宮崎駿《天空之城》的靈感原型！這座建在凝灰岩峭壁頂端的中世紀小城（已有2500年歷史），只有一條300公尺長的步行橋可以進入，整座城彷彿漂浮在山谷霧氣之中。由於凝灰岩不斷風化崩落，整個城市正在緩緩「死去」——入口牌子上寫著「La Città che Muore（正在死去的城市）」。目前全年常駐居民僅剩12人，但夏季遊客反而大量湧入，形成奇異對比。
+      </div>
+      <div class="tip-box">
+       🎤
+       <b>
+        導遊金句
+       </b>
+       ：「天空之城進城要收費（每人約€5），這是義大利絕無僅有的。因為整座城市正在下沉，收費是用來維護橋樑的費用。你花的這€5，某種意義上是在幫這個城市多活幾年！」
+      </div>
+      <div class="spot-tips">
+       📌
+       <b>
+        快速重點
+       </b>
+       ：① 最美拍照：停車場觀景台，有天空之城全景（霧天最像宮崎駿畫面） ② 進城後約15-20分鐘可走完全鎮，玫瑰花盛開的5月是最美季節 ③ 主廣場聖多納托教堂（San Donato）可入內，有中世紀濕壁畫 ④ 小城內有幾家餐廳和紀念品店，黑豬肉（Cinghiale）香腸是當地特色
+      </div>
+      <div class="mom-tip">
+       👴 橋和城內為石板坡道，有一定坡度。走橋往返約600公尺，媽媽體力評估後決定是否全程走，走到橋中間看景色也值回票價。
+      </div>
+     </div>
+     <div class="spot-entry">
+      <div class="spot-name">
+       🏰 西恩納 Siena【世界遺產】
+      </div>
+      <div class="spot-desc">
+       義大利最美的中世紀城鎮！扇形的坎波廣場（Piazza del Campo）每年舉辦世界最著名的賽馬節（Palio），曼吉亞塔樓（Torre del Mangia）高88米，登頂可俯瞰整個托斯卡納。整座城市停格在14世紀黑死病之前，原汁原味保存了中世紀風貌。
+      </div>
+      <div class="spot-tips">
+       🛍️ 西恩納名產：潘強尼麵包（Panforte）、杏仁甜餅（Ricciarelli），超市就能買到！
+      </div>
+     </div>
+     <div class="spot-entry">
+      <div class="spot-name">
+       🌿 托斯卡納莊園旅館 Il Piccolo Castello（四星）
+      </div>
+      <div class="spot-desc">
+       被柏樹林、橄欖園和葡萄園環繞的義大利農莊旅館，坐落在托斯卡納山丘間，擁有游泳池和鄉村田野美景。今晚在此享受真正的義大利鄉村夜晚。
+      </div>
+     </div>
+     <div class="meal-row">
+      🍽️ 早：旅館西式 ／ 午：地方料理 ／ 晚：莊園主廚料理
+     </div>
+    </div>
+   </div>
+   <!-- Day 8 -->
+   <div class="day-card">
+    <div class="day-header">
+     <div>
+      <div class="day-num">
+       Day 8
+      </div>
+      <div class="day-date">
+       5月16日（六）
+      </div>
+     </div>
+     <div class="day-title">
+      聖吉米安諾→比薩→佛羅倫斯
+     </div>
+    </div>
+    <div class="day-body">
+     <div class="spot-entry">
+      <div class="spot-name">
+       🏰 聖吉米安諾 San Gimignano【世界遺產】
+      </div>
+      <div class="spot-desc">
+       「中世紀曼哈頓」！13-14世紀的貴族為炫耀財富競相建造高塔，現存14座，從遠處山腳望去一片白色塔樓林立於綠丘上，景象絕美。市內波波洛宮廣場（Piazza della Cisterna）中央有13世紀的八角水井，是絕佳拍照點。
+      </div>
+      <div class="tip-box">
+       🍦 世界冰淇淋冠軍！Gelateria Dondoli的藏紅花冰淇淋曾多次榮獲世界冠軍，不可錯過！
+      </div>
+     </div>
+     <div class="spot-entry">
+      <div class="spot-name">
+       ⛪ 比薩斜塔 Torre di Pisa【世界遺產】
+      </div>
+      <div class="spot-desc">
+       世界七大奇蹟之一！建於1173年的大理石鐘樓，因地基不均勻下沉而傾斜，傾斜角約3.99度。旁邊的主教堂和洗禮堂同樣壯觀宏偉，三者合稱「奇蹟廣場」。必拍：用手「撐住」或「推倒」斜塔的創意照片！
+      </div>
+      <div class="spot-tips">
+       📸 拍斜塔照：距塔約30公尺處，在草坪左側蹲低，效果最好。
+      </div>
+     </div>
+     <div class="spot-entry">
+      <div class="spot-name">
+       🌸 佛羅倫斯 Firenze【世界遺產】
+      </div>
+      <div class="spot-desc">
+       文藝復興的發源地，有「花之都」美譽！今晚抵達，明日充分遊覽。主要景點：聖母百花大教堂（Duomo）、舊橋（Ponte Vecchio）、領主廣場（Piazza della Signoria）、烏菲茲美術館。
+      </div>
+     </div>
+     <div class="meal-row">
+      🍽️ 早：旅館西式 ／ 午：地方料理 ／ 晚：丁骨牛排（托斯卡納特色）
+     </div>
+    </div>
+   </div>
+   <!-- Day 9 -->
+   <div class="day-card">
+    <div class="day-header">
+     <div>
+      <div class="day-num">
+       Day 9
+      </div>
+      <div class="day-date">
+       5月17日（日）
+      </div>
+     </div>
+     <div class="day-title">
+      佛羅倫斯【世界遺產】
+     </div>
+    </div>
+    <div class="day-body">
+     <div class="spot-entry">
+      <div class="spot-name">
+       🎨 烏菲茲美術館 Uffizi
+      </div>
+      <div class="spot-desc">
+       義大利最重要的美術館，收藏波提切利《春》、《維納斯的誕生》，達文西《受胎告知》，米開朗基羅等文藝復興巨匠真跡，是藝術愛好者的朝聖地。太一安排專業導遊帶領參觀。
+      </div>
+     </div>
+     <div class="spot-entry">
+      <div class="spot-name">
+       ⛪ 聖母百花大教堂 Duomo
+      </div>
+      <div class="spot-desc">
+       由綠色、粉色、白色大理石拼接的美麗外牆，縱橫交織的幾何圖案讓人讚嘆。教堂由布魯內雷斯基設計的圓頂（Cupola），直徑45公尺，是文藝復興建築工程的奇蹟。旁邊的喬托鐘樓可攀登俯瞰全城。
+      </div>
+     </div>
+     <div class="spot-entry">
+      <div class="spot-name">
+       🌉 舊橋、老城自由活動
+      </div>
+      <div class="spot-desc">
+       但丁之家（Casa di Dante）、領主廣場、舊橋（Ponte Vecchio，橋上全是珠寶店）。下午自由購物，晚餐自理享受佛羅倫斯美食。
+      </div>
+      <div class="tip-box">
+       🛒 佛羅倫斯購物：聖十字教堂旁有皮革市場，可買牛皮包、皮帶；麥粒商場（Mercato Centrale）有各種食材。
+      </div>
+     </div>
+     <div class="meal-row">
+      🍽️ 早：旅館西式 ／ 午：中式料理 ／ 晚：自理
+     </div>
+    </div>
+   </div>
+   <!-- Day 10 -->
+   <div class="day-card">
+    <div class="day-header">
+     <div>
+      <div class="day-num">
+       Day 10
+      </div>
+      <div class="day-date">
+       5月18日（一）
+      </div>
+     </div>
+     <div class="day-title">
+      佛羅倫斯→高鐵→威尼斯
+     </div>
+    </div>
+    <div class="day-body">
+     <div class="spot-entry">
+      <div class="spot-name">
+       🚄 法拉利私鐵（Frecciarossa）
+      </div>
+      <div class="spot-desc">
+       09:39搭乘高速列車，約2小時直達威尼斯（Venezia Santa Lucia站），11:55抵達。
+      </div>
+     </div>
+     <div class="spot-entry">
+      <div class="spot-name">
+       🚢 威尼斯 Venezia【世界遺產】
+      </div>
+      <div class="spot-desc">
+       建在118個小島上、117條運河交錯的水上城市！沒有汽車，只有貢多拉和水上巴士。主要景點：聖馬可廣場（Piazza San Marco）旁的鐘樓、聖馬可教堂（精美的拜占庭馬賽克）、總督宮（Palazzo Ducale）、嘆息橋（Ponte dei Sospiri）。下午搭乘鳳尾船（Gondola）穿梭運河，感受最浪漫的威尼斯。
+      </div>
+      <div class="tip-box">
+       🎭 嘆息橋傳說：據說當情侶在貢多拉上，在嘆息橋下接吻，可獲得永恆愛情！
+      </div>
+      <div class="mom-tip">
+       👴 威尼斯路面多石板橋梁（Ponte），建議慢行。部分橋梁無扶手，上下橋時小心。鳳尾船入座有搖晃，導遊會協助。
+      </div>
+     </div>
+     <div class="meal-row">
+      🍽️ 早：旅館西式 ／ 午：地方料理 ／ 晚：自理（感受威尼斯夜晚）
+     </div>
+    </div>
+   </div>
+   <!-- Day 11 -->
+   <div class="day-card">
+    <div class="day-header">
+     <div>
+      <div class="day-num">
+       Day 11
+      </div>
+      <div class="day-date">
+       5月19日（二）
+      </div>
+     </div>
+     <div class="day-title">
+      威尼斯・彩色島 Burano
+     </div>
+    </div>
+    <div class="day-body">
+     <div class="spot-entry">
+      <div class="spot-name">
+       🌈 彩色島 Burano
+      </div>
+      <div class="spot-desc">
+       被NatGeo票選為「一輩子必去的19個絕美小鎮第一名」！威尼斯離島布拉諾（Burano），島上每棟房子都漆成鮮豔原色——紅、橙、黃、藍、綠。傳說來自16世紀：出海的漁夫在大霧中迷失，就靠著岸邊房子的顏色辨認方向，久而久之成為傳統。更有趣的是：現在如果你要重新粉刷自家外牆，必須向政府申請，政府才決定你可以漆哪個顏色，不能自己決定！島上的蕾絲博物館（Museo del Merletto）記錄了500年的蕾絲工藝史。
+      </div>
+      <div class="tip-box">
+       🎤
+       <b>
+        導遊金句
+       </b>
+       ：「彩色島居民說，整個島上的顏色是有系統規劃的，不是亂漆的——每一區有自己的顏色主題。但當你真的置身其中，那種繽紛衝擊感完全超越任何照片！」
+      </div>
+      <div class="spot-tips">
+       📌
+       <b>
+        快速重點
+       </b>
+       ：① 最美拍照：橋上俯拍兩側排屋（橋很多，隨時停下來拍） ② 上午光線最佳，顏色最飽和 ③ 必嚐：S形餅乾（Bussolà Buranello）和甜甜圈（Galani），各家糕點店都有 ④ 蕾絲博物館值得入內看，可親眼見識現場示範蕾絲編織的細膩功夫
+      </div>
+     </div>
+     <div class="meal-row">
+      🍽️ 早：旅館西式 ／ 午：米其林推薦料理 ／ 晚：自理
+     </div>
+    </div>
+   </div>
+   <!-- Day 12 -->
+   <div class="day-card">
+    <div class="day-header">
+     <div>
+      <div class="day-num">
+       Day 12
+      </div>
+      <div class="day-date">
+       5月20日（三）
+      </div>
+     </div>
+     <div class="day-title">
+      威尼斯→西米歐尼（加達湖）
+     </div>
+    </div>
+    <div class="day-body">
+     <div class="spot-entry">
+      <div class="spot-name">
+       🏰 西米歐尼 Sirmione（加達湖畔）
+      </div>
+      <div class="spot-desc">
+       義大利最大湖泊加達湖（Lago di Garda）畔的美麗小鎮，三面環湖，宛如一座水中半島。斯卡利傑羅城堡（Castello Scaligero）是義大利保存最完整的中世紀水上城堡，城堡環繞著碧藍湖水。下午沿湖岸漫步，搭船遊覽加達湖，感受阿爾卑斯山南麓的寧靜美景。
+      </div>
+      <div class="spot-tips">
+       🌿 加達湖特產：橄欖油（湖區氣候特殊，橄欖油品質極佳）、檸檬酒、湖魚料理（麻雀魚、鱸魚）。
+      </div>
+      <div class="mom-tip">
+       👴 加達湖畔步道寬敞平整，非常適合悠閒散步，是整個行程中較輕鬆的景點之一。
+      </div>
+     </div>
+     <div class="meal-row">
+      🍽️ 早：旅館西式 ／ 午：地方料理 ／ 晚：地方料理
+     </div>
+    </div>
+   </div>
+   <!-- Day 13 -->
+   <div class="day-card">
+    <div class="day-header">
+     <div>
+      <div class="day-num">
+       Day 13
+      </div>
+      <div class="day-date">
+       5月21日（四）
+      </div>
+     </div>
+     <div class="day-title">
+      西米歐尼→米蘭
+     </div>
+    </div>
+    <div class="day-body">
+     <div class="spot-entry">
+      <div class="spot-name">
+       🏙️ 米蘭 Milano（深度遊覽）
+      </div>
+      <div class="spot-desc">
+       抵達米蘭，參觀米蘭大教堂（Duomo di Milano）——搭乘電梯登頂欣賞135座哥德式尖塔，一覽米蘭全景，雲層下的城市壯觀無比。下午自由活動，逛艾曼紐商業大街、米蘭精品街（蒙特拿破崙路Via Monte Napoleone）。晚上享用特別安排的文華東方「米其林二星」料理。
+      </div>
+      <div class="tip-box">
+       🛍️ 購物天堂！蒙特拿破崙路是歐洲最頂級的精品街，Prada、Armani、Versace、Ferragamo旗艦店雲集。<br/>
+       👜 <b>Louis Vuitton旗艦店</b>就在 Via Monte Napoleone 2（2025年4月全新翻修重開），含Da Vittorio米其林三星餐廳咖啡館，記得預留時間！退稅滿€154.94即可申辦。
+      </div>
+     </div>
+     <div class="meal-row">
+      🍽️ 早：旅館西式 ／ 午：文華東方米其林二星料理 ／ 晚：自理
+     </div>
+    </div>
+   </div>
+   <!-- Day 14 -->
+   <div class="day-card">
+    <div class="day-header">
+     <div>
+      <div class="day-num">
+       Day 14
+      </div>
+      <div class="day-date">
+       5月22日（五）
+      </div>
+     </div>
+     <div class="day-title">
+      米蘭→台北 BR096
+     </div>
+    </div>
+    <div class="day-body">
+     <div class="spot-entry">
+      <div class="spot-name">
+       🛫 返程：米蘭馬爾本薩機場
+      </div>
+      <div class="spot-desc">
+       07:00出發前往機場，08:00辦理提早登機手續及退稅，11:15搭乘長榮BR096返回台北，飛行約13小時。
+      </div>
+      <div class="tip-box">
+       💰 退稅重要提醒：在義大利單店消費滿€154.94可申請退稅（Tax Refund），需保留收據並請店家填寫退稅單。在機場出關前前往海關蓋章，再到退稅窗口辦理。
+      </div>
+     </div>
+     <div class="meal-row">
+      🍽️ 早：早餐盒 ／ 晚：機上（豪經艙）
+     </div>
+    </div>
+   </div>
+   <!-- Day 15 -->
+   <div class="day-card">
+    <div class="day-header" style="background:linear-gradient(90deg,#c1121f,#e85d04);">
+     <div>
+      <div class="day-num">
+       Day 15
+      </div>
+      <div class="day-date">
+       5月23日（六）
+      </div>
+     </div>
+     <div class="day-title">
+      抵達台北・回家！
+     </div>
+    </div>
+    <div class="day-body">
+     <div class="spot-entry">
+      <div class="spot-name">
+       🏠 06:15 抵達台北桃園機場
+      </div>
+      <div class="spot-desc">
+       美好的義大利深情旅程圓滿結束！帶著滿滿的回憶和伴手禮，歡迎回家。
+      </div>
+     </div>
+    </div>
+   </div>
+  </section>
+  <!-- ===== FOOD ===== -->
+  <div class="divider">
+  </div>
+  <section id="food">
+   <div class="section-title">
+    <span class="emoji">
+     🍝
+    </span>
+    義大利美食文化
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      🍽️
+     </span>
+     必嚐義大利美食
+    </div>
+    <div class="food-grid">
+     <div class="food-item">
+      <div class="name">
+       🍝 義大利麵 Pasta
+      </div>
+      <div class="desc">
+       種類超過300種！拿坡里番茄醬麵、佛羅倫斯松露麵、羅馬蛋奶醬麵（Carbonara）各有特色。
+      </div>
+     </div>
+     <div class="food-item">
+      <div class="name">
+       🍕 披薩 Pizza
+      </div>
+      <div class="desc">
+       拿坡里是披薩故鄉！正統瑪格麗特披薩（番茄+水牛起司+羅勒），薄底柴火烘烤。
+      </div>
+     </div>
+     <div class="food-item">
+      <div class="name">
+       🥩 丁骨牛排 Bistecca
+      </div>
+      <div class="desc">
+       托斯卡納名菜！正宗「佛羅倫斯丁骨牛排」以奇亞納牛（Chianina）製作，七分熟，豪邁巨大。
+      </div>
+     </div>
+     <div class="food-item">
+      <div class="name">
+       🦑 墨魚麵 Spaghetti al Nero
+      </div>
+      <div class="desc">
+       威尼斯名菜，以墨魚汁染黑的麵條，海鮮鮮味濃郁，是義大利最獨特的料理之一。
+      </div>
+     </div>
+     <div class="food-item">
+      <div class="name">
+       🍦 冰淇淋 Gelato
+      </div>
+      <div class="desc">
+       義大利冰淇淋（Gelato）比一般冰淇淋濃郁細滑！聖吉米安諾的藏紅花口味世界冠軍級。
+      </div>
+     </div>
+     <div class="food-item">
+      <div class="name">
+       ☕ 義式咖啡 Espresso
+      </div>
+      <div class="desc">
+       義大利人早餐就是一杯Espresso！站在吧台喝比坐著便宜。Cappuccino早上喝，下午只喝Espresso。
+      </div>
+     </div>
+     <div class="food-item">
+      <div class="name">
+       🍮 提拉米蘇 Tiramisù
+      </div>
+      <div class="desc">
+       起源於威尼托（Veneto）地區，道地提拉米蘇柔滑濃郁，義大利任何餐廳幾乎都有。
+      </div>
+     </div>
+     <div class="food-item">
+      <div class="name">
+       🧀 帕馬森起司 Parmigiano
+      </div>
+      <div class="desc">
+       義大利國寶級食材！帕馬森起司（Parmigiano-Reggiano）需熟成至少12個月，超市有販賣。
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      🫒
+     </span>
+     義大利飲食文化小知識
+    </div>
+    <ul style="padding-left:18px;font-size:13px;line-height:2.1;">
+     <li>
+      <b>
+       用餐步調慢：
+      </b>
+      義大利人吃飯是社交活動，服務生不會催促你離席。
+     </li>
+     <li>
+      <b>
+       水要另外點：
+      </b>
+      餐廳的水是收費的（礦泉水/氣泡水 €1.5-3）。
+     </li>
+     <li>
+      <b>
+       服務費（Coperto）：
+      </b>
+      有些餐廳收桌位費（每人€1-3），帳單上會顯示。
+     </li>
+     <li>
+      <b>
+       午餐是正餐：
+      </b>
+      義大利人午餐最豐盛，從12:30開始。
+     </li>
+     <li>
+      <b>
+       Espresso規矩：
+      </b>
+      Cappuccino只在早上10點前喝，下午點會被側目。
+     </li>
+     <li>
+      <b>
+       小費文化：
+      </b>
+      不是強制，但自助餐或滿意可留€1-2。
+     </li>
+    </ul>
+   </div>
+  </section>
+  <!-- ===== SHOPPING ===== -->
+  <div class="divider">
+  </div>
+  <section id="shopping">
+   <div class="section-title">
+    <span class="emoji">
+     🛍️
+    </span>
+    採購名產指南
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      🍋
+     </span>
+     食品伴手禮
+    </div>
+    <div class="shop-card">
+     <div class="brand">
+      🫒 義大利橄欖油 Olio d'Oliva Extravergine ── 分級推薦
+     </div>
+     <div class="items">
+      <b>
+       【入門好選擇・超市即可買】
+      </b>
+      <br/>
+      •
+      <b>
+       Monini Classico
+      </b>
+      （綠色標）：翁布里亞產，平衡口感，最普遍，CP值高
+      <br/>
+      •
+      <b>
+       De Cecco Extravergine
+      </b>
+      ：義大利麵大廠，油品同樣優質，超市常見
+      <br/>
+      •
+      <b>
+       Filippo Berio DOP
+      </b>
+      ：出口為主，台灣也買得到但義大利便宜許多
+      <br/>
+      <br/>
+      <b>
+       【中高檔・主動採購】
+      </b>
+      <br/>
+      •
+      <b>
+       Laudemio（勞德米歐）
+      </b>
+      ：佛羅倫斯頂級品牌，由弗雷斯科巴爾迪家族（Frescobaldi）等11家貴族酒莊聯合出品，黑金瓶設計，托斯卡納 DOP 認證。佛羅倫斯超市或食品店可買到。
+      <br/>
+      •
+      <b>
+       Frantoi Cutrera
+      </b>
+      ：西西里島有機冷壓橄欖油，果香濃郁，義大利美食評比屢獲高分
+      <br/>
+      •
+      <b>
+       Olitalia Oro
+      </b>
+      ：義大利在地品牌，品質穩定，中價位
+      <br/>
+      <br/>
+      <b>
+       【行程中採購建議】
+      </b>
+      <br/>
+      • 阿貝羅貝羅（Day3）：普利亞（Puglia）是義大利最大橄欖油產區，當地農莊和小店有新鮮壓榨油，比超市更有地方特色
+      <br/>
+      • 西恩納/托斯卡納（Day7-8）：當地農莊橄欖油或農夫市集採購，可現場試味
+      <br/>
+      • 佛羅倫斯麥粒市場（Day9）：一樓食材區多家販售頂級托斯卡納橄欖油
+     </div>
+     <div class="price">
+      💰 超市普通款 €5-10 / 瓶；中高檔 €15-30 / 瓶（500ml）｜建議多買幾瓶，重量可接受
+     </div>
+    </div>
+    <div class="shop-card">
+     <div class="brand">
+      🍝 義大利麵條 Pasta Secca
+     </div>
+     <div class="items">
+      品牌推薦：
+      <b>
+       Garofalo
+      </b>
+      （高品質）、
+      <b>
+       De Cecco
+      </b>
+      （藍色盒）、
+      <b>
+       Barilla
+      </b>
+      （最常見）。各種形狀都可買，墨魚麵、寬麵、天使麵最受台灣人歡迎。
+     </div>
+     <div class="price">
+      💰 €1.5-4 / 包（500g）
+     </div>
+    </div>
+    <div class="shop-card">
+     <div class="brand">
+      🍫 巧克力 Cioccolato
+     </div>
+     <div class="items">
+      品牌推薦：
+      <b>
+       Baci Perugina
+      </b>
+      （巴奇巧克力，愛情語錄巧克力球，送禮超受歡迎）、
+      <b>
+       Amedei
+      </b>
+      （頂級工匠巧克力）、
+      <b>
+       Venchi
+      </b>
+      （隨處可見連鎖，可散裝）。
+     </div>
+     <div class="price">
+      💰 Baci約 €6-12 / 盒；Venchi散裝 €3-5 / 100g
+     </div>
+    </div>
+    <div class="shop-card">
+     <div class="brand">
+      🍷 Limoncello 檸檬甜酒
+     </div>
+     <div class="items">
+      南義、阿瑪菲海岸特產！
+      <b>
+       Villa Massa
+      </b>
+      、
+      <b>
+       Luxardo
+      </b>
+      是知名品牌，阿瑪菲當地農家手工版更香濃。也有小瓶裝便於攜帶。
+     </div>
+     <div class="price">
+      💰 €6-20 / 瓶
+     </div>
+    </div>
+    <div class="shop-card">
+     <div class="brand">
+      🌰 松露醬 Salsa al Tartufo
+     </div>
+     <div class="items">
+      托斯卡納和翁布里亞是松露產地，超市都有販售松露醬、松露油，
+      <b>
+       Urbani
+      </b>
+      是義大利最著名的松露品牌。拌入義大利麵即可，非常美味。
+     </div>
+     <div class="price">
+      💰 €5-25 / 罐（視松露含量）
+     </div>
+    </div>
+    <div class="shop-card">
+     <div class="brand">
+      🍪 餅乾糕點類──詳細採買指南
+     </div>
+     <div class="items">
+      <b>【托斯卡納・西恩納必買】</b><br/>
+      • <b>Cantucci / Cantuccini 杏仁硬餅</b>：托斯卡納最具代表性的餅乾！堅硬杏仁硬餅乾，傳統沾甜酒（Vin Santo）吃。品牌推薦：<b>Antonio Mattei</b>（1858年創立，藍色包裝，普拉托原產地）、<b>Biscottificio Carli</b>。超市或食品店均有售。<br/>
+      • <b>Panforte di Siena 西恩納香料蜜餞果餅</b>：水果蜜餞＋堅果＋香料，中世紀傳統甜點，<b>Sapori di Siena</b> 品牌最正宗，有多種口味（黑巧克力款最受歡迎）<br/>
+      • <b>Ricciarelli 杏仁軟餅</b>：西恩納另一名產，柔軟杏仁餅，表面撒糖粉，入口即化，非常適合長輩<br/><br/>
+      <b>【利古里亞・北義特色】</b><br/>
+      • <b>Canestrelli 奶油花形餅</b>：利古里亞小奶油餅，中心有孔的花朵造型，撒糖粉，奶香濃郁，超適合配茶或咖啡<br/><br/>
+      <b>【全義最夯餅乾品牌・超市即買】</b><br/>
+      • <b>Mulino Bianco</b>（白色風車磨坊）：義大利最受歡迎的家庭餅乾品牌！Fette Biscottate（烤吐司脆片）、Abbracci（擁抱餅乾）、Macine（磨坊餅）每款都好吃，包裝可愛，超市大量販賣，CP值極高！<br/>
+      • <b>Balocco</b>：義大利北部老牌，鬆脆奶油餅、薑餅系列不錯<br/>
+      • <b>Misura</b>：健康低卡餅乾，全麥麩皮口味，適合健康取向者<br/><br/>
+      <b>【糖果・甜食類】</b><br/>
+      • <b>Ferrero Rocher 金莎</b>：義大利本土原產，超市價格比台灣便宜30%以上，送禮大方<br/>
+      • <b>Baci Perugina 巴奇接吻巧克力</b>：翁布里亞佩魯賈名產，黑巧克力包榛果，每顆附愛情語錄小紙條，多國語言版，送禮超浪漫。超市、7-11型便利商店均有<br/>
+      • <b>Gianduiotti 杜林榛果巧克力</b>：皮埃蒙特（都靈）名產，金字塔形榛果牛奶巧克力，一口一個！品牌：<b>Caffarel</b>、<b>Venchi</b>、<b>La Perla di Torino</b><br/>
+      • <b>Torrone 牛軋糖</b>：克雷莫納（Cremona）特產，蜂蜜＋堅果製成，有軟硬兩種口感，也有巧克力包裹款<br/>
+      • <b>Amaretti di Saronno 杏仁脆糖餅</b>：倫巴底薩羅諾名產（Lazzaroni品牌的紅罐最有名），杏仁香氣濃郁，超市有賣
+     </div>
+     <div class="price">
+      💰 Cantucci €4-12 / 袋｜Mulino Bianco €1.5-3 / 包｜Baci一盒 €6-15｜Torrone €5-15 / 盒
+     </div>
+    </div>
+   </div>
+   <!-- NEW: 紀念品・玩具・兒童伴手禮 -->
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">🎁</span>
+     紀念品・玩具・兒童伴手禮
+    </div>
+    <div class="shop-card">
+     <div class="brand">🪵 木製品・Pinocchio（皮諾丘）</div>
+     <div class="items">
+      義大利最具代表性的兒童紀念品！木雕皮諾丘是源於托斯卡納作家Collodi筆下的文學人物，全義大利都有販售，但木製手工品質差異大。<br/><br/>
+      <b>哪裡買最好：</b><br/>
+      • <b>Bartolucci 木製品工坊・羅馬</b>：1936年創立的家族木工坊，手工精緻，位於萬神殿附近（Via dei Pastini 96-98）。除皮諾丘外有木製時鐘、磁鐵、文具，超可愛<br/>
+      • <b>Pinocchio Store Firenze・佛羅倫斯</b>：佛羅倫斯舊橋附近（Via Guicciardini 6r），專門店，有皮諾丘木偶、布偶、馬戲團玩偶、書籍、T恤，種類齊全<br/>
+      • <b>Al Sogno 玩具店・羅馬</b>：納沃納廣場旁（Piazza Navona），義大利最有名的玩具店之一，傳統義大利木製玩具、手偶、旋轉木馬音樂盒<br/><br/>
+      <b>⚠️ 注意：</b>路邊攤的皮諾丘多為中國製仿品，請認明「Made in Italy」或在信譽店家購買
+     </div>
+     <div class="price">💰 小型木製皮諾丘 €10-30｜大型手工木偶 €50-150</div>
+    </div>
+    <div class="shop-card">
+     <div class="brand">🎨 地方特色紀念品・各城市</div>
+     <div class="items">
+      <b>阿貝羅貝羅（Day3）：</b><br/>
+      • Trulli（錐形屋頂）造型陶瓷小物、冰箱磁鐵、鑰匙圈，超可愛且有地方特色<br/>
+      • 當地Taralli餅（環形小麵包）、Orecchiette（耳朵麵）帶回去煮<br/><br/>
+      <b>羅馬（Day6-7）：</b><br/>
+      • 羅馬競技場/古羅馬遺跡模型（博物館商店品質最佳）<br/>
+      • 梵蒂岡教皇相關紀念品（玫瑰念珠、小聖像、教皇祝福卡）<br/>
+      • 義大利警察帽、郵差帽造型紀念品<br/><br/>
+      <b>佛羅倫斯（Day10）：</b><br/>
+      • 大衛像相關紀念品（博物館商店有精緻款）<br/>
+      • 義大利文具（日記本、手工紙）──義大利手工紙（Carta fiorentina）美極了<br/>
+      • 美第奇家族徽章商品<br/><br/>
+      <b>威尼斯（Day11-12）：</b><br/>
+      • 面具（Maschera）：傳統義大利嘉年華面具，有紙糊款（較輕）和真石膏款，各種尺寸<br/>
+      • 穆拉諾玻璃小動物（最受孩子喜愛）：玻璃吹製的小貓、小狗、小魚<br/>
+      • 彩色島Burano蕾絲手帕、桌巾<br/><br/>
+      <b>西恩納（Day8）：</b><br/>
+      • Palio賽馬相關紀念品（絲巾、旗幟）<br/>
+      • 大理石紋陶瓷餐具
+     </div>
+     <div class="price">💰 磁鐵 €2-5｜陶瓷小物 €5-20｜面具 €10-80｜玻璃小動物 €8-25</div>
+    </div>
+    <div class="shop-card">
+     <div class="brand">📖 博物館商店（Museum Shop）──最值得挖寶</div>
+     <div class="items">
+      義大利各大博物館商店品質遠超一般紀念品店！<br/>
+      • <b>梵蒂岡博物館</b>：精緻藝術複製品、高品質畫冊、西斯汀禮拜堂相關商品<br/>
+      • <b>烏菲茲美術館（佛羅倫斯）</b>：波提切利《春》、《維納斯的誕生》精印品、文藝復興圖案文具<br/>
+      • <b>威尼斯學院美術館</b>：威尼斯黃金時代繪畫複製品<br/><br/>
+      博物館商店的明信片、筆記本、購物袋均可作為高品質伴手禮，且往往比路邊便宜
+     </div>
+     <div class="price">💰 明信片 €0.5-2｜印刷品 €5-30｜精裝畫冊 €20-60</div>
+    </div>
+   </div>
+   <!-- NEW: LV米蘭 -->
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">👜</span>
+     Louis Vuitton 米蘭旗艦店・採購指南
+    </div>
+    <div class="alert alert-gold" style="background:#fff9e6;border:1px solid #d4a017;border-radius:8px;padding:12px;margin-bottom:12px;font-size:13px;">
+     ✨ <b>2025年4月全新翻修重開張！</b>LV米蘭蒙特拿破崙路旗艦店經3年修復，以嶄新面貌登場，是全球最奢華的LV門市之一，還附設米其林三星主廚餐廳！
+    </div>
+    <div class="shop-card">
+     <div class="brand">🏛️ LV 蒙特拿破崙路旗艦店（主店・強烈推薦）</div>
+     <div class="items">
+      <b>地址：</b>Via Monte Napoleone 2, 20121 Milano（Palazzo Taverna 歷史宮殿內）<br/>
+      <b>電話：</b>+39 02 00 660 88 88<br/>
+      <b>營業時間：</b>週一～六 10:00–20:00｜週日 10:30–19:30<br/><br/>
+      <b>店內特色：</b><br/>
+      • 建築師Peter Marino主導修復設計，融合義大利工藝與法式優雅<br/>
+      • 三層樓，含女裝、男裝、鞋履、皮革精品、全球首個 <b>LV Home家居系列</b> 專屬樓層<br/>
+      • 二樓：<b>Da Vittorio Café Louis Vuitton</b>（咖啡館，可輕鬆消費體驗奢華空間）<br/>
+      • 二樓：<b>DaV by Da Vittorio Louis Vuitton 餐廳</b>（米其林三星 Da Vittorio 主廚操刀，需提前訂位）<br/>
+      • 藝術展覽空間，展出當代義大利藝術家作品<br/><br/>
+      <b>交通：</b>地鐵M3黃線 Montenapoleone站步行2分鐘
+     </div>
+     <div class="price">💰 入場免費｜Café咖啡 €8-20｜皮件在歐洲購買比台灣省約15-20%（含退稅後更划算）</div>
+    </div>
+    <div class="shop-card">
+     <div class="brand">🏪 LV 米蘭其他門市</div>
+     <div class="items">
+      • <b>Galleria Vittorio Emanuele II 艾曼紐二世購物廊</b>：米蘭大教堂廣場旁的歷史拱廊內，觀光時順路逛，地段絕佳<br/>
+      • <b>La Rinascente 百貨 LV 專區</b>：大教堂廣場旁百貨公司，方便退稅一站辦理
+     </div>
+    </div>
+    <div class="tip-box">
+     💡 <b>退稅提醒：</b>單店消費滿 €154.94 即可申請退稅（Tax Refund），LV 購物一件通常即達標。請在店內請服務人員協助填寫退稅單（Global Blue / Planet Tax Free），在米蘭馬爾本薩機場出發大廳退稅窗口辦理，實際退回約12-15%。<br/>
+     🕙 <b>採購時機：</b>本次行程 <b>Day13（5/21週四）</b> 下午在米蘭自由活動，是最佳採購時機。蒙特拿破崙路步行約15分鐘可逛完主要精品街。
+    </div>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      💄
+     </span>
+     美妝保養品
+    </div>
+    <div class="shop-card">
+     <div class="brand">
+      💊 Farmacia（藥妝店）名牌
+     </div>
+     <div class="items">
+      •
+      <b>
+       L'Erbolario
+      </b>
+      （萊博拉里歐）：義大利草本保養品牌，玫瑰、薰衣草系列，品質優良價格親民
+      <br/>
+      •
+      <b>
+       Officina Profumo-Farmaceutica di Santa Maria Novella
+      </b>
+      （SMN）：佛羅倫斯600年老藥草舖，玫瑰水、手霜是必買經典，在佛羅倫斯本店購買
+      <br/>
+      •
+      <b>
+       Borghese
+      </b>
+      ：義大利頂級美容品牌，泥漿面膜聞名全球
+      <br/>
+      •
+      <b>
+       Bioderma
+      </b>
+      /
+      <b>
+       Avène
+      </b>
+      ：歐洲藥妝便宜許多
+     </div>
+     <div class="price">
+      💰 L'Erbolario護手霜 €8-15；SMN玫瑰水 €25-40
+     </div>
+    </div>
+    <div class="shop-card">
+     <div class="brand">
+      🌿 義大利精油香水
+     </div>
+     <div class="items">
+      •
+      <b>
+       Acqua di Parma
+      </b>
+      ：義大利最頂級香水品牌，清新柑橘調，男女皆宜
+      <br/>
+      •
+      <b>
+       Laboratorio Olfattivo
+      </b>
+      ：小眾頂級香水，只在義大利有
+      <br/>
+      •
+      <b>
+       Farmacia SS. Annunziata
+      </b>
+      ：佛羅倫斯老牌藥妝香水
+     </div>
+    </div>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      🎨
+     </span>
+     生活工藝品
+    </div>
+    <div class="shop-card">
+     <div class="brand">
+      🏺 佛羅倫斯皮革製品
+     </div>
+     <div class="items">
+      佛羅倫斯是全球最頂級的皮革之城！聖十字教堂皮革學校（Scuola del Cuoio）、麥粒皮革市場（Mercato del Porcellino）可買到手工真皮製品。
+      <br/>
+      推薦品項：手提包、皮夾、皮帶、日記本封面（可現場燙字）。
+     </div>
+     <div class="price">
+      💰 皮夾 €30-80；手提包 €80-300+
+     </div>
+    </div>
+    <div class="shop-card">
+     <div class="brand">
+      🏺 阿貝羅貝羅手工陶瓷
+     </div>
+     <div class="items">
+      Trulli造型的手工陶瓷小物、磁鐵、杯盤，都是原汁原味南義風格，價格合理，超適合當紀念品。
+     </div>
+    </div>
+    <div class="shop-card">
+     <div class="brand">
+      🌊 威尼斯穆拉諾玻璃 Murano Glass
+     </div>
+     <div class="items">
+      穆拉諾島（Murano）的手工玻璃藝術享譽全球，製作技術超過1000年歷史。在威尼斯可買到玻璃飾品、花瓶、杯子。請認明「Murano Glass」標籤，避免中國仿品。
+     </div>
+     <div class="price">
+      💰 小飾品 €10-50；藝術品可達數百歐元
+     </div>
+    </div>
+    <div class="shop-card">
+     <div class="brand">
+      🕯️ 彩色島 Burano 蕾絲製品
+     </div>
+     <div class="items">
+      Burano蕾絲是世界最著名的手工蕾絲工藝，傳統圖案精緻無比。手帕、桌巾、裝飾品均有販售，雖稍貴但工藝無法複製。
+     </div>
+    </div>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      ☕
+     </span>
+     Bialetti 摩卡壺 ＆ Alessi 設計品──在義大利買划算嗎？
+    </div>
+    <div class="alert alert-success" style="margin-bottom:12px;">
+     ✅ 兩個品牌都是義大利本土品牌，在義大利購買
+     <b>
+      比台灣便宜約20–40%
+     </b>
+     ，且款式最齊全！強烈建議在當地採購。
+    </div>
+    <div class="shop-card">
+     <div class="brand">
+      ☕ Bialetti 摩卡壺（Moka Express）
+     </div>
+     <div class="items">
+      義大利家家戶戶必備的爐上摩卡壺，1933年誕生，全球銷量超過3億個！八角鋁製壺身，簡單耐用，煮出濃縮咖啡香氣十足。
+      <br/>
+      <br/>
+      <b>
+       在哪裡買（便宜又齊全）：
+      </b>
+      <br/>
+      •
+      <b>
+       Esselunga / Coop 超市
+      </b>
+      ：米蘭等大城市超市有販售，3杯份約 €15-20，最方便
+      <br/>
+      •
+      <b>
+       Bialetti 直營店
+      </b>
+      ：米蘭有幾家直營店，款式最齊（含彩色款、Venus款、Kitty聯名等），可詢問附近店點
+      <br/>
+      •
+      <b>
+       La Rinascente百貨
+      </b>
+      （米蘭 Piazza del Duomo旁）：高檔百貨，款式豐富，無折扣但齊全
+      <br/>
+      •
+      <b>
+       Casalinghi（廚具雜貨店）
+      </b>
+      ：各城市街頭常見的家用品店，價格通常比百貨便宜
+      <br/>
+      •
+      <b>
+       Manifattura（出廠直銷）
+      </b>
+      ：Bialetti在Crusinallo（皮埃蒙特）有工廠，附近有outlet，本次行程不經過
+      <br/>
+      <br/>
+      <b>
+       建議購買款：
+      </b>
+      <br/>
+      • 傳統 Moka Express（銀色）3杯份或6杯份最實用
+      <br/>
+      • 彩色款（紅/藍/綠/橘）輕巧可愛，也很受歡迎
+      <br/>
+      • Bialetti Venus（不鏽鋼款）：可用電磁爐，現代家庭更實用
+     </div>
+     <div class="price">
+      💰 Moka Express 3杯份 €15-20｜6杯份 €20-25｜彩色款 €20-28（台灣售價約1.5-2倍）
+     </div>
+    </div>
+    <div class="shop-card">
+     <div class="brand">
+      🍳 Alessi 設計廚具
+     </div>
+     <div class="items">
+      義大利最具代表性的工業設計品牌，以充滿創意和藝術感的廚具、餐具、居家用品聞名全球，每件都是設計師之作！
+      <br/>
+      <br/>
+      <b>
+       在哪裡買：
+      </b>
+      <br/>
+      •
+      <b>
+       Alessi 旗艦店・米蘭
+      </b>
+      ：Via Manzoni 14（米蘭精品區，離大教堂步行約10分鐘）。款式最完整，有些旗艦店限定款。
+      <b>
+       本次行程Day13在米蘭，可以安排前往！
+      </b>
+      <br/>
+      •
+      <b>
+       Alessi Outlet・Crusinallo
+      </b>
+      ：在義大利北部靠近Lago d'Orta的工廠outlet，距米蘭約1.5小時車程，折扣達30-50%。本次行程不經過，但若自由活動可考慮。
+      <br/>
+      •
+      <b>
+       La Rinascente百貨
+      </b>
+      （米蘭 Duomo廣場）：有Alessi專區，款式多
+      <br/>
+      •
+      <b>
+       Casalinghi廚具雜貨店
+      </b>
+      ：部分商品有販售
+      <br/>
+      <br/>
+      <b>
+       推薦採購品項：
+      </b>
+      <br/>
+      •
+      <b>
+       Anna G. 瓶塞（Corkscrew）
+      </b>
+      ：人形設計，最具代表性的Alessi圖標，送禮一絕
+      <br/>
+      •
+      <b>
+       Girotondo系列
+      </b>
+      ：小人手拉手圖案，有托盤、置物籃等，活潑可愛
+      <br/>
+      •
+      <b>
+       Dressed 餐具組
+      </b>
+      ：精緻花卉圖案，高雅大方
+      <br/>
+      •
+      <b>
+       Michael Graves 水壺
+      </b>
+      ：藍鳥哨音水壺，Alessi史上最暢銷單品
+      <br/>
+      •
+      <b>
+       義大利麵量具
+      </b>
+      /
+      <b>
+       調味料罐
+      </b>
+      ：實用又有設計感
+     </div>
+     <div class="price">
+      💰 Alessi一般商品 €15-60｜旗艦店不打折，但比台灣仍便宜約20-30%｜Outlet可達5折
+     </div>
+    </div>
+    <div class="tip-box">
+     💡
+     <b>
+      採購時機建議：
+     </b>
+     兩個品牌都在
+     <b>
+      Day13 米蘭
+     </b>
+     最好買！Bialetti 超市就可解決，Alessi 建議去 Via Manzoni 旗艦店逛逛，下午自由活動時間完全夠用。記得帶大購物袋，摩卡壺比想像中重！
+    </div>
+   </div>
+  </section>
+  <!-- ===== SUPERMARKET ===== -->
+  <div class="divider">
+  </div>
+  <section id="supermarket">
+   <div class="section-title">
+    <span class="emoji">
+     🏪
+    </span>
+    義大利超市必買清單
+   </div>
+   <div class="alert alert-info">
+    🛒 義大利各地超市連鎖不同，本次行程城市分布如下，請參考。
+    <b>
+     義大利週日多數超市縮短營業或休息，週間午休（13:00-15:30）也可能暫停，採購請提早！
+    </b>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      🗺️
+     </span>
+     主要超市連鎖・各城市分布 ＆ 營業時間
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+     <tr style="background:#2d6a4f;color:white;">
+      <th style="padding:8px 6px;text-align:left;">
+       超市名稱
+      </th>
+      <th style="padding:8px 6px;text-align:left;">
+       在本次行程哪裡有
+      </th>
+      <th style="padding:8px 6px;text-align:left;">
+       一般營業時間
+      </th>
+      <th style="padding:8px 6px;text-align:left;">
+       特色
+      </th>
+     </tr>
+     <tr style="background:#f9f9f2;">
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;font-weight:700;">
+       🟢 Esselunga
+      </td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">
+       米蘭、佛羅倫斯、西米歐尼附近
+      </td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">
+       週一～六 08:00–21:00
+       <br/>
+       週日 08:30–20:00（部分）
+      </td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">
+       北義最優質超市，熟食、起司、葡萄酒選擇豐富，強烈推薦
+      </td>
+     </tr>
+     <tr>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;font-weight:700;">
+       🔵 Conad
+      </td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">
+       全國皆有（羅馬、西恩納、比薩等）
+      </td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">
+       週一～六 08:00–21:00
+       <br/>
+       週日 09:00–19:30（部分門市）
+      </td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">
+       全國分布最廣，食材多元，Conad Sapori &amp; Idee自有品牌品質優
+      </td>
+     </tr>
+     <tr style="background:#f9f9f2;">
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;font-weight:700;">
+       🔴 Coop
+      </td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">
+       佛羅倫斯、威尼斯、羅馬、西恩納
+      </td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">
+       週一～六 08:30–20:30
+       <br/>
+       週日 09:00–19:00（部分休）
+      </td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">
+       義大利最大合作社超市，良心價格，有機產品多，多家分店
+      </td>
+     </tr>
+     <tr>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;font-weight:700;">
+       🟡 Carrefour
+      </td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">
+       米蘭、羅馬、拿坡里等大城市
+      </td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">
+       週一～六 08:00–21:00
+       <br/>
+       週日 09:00–20:00
+      </td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">
+       大型賣場，一次購足，義大利分支較小、稱Carrefour Express也常見
+      </td>
+     </tr>
+     <tr style="background:#f9f9f2;">
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;font-weight:700;">
+       🟠 Despar / Interspar
+      </td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">
+       威尼斯、佛羅倫斯、北義最多
+      </td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">
+       週一～六 08:30–20:00
+       <br/>
+       週日 09:00–13:00（多半休）
+      </td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">
+       威尼斯市區最常見，觀光區附近多，略貴但方便
+      </td>
+     </tr>
+     <tr>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;font-weight:700;">
+       🟣 Lidl
+      </td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">
+       全國郊區、米蘭、羅馬外圍
+      </td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">
+       週一～六 08:00–21:00
+       <br/>
+       週日 09:00–20:00（部分）
+      </td>
+      <td style="padding:8px 6px;border-bottom:1px solid #e8e0cc;">
+       德系平價超市，巧克力、餅乾、葡萄酒便宜且品質不差
+      </td>
+     </tr>
+     <tr style="background:#f9f9f2;">
+      <td style="padding:8px 6px;font-weight:700;">
+       ⚪ Alimentari
+       <br/>
+       （在地小食品雜貨）
+      </td>
+      <td style="padding:8px 6px;">
+       各小鎮觀光區常見
+      </td>
+      <td style="padding:8px 6px;">
+       09:00–13:00 / 16:00–19:30
+       <br/>
+       ⚠️ 中午關門2-3小時！
+      </td>
+      <td style="padding:8px 6px;">
+       義大利傳統雜貨店，可買到在地特產、火腿、起司，老闆通常很有個性
+      </td>
+     </tr>
+    </table>
+    <div class="tip-box" style="margin-top:10px;">
+     ⚠️
+     <b>
+      義大利超市重要提醒
+     </b>
+     <br/>
+     •
+     <b>
+      週日是大地雷！
+     </b>
+     許多超市週日縮短時間或不開，小鎮幾乎全休。採購要在週六前完成。
+     <br/>
+     •
+     <b>
+      午休文化
+     </b>
+     ：小型商店（非連鎖）中午約12:30–15:30關門，Alimentari尤其如此。
+     <br/>
+     •
+     <b>
+      袋子要付費
+     </b>
+     ：義大利超市購物袋需付費（約€0.10-0.25），請自備環保購物袋。
+     <br/>
+     •
+     <b>
+      蔬果秤重
+     </b>
+     ：買散裝蔬果水果要在磅秤機器自助秤重並列印價格標籤，再去結帳。
+     <br/>
+     •
+     <b>
+      米蘭最後採購
+     </b>
+     ：Day13下午自由活動是最後大採購時機，Esselunga是最佳選擇！
+    </div>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      📍
+     </span>
+     行程中各城市超市建議
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+     <tr style="background:#40916c;color:white;">
+      <th style="padding:8px;text-align:left;">
+       城市（Day）
+      </th>
+      <th style="padding:8px;text-align:left;">
+       推薦超市
+      </th>
+      <th style="padding:8px;text-align:left;">
+       備註
+      </th>
+     </tr>
+     <tr>
+      <td style="padding:7px 8px;border-bottom:1px solid #e8e0cc;">
+       米蘭（Day2, 13）
+      </td>
+      <td style="padding:7px 8px;border-bottom:1px solid #e8e0cc;">
+       Esselunga、Carrefour
+      </td>
+      <td style="padding:7px 8px;border-bottom:1px solid #e8e0cc;">
+       Day13下午自由時間大採購最佳！
+      </td>
+     </tr>
+     <tr style="background:#f9f9f2;">
+      <td style="padding:7px 8px;border-bottom:1px solid #e8e0cc;">
+       羅馬（Day5-6）
+      </td>
+      <td style="padding:7px 8px;border-bottom:1px solid #e8e0cc;">
+       Conad、Carrefour Express
+      </td>
+      <td style="padding:7px 8px;border-bottom:1px solid #e8e0cc;">
+       老城區內有小型Conad，萬神殿附近可找到
+      </td>
+     </tr>
+     <tr>
+      <td style="padding:7px 8px;border-bottom:1px solid #e8e0cc;">
+       佛羅倫斯（Day8-9）
+      </td>
+      <td style="padding:7px 8px;border-bottom:1px solid #e8e0cc;">
+       Esselunga、Coop、麥粒市場
+      </td>
+      <td style="padding:7px 8px;border-bottom:1px solid #e8e0cc;">
+       麥粒中央市場（Mercato Centrale）2樓有美食廣場，1樓買食材
+      </td>
+     </tr>
+     <tr style="background:#f9f9f2;">
+      <td style="padding:7px 8px;border-bottom:1px solid #e8e0cc;">
+       威尼斯（Day10-12）
+      </td>
+      <td style="padding:7px 8px;border-bottom:1px solid #e8e0cc;">
+       Despar、Conad
+      </td>
+      <td style="padding:7px 8px;border-bottom:1px solid #e8e0cc;">
+       市區內超市價格比外地略高，彩色島只有小商店
+      </td>
+     </tr>
+     <tr>
+      <td style="padding:7px 8px;">
+       西米歐尼/加達湖（Day12）
+      </td>
+      <td style="padding:7px 8px;">
+       Conad / Lidl（鎮外）
+      </td>
+      <td style="padding:7px 8px;">
+       小鎮內購物選擇少，多為紀念品店
+      </td>
+     </tr>
+    </table>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      🧺
+     </span>
+     超市必買品項（附品牌）
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+     <tr style="background:#2d6a4f;color:white;">
+      <th style="padding:8px;text-align:left;">
+       品項
+      </th>
+      <th style="padding:8px;text-align:left;">
+       推薦品牌
+      </th>
+      <th style="padding:8px;text-align:right;">
+       約價格
+      </th>
+     </tr>
+     <tr style="background:#f9f9f2;">
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       🫒 特級初榨橄欖油 (500ml)
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       <b>
+        Monini
+       </b>
+       、De Cecco、Filippo Berio
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;text-align:right;">
+       €5-10
+      </td>
+     </tr>
+     <tr>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       🍝 義大利麵（各種形狀）
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       <b>
+        De Cecco
+       </b>
+       （藍盒）、Garofalo、Rummo
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;text-align:right;">
+       €1.5-4
+      </td>
+     </tr>
+     <tr style="background:#f9f9f2;">
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       🥫 番茄醬罐頭
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       <b>
+        Mutti
+       </b>
+       （義大利No.1）、Cirio
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;text-align:right;">
+       €1-2.5
+      </td>
+     </tr>
+     <tr>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       🫙 松露醬 / 松露油
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       <b>
+        Urbani Tartufi
+       </b>
+       、La Madia Regale
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;text-align:right;">
+       €8-25
+      </td>
+     </tr>
+     <tr style="background:#f9f9f2;">
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       🧀 帕馬森起司 (200g塊)
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       <b>
+        Parmigiano Reggiano DOP
+       </b>
+       （認明認證標章）
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;text-align:right;">
+       €4-8
+      </td>
+     </tr>
+     <tr>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       🍫 Baci巧克力禮盒
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       <b>
+        Baci Perugina
+       </b>
+       （紫色包裝，有愛情語錄）
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;text-align:right;">
+       €5-15
+      </td>
+     </tr>
+     <tr style="background:#f9f9f2;">
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       🍪 Cantucci杏仁硬餅乾
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       <b>
+        Biscottificio Mattei
+       </b>
+       、Antonio Mattei（藍盒）
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;text-align:right;">
+       €4-8
+      </td>
+     </tr>
+     <tr>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       ☕ 義式咖啡豆/膠囊
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       <b>
+        Illy
+       </b>
+       （高端）、
+       <b>
+        Lavazza
+       </b>
+       （最普遍）、Segafredo
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;text-align:right;">
+       €5-15
+      </td>
+     </tr>
+     <tr style="background:#f9f9f2;">
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       🌰 榛果醬 Crema di Nocciole
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       <b>
+        Nutella
+       </b>
+       （義大利版口感更滑）、Amadori
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;text-align:right;">
+       €3-5
+      </td>
+     </tr>
+     <tr>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       🍷 Limoncello 檸檬甜酒
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       <b>
+        Villa Massa
+       </b>
+       、Luxardo（可買迷你版）
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;text-align:right;">
+       €8-20
+      </td>
+     </tr>
+     <tr style="background:#f9f9f2;">
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       🧴 L'Erbolario草本乳液
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       <b>
+        L'Erbolario
+       </b>
+       玫瑰護手霜、薰衣草沐浴系列
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;text-align:right;">
+       €8-18
+      </td>
+     </tr>
+     <tr>
+      <td style="padding:8px;">
+       🫧 義大利香皂
+      </td>
+      <td style="padding:8px;">
+       <b>
+        Saponificio Varesino
+       </b>
+       、Proraso（刮鬍/護膚系列）
+      </td>
+      <td style="padding:8px;text-align:right;">
+       €3-12
+      </td>
+     </tr>
+    </table>
+    <div class="tip-box" style="margin-top:10px;">
+     💡 採購時機建議：
+     <b>
+      佛羅倫斯麥粒市場（Mercato Centrale）
+     </b>
+     和
+     <b>
+      米蘭Esselunga超市
+     </b>
+     種類最齊全。最後一天米蘭機場免稅店也有精品食品，但價格較高。
+    </div>
+   </div>
+  </section>
+  <!-- ===== PHRASES ===== -->
+  <div class="divider">
+  </div>
+  <section id="phrases">
+   <div class="section-title">
+    <span class="emoji">
+     🗣️
+    </span>
+    實用義大利語
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      👋
+     </span>
+     基本問候
+    </div>
+    <table class="phrase-table">
+     <tr>
+      <th>
+       中文
+      </th>
+      <th>
+       義大利語
+      </th>
+      <th>
+       發音
+      </th>
+     </tr>
+     <tr>
+      <td>
+       你好（早上）
+      </td>
+      <td class="italian">
+       Buon giorno
+      </td>
+      <td class="pronunciation">
+       博諾 久諾
+      </td>
+     </tr>
+     <tr>
+      <td>
+       你好（下午/晚上）
+      </td>
+      <td class="italian">
+       Buona sera
+      </td>
+      <td class="pronunciation">
+       博納 塞拉
+      </td>
+     </tr>
+     <tr>
+      <td>
+       再見
+      </td>
+      <td class="italian">
+       Arrivederci
+      </td>
+      <td class="pronunciation">
+       阿里維得爾奇
+      </td>
+     </tr>
+     <tr>
+      <td>
+       謝謝
+      </td>
+      <td class="italian">
+       Grazie
+      </td>
+      <td class="pronunciation">
+       格拉奇耶
+      </td>
+     </tr>
+     <tr>
+      <td>
+       非常謝謝
+      </td>
+      <td class="italian">
+       Grazie mille
+      </td>
+      <td class="pronunciation">
+       格拉奇耶 米勒
+      </td>
+     </tr>
+     <tr>
+      <td>
+       請 / 麻煩
+      </td>
+      <td class="italian">
+       Per favore
+      </td>
+      <td class="pronunciation">
+       培爾 法沃雷
+      </td>
+     </tr>
+     <tr>
+      <td>
+       對不起 / 不好意思
+      </td>
+      <td class="italian">
+       Mi scusi / Scusa
+      </td>
+      <td class="pronunciation">
+       米 斯庫茲
+      </td>
+     </tr>
+     <tr>
+      <td>
+       是 / 不是
+      </td>
+      <td class="italian">
+       Sì / No
+      </td>
+      <td class="pronunciation">
+       西 / 諾
+      </td>
+     </tr>
+    </table>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      🍽️
+     </span>
+     餐廳用語
+    </div>
+    <table class="phrase-table">
+     <tr>
+      <th>
+       中文
+      </th>
+      <th>
+       義大利語
+      </th>
+      <th>
+       發音
+      </th>
+     </tr>
+     <tr>
+      <td>
+       我要點餐
+      </td>
+      <td class="italian">
+       Vorrei ordinare
+      </td>
+      <td class="pronunciation">
+       沃雷依 奧爾迪納雷
+      </td>
+     </tr>
+     <tr>
+      <td>
+       請給我菜單
+      </td>
+      <td class="italian">
+       Il menù, per favore
+      </td>
+      <td class="pronunciation">
+       伊爾 梅努，培爾 法沃雷
+      </td>
+     </tr>
+     <tr>
+      <td>
+       很好吃！
+      </td>
+      <td class="italian">
+       Molto buono!
+      </td>
+      <td class="pronunciation">
+       莫爾托 博諾
+      </td>
+     </tr>
+     <tr>
+      <td>
+       買單（結帳）
+      </td>
+      <td class="italian">
+       Il conto, per favore
+      </td>
+      <td class="pronunciation">
+       伊爾 孔托，培爾 法沃雷
+      </td>
+     </tr>
+     <tr>
+      <td>
+       一杯水
+      </td>
+      <td class="italian">
+       Un bicchiere d'acqua
+      </td>
+      <td class="pronunciation">
+       溫 比基耶雷 達夸
+      </td>
+     </tr>
+     <tr>
+      <td>
+       一杯咖啡
+      </td>
+      <td class="italian">
+       Un caffè
+      </td>
+      <td class="pronunciation">
+       溫 卡菲
+      </td>
+     </tr>
+     <tr>
+      <td>
+       我是素食者
+      </td>
+      <td class="italian">
+       Sono vegetariano/a
+      </td>
+      <td class="pronunciation">
+       索諾 維吉塔里阿諾
+      </td>
+     </tr>
+    </table>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      🛒
+     </span>
+     購物用語
+    </div>
+    <table class="phrase-table">
+     <tr>
+      <th>
+       中文
+      </th>
+      <th>
+       義大利語
+      </th>
+      <th>
+       發音
+      </th>
+     </tr>
+     <tr>
+      <td>
+       這個多少錢？
+      </td>
+      <td class="italian">
+       Quanto costa?
+      </td>
+      <td class="pronunciation">
+       夸恩托 科斯塔
+      </td>
+     </tr>
+     <tr>
+      <td>
+       可以便宜一點嗎？
+      </td>
+      <td class="italian">
+       Può fare uno sconto?
+      </td>
+      <td class="pronunciation">
+       普沃 法雷 烏諾 斯孔托
+      </td>
+     </tr>
+     <tr>
+      <td>
+       我想買這個
+      </td>
+      <td class="italian">
+       Vorrei comprare questo
+      </td>
+      <td class="pronunciation">
+       沃雷依 孔普拉雷 夸斯托
+      </td>
+     </tr>
+     <tr>
+      <td>
+       有沒有大一點的？
+      </td>
+      <td class="italian">
+       C'è una taglia più grande?
+      </td>
+      <td class="pronunciation">
+       切 烏納 塔利亞 披烏 葛蘭得
+      </td>
+     </tr>
+     <tr>
+      <td>
+       可以刷卡嗎？
+      </td>
+      <td class="italian">
+       Posso pagare con la carta?
+      </td>
+      <td class="pronunciation">
+       博索 帕加雷 孔 拉 卡爾塔
+      </td>
+     </tr>
+     <tr>
+      <td>
+       我在找___
+      </td>
+      <td class="italian">
+       Sto cercando___
+      </td>
+      <td class="pronunciation">
+       斯托 切爾坎多
+      </td>
+     </tr>
+    </table>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      🆘
+     </span>
+     緊急用語
+    </div>
+    <table class="phrase-table">
+     <tr>
+      <th>
+       中文
+      </th>
+      <th>
+       義大利語
+      </th>
+      <th>
+       說明
+      </th>
+     </tr>
+     <tr>
+      <td>
+       救命！
+      </td>
+      <td class="italian">
+       Aiuto!
+      </td>
+      <td class="pronunciation">
+       阿尤托！
+      </td>
+     </tr>
+     <tr>
+      <td>
+       請叫救護車
+      </td>
+      <td class="italian">
+       Chiami un'ambulanza
+      </td>
+      <td class="pronunciation">
+       基阿米 烏娜姆布蘭扎
+      </td>
+     </tr>
+     <tr>
+      <td>
+       請叫警察
+      </td>
+      <td class="italian">
+       Chiami la polizia
+      </td>
+      <td class="pronunciation">
+       基阿米 拉 波利奇亞
+      </td>
+     </tr>
+     <tr>
+      <td>
+       我需要醫生
+      </td>
+      <td class="italian">
+       Ho bisogno di un medico
+      </td>
+      <td class="pronunciation">
+       奧 比索尼歐 迪 溫 梅迪科
+      </td>
+     </tr>
+     <tr>
+      <td>
+       我迷路了
+      </td>
+      <td class="italian">
+       Mi sono perso/a
+      </td>
+      <td class="pronunciation">
+       米 索諾 培爾索
+      </td>
+     </tr>
+     <tr>
+      <td>
+       廁所在哪？
+      </td>
+      <td class="italian">
+       Dov'è il bagno?
+      </td>
+      <td class="pronunciation">
+       多維耶 伊爾 巴尼歐
+      </td>
+     </tr>
+    </table>
+    <div class="alert alert-danger" style="margin-top:10px;">
+     🆘 緊急電話：
+     <b>
+      112
+     </b>
+     （萬用緊急）、
+     <b>
+      118
+     </b>
+     （救護車）、
+     <b>
+      113
+     </b>
+     （警察）
+    </div>
+   </div>
+  </section>
+  <!-- ===== TIPS ===== -->
+  <div class="divider">
+  </div>
+  <section id="tips">
+   <div class="section-title">
+    <span class="emoji">
+     💡
+    </span>
+    重要注意事項
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      👴
+     </span>
+     帶媽媽旅行的貼心提醒
+    </div>
+    <ul style="padding-left:18px;font-size:13px;line-height:2.2;">
+     <li>
+      每天步行量大（8,000-15,000步），
+      <b>
+       每1-2小時主動建議媽媽坐下休息
+      </b>
+      ，義大利廣場多有椅子。
+     </li>
+     <li>
+      石板路和圓石路（sanpietrini）是義大利特色，
+      <b>
+       防滑鞋非常重要
+      </b>
+      ，雨後濕滑更要小心。
+     </li>
+     <li>
+      天氣5月較熱，
+      <b>
+       隨時補充水分
+      </b>
+      ，歐洲人喝水少，請主動提醒。義大利城市有免費飲水噴泉（Nasone），可填裝水瓶。
+     </li>
+     <li>
+      部分教堂和景點需排隊入場，
+      <b>
+       摺疊小板凳或帶一條毛巾
+      </b>
+      可以坐在牆邊休息。
+     </li>
+     <li>
+      威尼斯橋梁多，
+      <b>
+       嘆息橋等景點都需要上下台階
+      </b>
+      ，慢慢走即可，旁邊通常有扶手。
+     </li>
+     <li>
+      隨時確認媽媽的
+      <b>
+       手機電量充足
+      </b>
+      ，並確保她有領隊的聯絡電話。
+     </li>
+    </ul>
+   </div>
+   <div class="card" id="taxrefund">
+    <div class="card-title">
+     <span class="icon">
+      💰
+     </span>
+     退稅完整指南（Tax Refund）
+    </div>
+    <div class="alert alert-gold" style="background:#fff9e6;border:1px solid #f0c040;border-radius:10px;padding:12px;margin-bottom:12px;font-size:13px;">
+     💡
+     <b>
+      基本資格
+     </b>
+     ：非歐盟居民（台灣護照持有人符合）、在同一家商店單日消費
+     <b>
+      滿 €154.94
+     </b>
+     ，即可申請退稅。退稅金額約為消費金額的
+     <b>
+      11–15%
+     </b>
+     （依商品類別）。
+    </div>
+    <div style="font-size:14px;font-weight:700;color:#2d6a4f;margin:12px 0 8px;">
+     📋 Step 1：購物時在店內申請退稅單
+    </div>
+    <ul style="padding-left:18px;font-size:13px;line-height:2.1;">
+     <li>
+      購物時主動告知店員：
+      <span style="color:#c1121f;font-weight:600;font-style:italic;">
+       「Tax Free, please.」
+      </span>
+     </li>
+     <li>
+      店員會提供退稅公司的表單（最常見：
+      <b>
+       Global Blue
+      </b>
+      藍色、
+      <b>
+       Planet Tax Free
+      </b>
+      橘色、
+      <b>
+       Innova Tax Free
+      </b>
+      ）
+     </li>
+     <li>
+      填寫你的姓名、護照號碼、聯絡地址（可填台灣地址）
+     </li>
+     <li>
+      收齊
+      <b>
+       收據（Scontrino）＋退稅單（Tax Free Form）
+      </b>
+      ，兩者都要保留！
+     </li>
+     <li>
+      商品帶出義大利前
+      <b>
+       不要使用或拆包
+       <!--�-->
+       裝（關鍵！）
+      </b>
+     </li>
+    </ul>
+    <div style="font-size:14px;font-weight:700;color:#2d6a4f;margin:12px 0 8px;">
+     ✈️ Step 2：米蘭馬爾本薩機場（MXP）退稅流程
+    </div>
+    <div class="alert alert-warning" style="margin-bottom:10px;">
+     ⚠️
+     <b>
+      重要：退稅流程需在「出海關前」處理，一旦過安檢就無法回來！
+     </b>
+     請至少提早出發，5/22 Day14 建議 07:00 出發，08:00 抵達機場後立即開始退稅程序。
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+     <tr style="background:#c1121f;color:white;">
+      <th style="padding:8px;text-align:left;width:30px;">
+       步驟
+      </th>
+      <th style="padding:8px;text-align:left;">
+       動作
+      </th>
+      <th style="padding:8px;text-align:left;">
+       位置
+      </th>
+     </tr>
+     <tr style="background:#fff5f5;">
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;text-align:center;font-size:20px;">
+       1️⃣
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       <b>
+        先辦理航班托運
+       </b>
+       <br/>
+       把大行李托運完畢（已辦理登機手續）
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       Check-in 櫃台
+       <br/>
+       （長榮航空 BR096）
+      </td>
+     </tr>
+     <tr>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;text-align:center;font-size:20px;">
+       2️⃣
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       <b>
+        前往海關蓋章（最重要！）
+       </b>
+       <br/>
+       帶著：護照＋退稅單＋購物收據＋退稅商品（未拆封）
+       <br/>
+       找到「Dogana / Customs」蓋章窗口，讓官員核驗商品後蓋章
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       出境大廳
+       <br/>
+       安檢前方的海關區（Dogana）
+      </td>
+     </tr>
+     <tr style="background:#fff5f5;">
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;text-align:center;font-size:20px;">
+       3️⃣
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       <b>
+        選擇退稅方式
+       </b>
+       <br/>
+       選 A：前往各退稅公司窗口直接領現金（歐元），手續費略高
+       <br/>
+       選 B：信用卡退款（回台後約4-8週入帳），手續費較低
+      </td>
+      <td style="padding:8px;border-bottom:1px solid #e8e0cc;">
+       出境後免稅區
+       <br/>
+       Global Blue / Planet 窗口
+      </td>
+     </tr>
+     <tr>
+      <td style="padding:8px;text-align:center;font-size:20px;">
+       4️⃣
+      </td>
+      <td style="padding:8px;">
+       <b>
+        完成！
+       </b>
+       <br/>
+       退稅單留副本自存，正本交給退稅公司
+      </td>
+      <td style="padding:8px;">
+       完成後可去免稅商店繼續採購 😄
+      </td>
+     </tr>
+    </table>
+    <div style="margin-top:14px;font-size:14px;font-weight:700;color:#2d6a4f;margin-bottom:8px;">
+     📌 退稅重要細節整理
+    </div>
+    <ul style="padding-left:18px;font-size:13px;line-height:2.1;">
+     <li>
+      <b>
+       可退稅商品：
+      </b>
+      衣物、皮件、鞋子、珠寶、電器、食品（部分）等消費品
+     </li>
+     <li>
+      <b>
+       不可退稅：
+      </b>
+      餐廳費用、旅館費用、服務費、已食用食品
+     </li>
+     <li>
+      <b>
+       退稅率表（約略）：
+      </b>
+      €155-300 約退 11-12%；€300-600 約退 13%；€600以上 約退 14-15%
+     </li>
+     <li>
+      <b>
+       Global Blue App
+      </b>
+      ：可下載 App，部分商店支援數位退稅，機場更快速
+     </li>
+     <li>
+      <b>
+       米蘭購物最划算：
+      </b>
+      Day13 下午在蒙特拿破崙路精品街消費，可在米蘭機場退稅，不必等其他城市
+     </li>
+     <li>
+      <b>
+       多店合併：
+      </b>
+      退稅單是「每家店各自計算」，同一家店當日消費累計滿 €154.94 才符合，不同家店不能合併
+     </li>
+    </ul>
+    <div class="tip-box">
+     💡
+     <b>
+      實用小技巧
+     </b>
+     ：在大牌商店（Prada、Gucci、Ferragamo等）購物，店員都很熟悉退稅流程，主動配合。超市食品類通常不辦退稅（金額不達門檻）。
+     <b>
+      建議在米蘭精品街集中採購大件商品，一次達到退稅門檻！
+     </b>
+    </div>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      🔒
+     </span>
+     安全與防扒
+    </div>
+    <ul style="padding-left:18px;font-size:13px;line-height:2.1;">
+     <li>
+      羅馬、那不勒斯扒竊問題較嚴重，
+      <b>
+       手機/包包放胸前
+      </b>
+      ，不要掛後背。
+     </li>
+     <li>
+      <b>
+       護照留旅館保險箱
+      </b>
+      ，外出帶影本即可（或手機存電子檔）。
+     </li>
+     <li>
+      不接受陌生人「幫忙拍照」後索取費用，不接受主動塞給你的玫瑰花（需付費）。
+     </li>
+     <li>
+      Wi-Fi使用公共網路時，不要輸入銀行密碼，建議用手機行動網路（旅行社已提供SIM卡）。
+     </li>
+     <li>
+      遺失財物立即撥打「
+      <b>
+       113
+      </b>
+      」報警，取得報案單（Denuncia）以利保險申報。
+     </li>
+    </ul>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      💶
+     </span>
+     金錢與消費
+    </div>
+    <ul style="padding-left:18px;font-size:13px;line-height:2.1;">
+     <li>
+      義大利全程使用
+      <b>
+       歐元（EUR）
+      </b>
+      。建議準備€500-600現金（含小費、自理餐、購物備用）。
+     </li>
+     <li>
+      大部分商店和餐廳接受信用卡，但小店和市集常只收現金。
+     </li>
+     <li>
+      <b>
+       退稅（Tax Free）
+      </b>
+      ：單一商家消費滿€154.94可退稅（約12%）。購物時請告知「Tax free please」，保留收據，離境前在機場辦理。
+     </li>
+     <li>
+      在ATM提款選「EUR（歐元）」，不要選「你的貨幣（台幣）」以免匯率損失。
+     </li>
+    </ul>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      📱
+     </span>
+     通訊與上網
+    </div>
+    <ul style="padding-left:18px;font-size:13px;line-height:2.1;">
+     <li>
+      旅行社已提供每人一張SIM卡，請妥善保管。
+     </li>
+     <li>
+      離線地圖下載推薦：
+      <b>
+       Google Maps 離線地圖
+      </b>
+      （出發前下載義大利各城市地圖）。
+     </li>
+     <li>
+      翻譯工具：
+      <b>
+       Google Translate
+      </b>
+      拍照翻譯功能，可掃菜單即時翻譯義大利文。
+     </li>
+     <li>
+      緊急聯絡：帶隊領隊電話（旅行社出發前提供），確保雙方手機都儲存。
+     </li>
+    </ul>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      ⛪
+     </span>
+     教堂禮儀
+    </div>
+    <ul style="padding-left:18px;font-size:13px;line-height:2.1;">
+     <li>
+      進入教堂時保持
+      <b>
+       安靜低聲
+      </b>
+      ，禁止喧嘩。
+     </li>
+     <li>
+      禁止穿著無袖、短褲、短裙。薄圍巾隨身攜帶可隨時披上。
+     </li>
+     <li>
+      部分區域禁止拍照（尤其西斯汀禮拜堂），請遵守規定。
+     </li>
+     <li>
+      若有宗教儀式正在進行，請在外等候，不可強行進入。
+     </li>
+    </ul>
+   </div>
+   <div class="card">
+    <div class="card-title">
+     <span class="icon">
+      ☕
+     </span>
+     義大利咖啡豆購買指南
+    </div>
+    <ul style="padding-left:18px;font-size:13px;line-height:2.1;">
+     <li>
+      <b>推薦品牌：</b>
+      <b>Lavazza</b>（義大利最知名品牌，超市有售）、
+      <b>Illy</b>（高端精品，口感醇厚）、
+      <b>Kimbo</b>（拿坡里在地品牌，濃縮風味）、
+      <b>Segafredo</b>（米蘭知名，適合義式濃縮）。
+     </li>
+     <li>
+      <b>購買地點：</b>
+      各城市超市（Esselunga、Conad、Carrefour）、咖啡專賣店、機場免稅店；
+      米蘭 <b>Eataly</b> 可找到精選義大利咖啡豆。
+     </li>
+     <li>
+      <b>豆種選擇：</b>
+      義大利傳統以 <b>Arabica + Robusta</b> 混合豆為主；
+      Arabica 偏酸甜適合手沖，Robusta 奶油泡沫豐富適合義式濃縮機。
+     </li>
+     <li>
+      <b>研磨程度：</b>建議購買
+      <b>整粒咖啡豆（Grani/Beans）</b>，保存期較長（真空包裝可達2年），
+      回台後再依器具研磨。亦可選「Macinato per Moka」（摩卡壺專用細研磨）。
+     </li>
+     <li>
+      <b>價格參考：</b>超市 250g 約 €3–6；精品豆或 Illy 罐裝 250g 約 €8–12；
+      機場免稅店略貴但方便。
+     </li>
+     <li>
+      <b>入境台灣規定：</b>咖啡豆屬農產品加工品，
+      <b>真空密封包裝</b>可攜帶入境，建議保留原包裝及收據，每人無限量。
+      散裝或未包裝的生咖啡豆不建議攜帶。
+     </li>
+     <li>
+      <b>行程採買建議：</b>
+      D9 佛羅倫斯（Eataly 佛羅倫斯店）、
+      D13 米蘭（Eataly 米蘭店或米蘭大教堂附近咖啡專賣店）、
+      D14 米蘭機場出境前免稅店為最後購買機會。
+     </li>
+    </ul>
+   </div>
+   <div class="alert alert-success" style="margin:16px 0 24px;">
+    ✨
+    <b>
+     最後祝福
+    </b>
+    ：帶著媽媽走過這片充滿藝術、歷史與美食的土地，感受義大利的深情。每一刻都是珍貴的回憶。祝旅途平安愉快、母女情深、義大利深情！
+    <br/>
+    <br/>
+    🇮🇹
+    <i>
+     Buon viaggio!
+    </i>
+    （一路順風！）
+   </div>
+  </section>
+  <footer>
+   <div>
+    🇮🇹 義大利深情十五天・太一國際旅行社
+   </div>
+   <div style="margin-top:4px;">
+    2026年5月9日–23日 ・ 豪經艙 BR095/BR096
+   </div>
+   <div style="margin-top:4px;">
+    本手冊由 AI 整理製作，景點資訊供參考，以實際行程為準。
+   </div>
+  </footer>
+  <button class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+   ↑
+  </button>
+ </body>
+</html>
