@@ -235,11 +235,7 @@ const TRIPS = [
 ];
 
 /* ── 動態產生年份 tab ── */
-const COLOR_MAP = {
-  '--sage':var('--sage'),'--rose':var('--rose'),'--sky':var('--sky'),
-  '--lavender':var('--lavender'),'--peach':var('--peach'),'--sand':var('--sand')
-};
-function cssVar(v){ return getComputedStyle(document.documentElement).getPropertyValue(v.replace('var(','').replace(')','').trim()); }
+function cssVar(v){ return getComputedStyle(document.documentElement).getPropertyValue(v); }
 function tripColor(t){ return cssVar(t.color||'--sage'); }
 
 let filterYear='all', filterContinent='all';
