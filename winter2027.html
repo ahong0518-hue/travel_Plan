@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2027 寒假出遊地點比較</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Segoe UI", "Microsoft JhengHei", sans-serif; background: #f0f4f8; color: #2d3748; line-height: 1.6; }
+
+  .hero {
+    background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 50%, #3182ce 100%);
+    color: white; padding: 40px 30px; text-align: center;
+  }
+  .hero h1 { font-size: 2rem; margin-bottom: 8px; }
+  .hero p { font-size: 1rem; opacity: 0.85; }
+  .hero .tags { margin-top: 14px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .tag { background: rgba(255,255,255,0.2); border-radius: 20px; padding: 4px 14px; font-size: 0.85rem; }
+
+  .alert-box {
+    background: #fff3cd; border-left: 5px solid #f6ad55; margin: 20px auto;
+    max-width: 1100px; padding: 16px 20px; border-radius: 6px;
+  }
+  .alert-box strong { color: #c05621; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+
+  h2 { font-size: 1.4rem; color: #1a365d; margin: 30px 0 16px; border-bottom: 3px solid #3182ce; padding-bottom: 8px; }
+  h3 { font-size: 1.1rem; color: #2b6cb0; margin: 16px 0 10px; }
+
+  /* 評分總表 */
+  .score-table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 30px; }
+  .score-table th { background: #1a365d; color: white; padding: 12px 10px; text-align: center; font-size: 0.9rem; }
+  .score-table th:first-child { text-align: left; }
+  .score-table td { padding: 11px 10px; border-bottom: 1px solid #e2e8f0; text-align: center; font-size: 0.9rem; }
+  .score-table td:first-child { text-align: left; font-weight: 600; color: #2d3748; }
+  .score-table tr:last-child td { border-bottom: none; }
+  .score-table tr:hover td { background: #f7fafc; }
+  .score-table .best { background: #c6f6d5; font-weight: 700; }
+  .score-table .good { background: #ebf8ff; }
+  .score-table .warn { background: #fff5f5; }
+  .total-row td { background: #edf2f7 !important; font-weight: 700; font-size: 1rem; }
+  .stars { color: #f6ad55; letter-spacing: -2px; }
+  .recommend-badge { background: #48bb78; color: white; border-radius: 12px; padding: 2px 10px; font-size: 0.78rem; margin-left: 6px; }
+  .alt-badge { background: #667eea; color: white; border-radius: 12px; padding: 2px 10px; font-size: 0.78rem; margin-left: 6px; }
+
+  /* 地點卡片 */
+  .dest-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(480px, 1fr)); gap: 20px; margin-bottom: 30px; }
+  .dest-card { background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); overflow: hidden; }
+  .dest-card .card-header { padding: 18px 20px 14px; color: white; }
+  .phuket .card-header { background: linear-gradient(135deg, #c05621, #ed8936); }
+  .samui .card-header { background: linear-gradient(135deg, #276749, #38a169); }
+  .penang .card-header { background: linear-gradient(135deg, #553c9a, #805ad5); }
+  .krabi .card-header { background: linear-gradient(135deg, #2c7a7b, #319795); }
+  .dest-card .card-header h3 { color: white; margin: 0; font-size: 1.15rem; }
+  .dest-card .card-header p { opacity: 0.85; font-size: 0.85rem; margin-top: 4px; }
+  .card-body { padding: 16px 20px; }
+
+  .attr-section { margin-bottom: 14px; }
+  .attr-section h4 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: #718096; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; }
+  .attr-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; }
+  .attr-list li { font-size: 0.88rem; padding: 3px 0; display: flex; align-items: flex-start; gap: 6px; }
+  .attr-list li::before { content: "•"; color: #3182ce; flex-shrink: 0; margin-top: 1px; }
+  .attr-list li.kid::before { content: "👦"; font-size: 0.8rem; }
+  .attr-list li.food::before { content: "🍜"; font-size: 0.8rem; }
+  .attr-list li.warn-item::before { content: "⚠️"; font-size: 0.8rem; }
+
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+  .info-item { background: #f7fafc; border-radius: 6px; padding: 8px 10px; }
+  .info-item .label { font-size: 0.75rem; color: #718096; }
+  .info-item .value { font-size: 0.88rem; font-weight: 600; color: #2d3748; }
+
+  .verdict { border-radius: 8px; padding: 10px 14px; margin-top: 12px; font-size: 0.88rem; }
+  .verdict.recommend { background: #c6f6d5; border-left: 4px solid #48bb78; }
+  .verdict.alt { background: #e9d8fd; border-left: 4px solid #805ad5; }
+  .verdict.caution { background: #fed7d7; border-left: 4px solid #fc8181; }
+
+  /* 景點比較大表 */
+  .attr-compare { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 30px; font-size: 0.88rem; }
+  .attr-compare th { background: #2d3748; color: white; padding: 10px 12px; text-align: left; }
+  .attr-compare td { padding: 9px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+  .attr-compare tr:nth-child(even) td { background: #f7fafc; }
+  .attr-compare .category { background: #edf2f7; font-weight: 700; color: #1a365d; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .check { color: #48bb78; font-weight: 700; }
+  .cross { color: #fc8181; }
+  .half { color: #ed8936; }
+
+  /* 行程建議 */
+  .itinerary-section { background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 20px; margin-bottom: 30px; }
+  .date-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 14px; }
+  .date-card { border: 2px solid #e2e8f0; border-radius: 8px; padding: 12px; text-align: center; }
+  .date-card.best { border-color: #48bb78; background: #f0fff4; }
+  .date-card.good { border-color: #3182ce; background: #ebf8ff; }
+  .date-card.ok { border-color: #ed8936; background: #fffaf0; }
+  .date-card .date { font-size: 1.1rem; font-weight: 700; }
+  .date-card .day { font-size: 0.8rem; color: #718096; }
+  .date-card .note { font-size: 0.82rem; margin-top: 6px; }
+
+  /* 未想到的事項 */
+  .tips-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 30px; }
+  .tip-card { background: white; border-radius: 10px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); border-top: 4px solid; }
+  .tip-card.budget { border-color: #48bb78; }
+  .tip-card.logistics { border-color: #3182ce; }
+  .tip-card.health { border-color: #ed8936; }
+  .tip-card.family { border-color: #9f7aea; }
+  .tip-card.weather { border-color: #00b5d8; }
+  .tip-card h4 { font-size: 0.95rem; margin-bottom: 10px; }
+  .tip-card ul { list-style: none; }
+  .tip-card ul li { font-size: 0.85rem; padding: 4px 0; border-bottom: 1px solid #f0f0f0; display: flex; gap: 8px; }
+  .tip-card ul li:last-child { border-bottom: none; }
+  .tip-card ul li::before { content: "→"; color: #718096; flex-shrink: 0; }
+
+  /* 費用試算 */
+  .budget-table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 30px; font-size: 0.88rem; }
+  .budget-table th { background: #1a365d; color: white; padding: 10px 12px; text-align: center; }
+  .budget-table th:first-child { text-align: left; }
+  .budget-table td { padding: 9px 12px; border-bottom: 1px solid #e2e8f0; text-align: center; }
+  .budget-table td:first-child { text-align: left; font-weight: 600; }
+  .budget-table .total-row td { background: #1a365d; color: white; font-weight: 700; }
+  .budget-table tr:hover td { background: #f7fafc; }
+
+  .footer { background: #2d3748; color: #a0aec0; text-align: center; padding: 20px; font-size: 0.82rem; }
+  .footer strong { color: white; }
+
+  @media (max-width: 700px) {
+    .dest-grid { grid-template-columns: 1fr; }
+    .attr-list { grid-template-columns: 1fr; }
+    .info-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>2027 寒假家庭出遊 — 目的地全比較</h1>
+  <p>深度評估 × 景點整理 × 親子適合度 × 費用參考</p>
+  <div class="tags">
+    <span class="tag">👨‍👩‍👧‍👦 2大2小</span>
+    <span class="tag">👧 女13歲 / 男11歲</span>
+    <span class="tag">📅 1/28～2/3（7天6夜）</span>
+    <span class="tag">✈️ 自助行</span>
+    <span class="tag">⚠️ 春節前旺季</span>
+  </div>
+</div>
+
+<div class="alert-box">
+  <strong>🎊 重要：2027年農曆新年為 2月6日（丁未羊年）！</strong>
+  本次行程（1/28出發、2/3回程，共7天6夜）正好落在 <strong>春節前旺季</strong>，是亞洲旺季中的旺季。機票與住宿建議 <strong>2026年9月前完成預訂</strong>，越晚越貴。<br>
+  ⚠️ <strong>特別注意：2/4（週四）為除夕小年夜，台灣開始放年假！</strong>建議 <strong>2/3（週三）回程</strong>，比2/4便宜且位子好搶。<br>
+  <small>資料來源：<a href="https://www.businesstoday.com.tw/article/category/183030/post/202605030005/" target="_blank">今周刊 2027行事曆</a> ／ <a href="https://naozhong.tw/jishiqi/chunjie/2027/" target="_blank">2027春節計時器</a></small>
+</div>
+
+<div class="container">
+
+  <!-- ===== 評分總覽 ===== -->
+  <h2>📊 綜合評分總覽</h2>
+  <table class="score-table">
+    <thead>
+      <tr>
+        <th>評估項目</th>
+        <th>🏝 普吉島<br><small>Phuket</small></th>
+        <th>🌴 蘇美島<br><small>Koh Samui</small></th>
+        <th>🏛 檳城<br><small>Penang</small></th>
+        <th>🪨 甲米<br><small>Krabi（備選）</small></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>自助便利性</td>
+        <td class="good">★★★★☆<br><small>Grab可用</small></td>
+        <td class="warn">★★☆☆☆<br><small>幾乎無Grab</small></td>
+        <td class="best">★★★★★<br><small>最輕鬆</small></td>
+        <td class="good">★★★☆☆<br><small>需包車</small></td>
+      </tr>
+      <tr>
+        <td>旅遊深度</td>
+        <td class="good">★★★★☆</td>
+        <td>★★★☆☆</td>
+        <td class="best">★★★★★<br><small>UNESCO古城</small></td>
+        <td class="good">★★★★☆</td>
+      </tr>
+      <tr>
+        <td>海灘品質</td>
+        <td class="good">★★★★☆</td>
+        <td class="best">★★★★★</td>
+        <td class="warn">★★☆☆☆<br><small>沙質普通</small></td>
+        <td class="best">★★★★★<br><small>Railay超美</small></td>
+      </tr>
+      <tr>
+        <td>親子活動豐富度</td>
+        <td class="best">★★★★★</td>
+        <td class="good">★★★☆☆</td>
+        <td class="good">★★★★☆</td>
+        <td>★★★☆☆</td>
+      </tr>
+      <tr>
+        <td>機票方便性（台灣出發）</td>
+        <td class="best">★★★★★<br><small>直飛</small></td>
+        <td class="warn">★★☆☆☆<br><small>需轉機2次</small></td>
+        <td class="good">★★★★☆<br><small>直飛或1轉</small></td>
+        <td class="warn">★★☆☆☆<br><small>需轉機</small></td>
+      </tr>
+      <tr>
+        <td>不換房可行性</td>
+        <td class="best">✅ 完全可</td>
+        <td class="best">✅ 完全可</td>
+        <td>⚠️ 建議換1次<br><small>古城↔海灘</small></td>
+        <td class="best">✅ 完全可</td>
+      </tr>
+      <tr>
+        <td>美食多樣性</td>
+        <td class="good">★★★★☆</td>
+        <td>★★★☆☆</td>
+        <td class="best">★★★★★<br><small>美食天堂</small></td>
+        <td>★★★☆☆</td>
+      </tr>
+      <tr>
+        <td>整體預算（相對）</td>
+        <td class="good">中～中高</td>
+        <td class="warn">高（最貴）</td>
+        <td class="best">中（最實惠）</td>
+        <td class="good">中</td>
+      </tr>
+      <tr>
+        <td>春節旺季人潮</td>
+        <td class="warn">非常多</td>
+        <td class="good">中</td>
+        <td class="warn">多（華人多）</td>
+        <td class="good">少（優點）</td>
+      </tr>
+      <tr>
+        <td>語言溝通</td>
+        <td class="good">英文可通</td>
+        <td class="good">英文可通</td>
+        <td class="best">最容易（全英）</td>
+        <td class="good">英文可通</td>
+      </tr>
+      <tr class="total-row">
+        <td>🏆 綜合推薦度</td>
+        <td>⭐⭐⭐⭐½<br><small>首選</small></td>
+        <td>⭐⭐½<br><small>不推</small></td>
+        <td>⭐⭐⭐⭐<br><small>文化首選</small></td>
+        <td>⭐⭐⭐½<br><small>進階選項</small></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ===== 地點詳細卡片 ===== -->
+  <h2>🗺️ 各地點詳細分析</h2>
+  <div class="dest-grid">
+
+    <!-- 普吉島 -->
+    <div class="dest-card phuket">
+      <div class="card-header">
+        <h3>🏝 普吉島 Phuket <span class="recommend-badge">首選推薦</span></h3>
+        <p>泰國最大島，玩法多元，親子首選</p>
+      </div>
+      <div class="card-body">
+        <div class="info-grid">
+          <div class="info-item"><div class="label">飛行時間</div><div class="value">約 4h25min（直飛）<br><small style="color:#e53e3e">⚠️ 原標示3.5h有誤</small></div></div>
+          <div class="info-item"><div class="label">航空選擇</div><div class="value">台灣虎航、酷航、泰航、泰獅航、AirAsia X（每週約2班）</div></div>
+          <div class="info-item"><div class="label">推薦住宿區</div><div class="value">Kata / Karon / Kamala</div></div>
+          <div class="info-item"><div class="label">匯率參考</div><div class="value">1 TWD ≈ 1.02 THB（2026.08實測）<br><small style="color:#718096">資料：<a href="https://www.xe.com/currencyconverter/convert/?Amount=1&From=TWD&To=THB" target="_blank">XE.com</a></small></div></div>
+        </div>
+
+        <div class="attr-section">
+          <h4>🏖 海灘 &amp; 自然景點</h4>
+          <ul class="attr-list">
+            <li>卡塔海灘 Kata Beach（推薦住這）</li>
+            <li>卡倫海灘 Karon Beach</li>
+            <li>奈哈恩海灘 Nai Harn（安靜美）</li>
+            <li>卡馬拉海灘 Kamala</li>
+            <li>攀牙灣 Phang Nga Bay</li>
+            <li>詹姆士龐德島</li>
+          </ul>
+        </div>
+        <div class="attr-section">
+          <h4>🚤 跳島 &amp; 海上活動</h4>
+          <ul class="attr-list">
+            <li class="kid">皮皮島一日遊（必去）</li>
+            <li class="kid">珊瑚島 Coral Island</li>
+            <li class="kid">浮潛、玻璃船</li>
+            <li class="kid">橡皮艇激流（Phang Nga）</li>
+            <li>帆船體驗</li>
+            <li>深潛（大人）</li>
+          </ul>
+        </div>
+        <div class="attr-section">
+          <h4>🐘 親子特色活動</h4>
+          <ul class="attr-list">
+            <li class="kid">大象保育營（必排）</li>
+            <li class="kid">Splash Jungle 水上樂園</li>
+            <li class="kid">Tiger Kingdom 老虎園</li>
+            <li class="kid">ATV 越野車</li>
+            <li class="kid">Fantasea 文化秀</li>
+            <li class="kid">烹飪課（親子體驗）</li>
+          </ul>
+        </div>
+        <div class="attr-section">
+          <h4>🛕 文化 &amp; 市區</h4>
+          <ul class="attr-list">
+            <li>普吉老城區（中葡建築）</li>
+            <li>查龍寺 Wat Chalong</li>
+            <li>大佛 Big Buddha</li>
+            <li>周日步行街夜市</li>
+            <li>巴東夜市</li>
+            <li>泰式按摩</li>
+          </ul>
+        </div>
+        <div class="attr-section">
+          <h4>🍜 美食</h4>
+          <ul class="attr-list">
+            <li class="food">泰式海鮮</li>
+            <li class="food">Pad Thai</li>
+            <li class="food">Tom Yum</li>
+            <li class="food">芒果糯米飯</li>
+          </ul>
+        </div>
+        <div class="verdict recommend">
+          ✅ <strong>推薦理由：</strong>直飛省時、Grab自助最方便、親子活動最豐富、6-7天玩不完。住Kata/Karon一個區域全程不換房。
+        </div>
+      </div>
+    </div>
+
+    <!-- 蘇美島 -->
+    <div class="dest-card samui">
+      <div class="card-header">
+        <h3>🌴 蘇美島 Koh Samui</h3>
+        <p>泰國最美海灘，但交通不便、成本最高</p>
+      </div>
+      <div class="card-body">
+        <div class="info-grid">
+          <div class="info-item"><div class="label">飛行時間</div><div class="value">5-7h（轉機2次）</div></div>
+          <div class="info-item"><div class="label">轉機路線</div><div class="value">TPE→BKK→USM（曼谷航空壟斷）</div></div>
+          <div class="info-item"><div class="label">推薦住宿區</div><div class="value">查汶 Chaweng / 博普特 Bophut</div></div>
+          <div class="info-item"><div class="label">島上交通</div><div class="value">無Grab，靠包車/摩托的</div></div>
+        </div>
+
+        <div class="attr-section">
+          <h4>🏖 海灘 &amp; 自然</h4>
+          <ul class="attr-list">
+            <li>查汶海灘（最熱鬧）</li>
+            <li>拉邁海灘 Lamai（較安靜）</li>
+            <li>銀色海灘 Silver Beach</li>
+            <li>Na Muang 瀑布</li>
+            <li class="kid">Ang Thong 海洋公園（必去）</li>
+          </ul>
+        </div>
+        <div class="attr-section">
+          <h4>🛕 文化景點</h4>
+          <ul class="attr-list">
+            <li>大佛寺 Big Buddha</li>
+            <li>祖母祖父岩</li>
+            <li>Secret Buddha Garden</li>
+            <li>Bophut 漁人村</li>
+          </ul>
+        </div>
+        <div class="attr-section">
+          <h4>⚠️ 缺點警示</h4>
+          <ul class="attr-list">
+            <li class="warn-item">曼谷航空壟斷票價貴</li>
+            <li class="warn-item">總飛行+等候超過6小時</li>
+            <li class="warn-item">無Grab，包車費高</li>
+            <li class="warn-item">整體花費4人可能最貴</li>
+          </ul>
+        </div>
+        <div class="attr-section">
+          <h4>🌧 1月天氣警示（查證後更新）</h4>
+          <ul class="attr-list">
+            <li class="warn-item">1月仍受東北季風尾端影響</li>
+            <li class="warn-item">月均雨量90mm、約7個雨天</li>
+            <li class="warn-item">天氣比普吉島不穩定</li>
+            <li>整體仍算乾季，但有陣雨風險</li>
+          </ul>
+          <small style="color:#718096">資料：<a href="https://www.thekohsamuiguide.com/post/koh-samui-january" target="_blank">The Koh Samui Guide</a></small>
+        </div>
+        <div class="verdict caution">
+          ❌ <strong>不推薦原因：</strong>轉機次數多、時間成本高、曼谷航空壟斷票貴、無Grab自助不方便、1月天氣比普吉不穩定。本次行程條件下，CP值最低。
+        </div>
+      </div>
+    </div>
+
+    <!-- 檳城 -->
+    <div class="dest-card penang">
+      <div class="card-header">
+        <h3>🏛 檳城 Penang + 峇都丁宜 <span class="alt-badge">文化首選</span></h3>
+        <p>UNESCO世界遺產、美食天堂、最適合自助</p>
+      </div>
+      <div class="card-body">
+        <div class="info-grid">
+          <div class="info-item"><div class="label">飛行時間</div><div class="value">直飛約 4h41min<br><small style="color:#718096">資料：<a href="https://www.skyscanner.com/routes/tpe/pen/taipei-taiwan-taoyuan-to-penang.html" target="_blank">Skyscanner</a></small></div></div>
+          <div class="info-item"><div class="label">航空選擇</div><div class="value">中華航空、星宇航空、馬來西亞航空（直飛每週28班）</div></div>
+          <div class="info-item"><div class="label">住宿建議</div><div class="value">古城2晚 + 峇都丁宜4晚</div></div>
+          <div class="info-item"><div class="label">匯率參考</div><div class="value">1 TWD ≈ 0.12 MYR（1 MYR≈7.9 TWD）<br><small style="color:#e53e3e">⚠️ 原標示0.15有誤</small></div></div>
+        </div>
+
+        <div class="attr-section">
+          <h4>🏛 喬治市 George Town（UNESCO）</h4>
+          <ul class="attr-list">
+            <li class="kid">街頭壁畫藝術（網美必拍）</li>
+            <li>姓氏橋 Clan Jetties（5條）</li>
+            <li class="kid">極樂寺 Kek Lok Si（壯觀）</li>
+            <li class="kid">升旗山纜車 Penang Hill</li>
+            <li>康華麗堡 Fort Cornwallis</li>
+            <li>娘惹文化博物館</li>
+            <li>小印度、唐人街</li>
+            <li>殖民地建築巡禮</li>
+          </ul>
+        </div>
+        <div class="attr-section">
+          <h4>🏖 峇都丁宜 Batu Ferringhi（海灘區）</h4>
+          <ul class="attr-list">
+            <li>峇都丁宜海灘</li>
+            <li class="kid">夜市（好逛）</li>
+            <li>熱帶香料園</li>
+            <li class="kid">水上活動（滑翔傘、摩托艇）</li>
+            <li>周邊浮潛</li>
+          </ul>
+        </div>
+        <div class="attr-section">
+          <h4>🍜 美食（最大亮點）</h4>
+          <ul class="attr-list">
+            <li class="food">檳城蝦麵（必吃）</li>
+            <li class="food">炒粿條 Char Kway Teow</li>
+            <li class="food">肉骨茶 Bak Kut Teh</li>
+            <li class="food">Rojak 水果沙拉</li>
+            <li class="food">Cendol 刨冰（甜點）</li>
+            <li class="food">娘惹料理</li>
+            <li class="food">咖哩麵</li>
+            <li class="food">糟粕龜苓膏</li>
+          </ul>
+        </div>
+        <div class="attr-section">
+          <h4>✅ 自助優勢</h4>
+          <ul class="attr-list">
+            <li>全面使用英語</li>
+            <li>Grab App普及</li>
+            <li>治安在東南亞較佳</li>
+            <li>春節氣氛濃（華人多）</li>
+          </ul>
+        </div>
+        <div class="verdict alt">
+          💜 <strong>適合對象：</strong>注重文化體驗&amp;美食、海灘不是最優先、希望自助最輕鬆。缺點是需換一次房（古城→海灘），海灘品質不如泰國。
+        </div>
+      </div>
+    </div>
+
+    <!-- 甲米 -->
+    <div class="dest-card krabi">
+      <div class="card-header">
+        <h3>🪨 甲米 Krabi <span class="alt-badge">進階備選</span></h3>
+        <p>Railay絕景、比普吉安靜、人潮相對少</p>
+      </div>
+      <div class="card-body">
+        <div class="info-grid">
+          <div class="info-item"><div class="label">飛行時間</div><div class="value">轉機曼谷或飛普吉轉船</div></div>
+          <div class="info-item"><div class="label">推薦住宿區</div><div class="value">Ao Nang / Krabi Town</div></div>
+          <div class="info-item"><div class="label">春節人潮</div><div class="value">比普吉少很多</div></div>
+          <div class="info-item"><div class="label">適合強度</div><div class="value">中低，步調悠閒</div></div>
+        </div>
+
+        <div class="attr-section">
+          <h4>🏖 頂級景點</h4>
+          <ul class="attr-list">
+            <li class="kid">萊利海灘 Railay Beach（東南亞最美之一）</li>
+            <li class="kid">四島一日遊 Four Islands</li>
+            <li>翡翠洞 Emerald Cave</li>
+            <li>攀岩（石灰岩壁世界級）</li>
+            <li class="kid">獨木舟探洞</li>
+            <li>虎穴廟 Tiger Cave Temple（1237階）</li>
+          </ul>
+        </div>
+        <div class="attr-section">
+          <h4>⚠️ 注意事項</h4>
+          <ul class="attr-list">
+            <li class="warn-item">無直飛，需轉曼谷或先到普吉</li>
+            <li class="warn-item">若與普吉合併需換房</li>
+            <li class="warn-item">Railay需搭船才能進入</li>
+            <li class="warn-item">相對活動選擇少一些</li>
+          </ul>
+        </div>
+        <div class="verdict alt">
+          💡 <strong>建議：</strong>可考慮「普吉3天 + 甲米3天」組合，但需換房一次。若不想換房，單選普吉或甲米更省事。
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end dest-grid -->
+
+  <!-- ===== 景點比較大表 ===== -->
+  <h2>🔍 景點類型對照比較</h2>
+  <table class="attr-compare">
+    <thead>
+      <tr>
+        <th style="width:22%">景點類型</th>
+        <th style="width:20%">普吉島</th>
+        <th style="width:20%">蘇美島</th>
+        <th style="width:20%">檳城</th>
+        <th style="width:18%">甲米</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="category" colspan="5">🌊 海灘 &amp; 水上</td></tr>
+      <tr>
+        <td>海灘水質透明度</td>
+        <td class="check">★★★★ 優</td>
+        <td class="check">★★★★★ 最佳</td>
+        <td class="cross">★★ 普通</td>
+        <td class="check">★★★★★ 最佳</td>
+      </tr>
+      <tr>
+        <td>浮潛/深潛</td>
+        <td class="check">✅ 珊瑚島、皮皮島</td>
+        <td class="check">✅ Ang Thong</td>
+        <td class="half">⚠️ 有但普通</td>
+        <td class="check">✅ 四島行程</td>
+      </tr>
+      <tr>
+        <td>跳島行程</td>
+        <td class="check">✅ 皮皮島/詹姆士龐德島</td>
+        <td class="check">✅ Ang Thong</td>
+        <td class="cross">❌ 無</td>
+        <td class="check">✅ 四島/Railay</td>
+      </tr>
+      <tr>
+        <td>水上樂園</td>
+        <td class="check">✅ Splash Jungle</td>
+        <td class="cross">❌ 無</td>
+        <td class="cross">❌ 無</td>
+        <td class="cross">❌ 無</td>
+      </tr>
+      <tr><td class="category" colspan="5">🐘 親子特色活動</td></tr>
+      <tr>
+        <td>大象保育體驗</td>
+        <td class="check">✅ 多家優質選擇</td>
+        <td class="half">⚠️ 少</td>
+        <td class="cross">❌ 無</td>
+        <td class="check">✅ Elephant Hills</td>
+      </tr>
+      <tr>
+        <td>文化表演秀</td>
+        <td class="check">✅ Fantasea、人妖秀</td>
+        <td class="cross">❌ 少</td>
+        <td class="half">⚠️ 少</td>
+        <td class="cross">❌ 無</td>
+      </tr>
+      <tr>
+        <td>烹飪課（親子）</td>
+        <td class="check">✅ 多選擇</td>
+        <td class="half">⚠️ 少</td>
+        <td class="check">✅ 娘惹料理</td>
+        <td class="half">⚠️ 少</td>
+      </tr>
+      <tr>
+        <td>ATV/戶外活動</td>
+        <td class="check">✅ 多</td>
+        <td class="half">⚠️ 少</td>
+        <td class="cross">❌ 無</td>
+        <td class="check">✅ 攀岩/獨木舟</td>
+      </tr>
+      <tr><td class="category" colspan="5">🏛 文化 &amp; 歷史</td></tr>
+      <tr>
+        <td>UNESCO遺址</td>
+        <td class="cross">❌ 無</td>
+        <td class="cross">❌ 無</td>
+        <td class="check">✅ 喬治市整個古城</td>
+        <td class="cross">❌ 無</td>
+      </tr>
+      <tr>
+        <td>寺廟/宗教建築</td>
+        <td class="check">✅ 查龍寺、大佛</td>
+        <td class="check">✅ 大佛廟</td>
+        <td class="check">✅ 極樂寺、清真寺、印度廟</td>
+        <td class="check">✅ 虎穴廟</td>
+      </tr>
+      <tr>
+        <td>殖民歷史建築</td>
+        <td class="half">⚠️ 老城區</td>
+        <td class="cross">❌ 少</td>
+        <td class="check">✅ 最豐富</td>
+        <td class="cross">❌ 無</td>
+      </tr>
+      <tr>
+        <td>街頭藝術</td>
+        <td class="cross">❌ 無</td>
+        <td class="cross">❌ 無</td>
+        <td class="check">✅ 世界知名壁畫</td>
+        <td class="cross">❌ 無</td>
+      </tr>
+      <tr><td class="category" colspan="5">🍜 美食</td></tr>
+      <tr>
+        <td>在地特色美食</td>
+        <td class="good">泰式海鮮、Pad Thai</td>
+        <td>泰式料理</td>
+        <td class="best">蝦麵、炒粿條、娘惹料理（最獨特）</td>
+        <td>泰式料理</td>
+      </tr>
+      <tr>
+        <td>夜市</td>
+        <td class="check">✅ 多處</td>
+        <td class="half">⚠️ 少</td>
+        <td class="check">✅ Batu Ferringhi夜市</td>
+        <td class="half">⚠️ 少</td>
+      </tr>
+      <tr><td class="category" colspan="5">🚗 交通 &amp; 後勤</td></tr>
+      <tr>
+        <td>Grab App可用</td>
+        <td class="check">✅ 方便</td>
+        <td class="cross">❌ 幾乎無</td>
+        <td class="check">✅ 最方便</td>
+        <td class="half">⚠️ 有限</td>
+      </tr>
+      <tr>
+        <td>包車難易</td>
+        <td class="check">✅ 易找，價合理</td>
+        <td class="half">⚠️ 易找但貴</td>
+        <td class="check">✅ 易找</td>
+        <td class="check">✅ 易找</td>
+      </tr>
+      <tr>
+        <td>簽證</td>
+        <td class="check">✅ 免簽（泰）</td>
+        <td class="check">✅ 免簽（泰）</td>
+        <td class="check">✅ 免簽（馬）</td>
+        <td class="check">✅ 免簽（泰）</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ===== 出發日期建議 ===== -->
+  <h2>📅 出發日期比較</h2>
+  <div class="itinerary-section">
+    <p>女兒 1/27 上完寒輔，最早 <strong>1/28（週四）</strong>出發。2027年CNY為 <strong>2/6</strong>，整段行程屬旺季中的旺季。</p>
+    <div class="date-grid" style="margin-top:16px;">
+      <div class="date-card best">
+        <div class="date">1/28 Thu</div>
+        <div class="day">週四</div>
+        <div class="note">✅ <strong>首選</strong><br>最多天（7天）<br>週四票價較平</div>
+      </div>
+      <div class="date-card good">
+        <div class="date">1/29 Fri</div>
+        <div class="day">週五</div>
+        <div class="note">🔵 次選<br>6天行程<br>週五票價略貴</div>
+      </div>
+      <div class="date-card ok">
+        <div class="date">1/30 Sat</div>
+        <div class="day">週六</div>
+        <div class="note">⚠️ 勉強<br>只剩6天<br>週末票貴</div>
+      </div>
+      <div class="date-card" style="border-color:#fc8181; background:#fff5f5;">
+        <div class="date">1/31+</div>
+        <div class="day">週日後</div>
+        <div class="note">❌ 不建議<br>天數太少<br>節前漲價</div>
+      </div>
+    </div>
+    <div style="margin-top:16px; background:#f0fff4; border-radius:8px; padding:14px;">
+      <strong>✅ 確認方案：1/28（四）出發 → 2/3（三）回程，共 7天6夜</strong><br>
+      <small>2/3回程，2/4（除夕小年夜）抵台剛好有一天緩衝準備過年。週三回程票比週五/六便宜，位子也好搶。</small>
+    </div>
+    <div style="margin-top:10px; background:#fff5f5; border-radius:8px; padding:12px; font-size:0.85rem;">
+      ⚠️ <strong>回程特別提醒：</strong>2/4（除夕小年夜）台灣放年假，出境/入境人潮都很大，候機時間可能拉長。如果選2/4回台，建議選早上班機，避免晚班延誤影響年夜飯。<br>
+      <small>資料來源：<a href="https://www.goodaytw.com/calendar/2027" target="_blank">2027行事曆 goodaytw</a></small>
+    </div>
+  </div>
+
+  <!-- ===== 你可能沒想到的事 ===== -->
+  <h2>💡 你可能沒想到的事</h2>
+  <div class="tips-grid">
+
+    <div class="tip-card budget">
+      <h4>💰 費用相關</h4>
+      <ul>
+        <li>春節前旺季，飯店可能需7天整包訂，不能入退分開</li>
+        <li>皮皮島/Ang Thong等熱門跳島，旺季一定要提前預約</li>
+        <li>大象保育營好的場次常提早數週售完</li>
+        <li>泰國信用卡手續費注意，現金+卡各備</li>
+        <li>台幣換泰銖/馬幣在台換或當地機場換差很多</li>
+      </ul>
+    </div>
+
+    <div class="tip-card logistics">
+      <h4>✈️ 交通後勤</h4>
+      <ul>
+        <li>eSIM提前購買（Airalo等平台），一到當地就有網路</li>
+        <li>Grab要用當地電話號碼驗證，記得帶備用SIM或預先設定</li>
+        <li>普吉機場到Kata/Karon約50分鐘，可提前訂接機</li>
+        <li>包車談好含油錢、停車費、司機等候費</li>
+        <li>回程日提早check-out，行李寄存，最後再玩</li>
+      </ul>
+    </div>
+
+    <div class="tip-card health">
+      <h4>🏥 健康 &amp; 安全</h4>
+      <ul>
+        <li>旅遊平安保險：買含緊急醫療100萬以上的（帶小孩必備）</li>
+        <li>備常備藥：腸胃藥、止瀉、退燒、防蚊液（DEET40%以上）</li>
+        <li>泰國海水有珊瑚礁，水鞋建議帶</li>
+        <li>防曬SPF50+，小孩皮膚嫩，每2小時補擦</li>
+        <li>泰國旺季有果凍魚（Jellyfish），海灘前先確認</li>
+        <li>飲食：只喝瓶裝水，路邊冰塊小心</li>
+      </ul>
+    </div>
+
+    <div class="tip-card family">
+      <h4>👧 親子注意</h4>
+      <ul>
+        <li>13歲/11歲可參加大部分成人活動，但需確認身高限制</li>
+        <li>大象保育選「倫理型」（不騎象），現在是主流且體驗更好</li>
+        <li>行程不要排太滿，下午3點後孩子容易疲累</li>
+        <li>讓孩子參與行前規劃，提高旅遊動力和記憶點</li>
+        <li>女兒13歲可能對文化/美食更感興趣（檳城優勢）</li>
+        <li>男孩11歲活動力強，水上樂園/跳島/ATV是首選</li>
+        <li>每天一個「孩子選擇」的活動，讓旅遊更有參與感</li>
+      </ul>
+    </div>
+
+    <div class="tip-card weather">
+      <h4>🌤 天氣 &amp; 季節</h4>
+      <ul>
+        <li><strong>普吉1月：</strong>乾季，晴天為主，偶有陣雨，最佳旅遊季</li>
+        <li><strong>蘇美1月：</strong>東北季風影響，部分海域有浪，需確認當地狀況</li>
+        <li><strong>檳城1月：</strong>氣候穩定，偶有午後雷陣雨</li>
+        <li><strong>甲米1月：</strong>乾季，天氣絕佳</li>
+        <li>帶薄外套：室內冷氣強（飛機、飯店、餐廳）</li>
+        <li>早晚溫差小，但室內外差大，準備隨身薄層衣物</li>
+      </ul>
+    </div>
+
+    <div class="tip-card logistics" style="border-color:#e53e3e;">
+      <h4>⚠️ 春節旺季特別注意</h4>
+      <ul>
+        <li>熱門飯店現在就應該查詢，2026年底可能已售罄</li>
+        <li>機票建議2026年9-10月前搞定</li>
+        <li>普吉/檳城在春節期間華人觀光客特別多</li>
+        <li>餐廳熱門時段要訂位，不然等很久</li>
+        <li>景點提早出發（8:30前），避開旅遊團人潮</li>
+        <li>回程2/3（週三），2/4小年夜抵台，提早確認班機</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ===== 費用試算 ===== -->
+  <h2>💵 4人7天費用粗估比較（台幣）</h2>
+  <table class="budget-table">
+    <thead>
+      <tr>
+        <th>費用項目</th>
+        <th>普吉島</th>
+        <th>蘇美島</th>
+        <th>檳城</th>
+        <th>甲米</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>來回機票（4人）</td>
+        <td>$48,000~70,000</td>
+        <td>$80,000~120,000</td>
+        <td>$50,000~72,000</td>
+        <td>$65,000~90,000</td>
+      </tr>
+      <tr>
+        <td>住宿6晚（4人房）</td>
+        <td>$36,000~60,000</td>
+        <td>$50,000~90,000</td>
+        <td>$24,000~48,000</td>
+        <td>$30,000~55,000</td>
+      </tr>
+      <tr>
+        <td>餐飲（7天）</td>
+        <td>$14,000~21,000</td>
+        <td>$18,000~28,000</td>
+        <td>$10,000~16,000</td>
+        <td>$12,000~18,000</td>
+      </tr>
+      <tr>
+        <td>交通（Grab+包車）</td>
+        <td>$6,000~10,000</td>
+        <td>$12,000~18,000</td>
+        <td>$5,000~8,000</td>
+        <td>$8,000~12,000</td>
+      </tr>
+      <tr>
+        <td>景點+活動</td>
+        <td>$20,000~35,000</td>
+        <td>$15,000~25,000</td>
+        <td>$12,000~20,000</td>
+        <td>$15,000~25,000</td>
+      </tr>
+      <tr>
+        <td>其他（購物/零食/保險）</td>
+        <td>$8,000~15,000</td>
+        <td>$10,000~18,000</td>
+        <td>$8,000~14,000</td>
+        <td>$8,000~14,000</td>
+      </tr>
+      <tr class="total-row">
+        <td>估計總費用（4人）</td>
+        <td>$132,000~211,000</td>
+        <td>$185,000~299,000</td>
+        <td>$109,000~178,000</td>
+        <td>$138,000~214,000</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="color:#718096; font-size:0.82rem; margin-bottom:30px;">※ 春節旺季估算，實際價格依訂房時間和選擇飯店等級而異。蘇美島因轉機和壟斷航班，費用明顯偏高。</p>
+
+  <!-- ===== 最終建議 ===== -->
+  <h2>🏆 最終建議</h2>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:30px;">
+    <div style="background:white; border-radius:12px; padding:20px; border-top:5px solid #ed8936; box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+      <h3 style="color:#c05621;">🥇 首選：普吉島</h3>
+      <p style="font-size:0.9rem; margin:10px 0;">適合想要：<strong>海灘+多元活動+不折騰</strong></p>
+      <ul style="font-size:0.88rem; list-style:none;">
+        <li>✅ 直飛省時省力</li>
+        <li>✅ 親子活動最豐富</li>
+        <li>✅ 住一個區域不換房</li>
+        <li>✅ Grab自助方便</li>
+        <li>✅ 7天完全玩不完</li>
+      </ul>
+      <p style="font-size:0.82rem; margin-top:10px; color:#718096;">住宿推薦：Kata/Karon區，全程不換房</p>
+    </div>
+    <div style="background:white; border-radius:12px; padding:20px; border-top:5px solid #805ad5; box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+      <h3 style="color:#553c9a;">🥈 次選：檳城</h3>
+      <p style="font-size:0.9rem; margin:10px 0;">適合想要：<strong>文化深度+美食+最省錢</strong></p>
+      <ul style="font-size:0.88rem; list-style:none;">
+        <li>✅ 最容易自助（英語）</li>
+        <li>✅ 文化深度最高</li>
+        <li>✅ 美食體驗無可替代</li>
+        <li>✅ 花費最實惠</li>
+        <li>⚠️ 需換一次房（古城→海灘）</li>
+      </ul>
+      <p style="font-size:0.82rem; margin-top:10px; color:#718096;">喬治市2晚 + 峇都丁宜4晚</p>
+    </div>
+  </div>
+
+  <!-- ===== 天氣查證 ===== -->
+  <h2>🌤 天氣查證（網路資料）</h2>
+  <table class="budget-table" style="font-size:0.88rem;">
+    <thead>
+      <tr>
+        <th style="text-align:left">項目</th>
+        <th>普吉島 1月</th>
+        <th>蘇美島 1月</th>
+        <th>檳城 1月</th>
+        <th>甲米 1月</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>平均高溫</td>
+        <td>32.7°C</td>
+        <td>28~30°C</td>
+        <td>32°C</td>
+        <td>33°C</td>
+      </tr>
+      <tr>
+        <td>平均低溫</td>
+        <td>24.5°C</td>
+        <td>24~25°C</td>
+        <td>24°C</td>
+        <td>23°C</td>
+      </tr>
+      <tr>
+        <td>月均雨量</td>
+        <td style="color:#48bb78;font-weight:700">40mm（最乾燥月份）</td>
+        <td style="color:#ed8936;font-weight:700">90mm（東北季風尾端）</td>
+        <td>60mm（午後陣雨）</td>
+        <td>30mm（乾季）</td>
+      </tr>
+      <tr>
+        <td>雨天天數</td>
+        <td style="color:#48bb78">約4天</td>
+        <td style="color:#ed8936">約7天</td>
+        <td>約5天</td>
+        <td style="color:#48bb78">約3天</td>
+      </tr>
+      <tr>
+        <td>日照時數</td>
+        <td>9小時/天</td>
+        <td>7小時/天</td>
+        <td>8小時/天</td>
+        <td>9小時/天</td>
+      </tr>
+      <tr>
+        <td>海水溫度</td>
+        <td>28°C（清澈、適合游泳）</td>
+        <td>27°C</td>
+        <td>29°C</td>
+        <td>28°C</td>
+      </tr>
+      <tr>
+        <td>整體評價</td>
+        <td style="color:#48bb78;font-weight:700">⭐ 最佳旺季</td>
+        <td style="color:#ed8936;font-weight:700">⚠️ 有季風風險</td>
+        <td>✅ 穩定</td>
+        <td style="color:#48bb78;font-weight:700">⭐ 絕佳</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="color:#718096; font-size:0.82rem; margin-bottom:24px;">
+    資料來源：<a href="https://www.weather2visit.com/asia/thailand/phuket-january.htm" target="_blank">Weather2Visit Phuket January</a>・
+    <a href="https://www.thekohsamuiguide.com/post/koh-samui-january" target="_blank">The Koh Samui Guide January</a>
+  </p>
+
+  <!-- ===== AI 查機票與房價 ===== -->
+  <h2>🤖 用 AI 找便宜機票 &amp; 房價的方法</h2>
+  <div style="background:white; border-radius:12px; padding:24px; box-shadow:0 2px 12px rgba(0,0,0,0.08); margin-bottom:24px;">
+
+    <h3 style="color:#1a365d; margin-bottom:16px;">📌 核心觀念：AI 不賣票，要組合工具才有效</h3>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px;">
+
+      <div style="background:#ebf8ff; border-radius:10px; padding:16px; border-left:4px solid #3182ce;">
+        <h4 style="color:#2b6cb0; margin-bottom:10px;">Step 1｜用 Google Flights 做基準價</h4>
+        <ul style="font-size:0.87rem; list-style:none; line-height:2;">
+          <li>→ 開啟 <strong>google.com/flights</strong></li>
+          <li>→ 點「日期格狀圖」找最便宜日期</li>
+          <li>→ 開啟「價格追蹤」（有降價會寄信通知）</li>
+          <li>→ 搜尋「附近機場」（桃園/高雄都試）</li>
+          <li>→ 勾選「無托運行李」單獨比較</li>
+        </ul>
+        <small style="color:#718096">資料：<a href="https://www.xinmedia.com/article/304093" target="_blank">欣傳媒 Google Flights AI技巧 2026</a></small>
+      </div>
+
+      <div style="background:#f0fff4; border-radius:10px; padding:16px; border-left:4px solid #48bb78;">
+        <h4 style="color:#276749; margin-bottom:10px;">Step 2｜用 AI 助理問策略問題</h4>
+        <div style="background:#e6fffa; border-radius:6px; padding:8px 10px; margin-bottom:10px; font-size:0.82rem;">
+          <strong>🏆 哪個 AI 最好用？</strong><br>
+          <span style="color:#276749">Copilot（有Bing搜尋）</span> 和 <span style="color:#2b6cb0">Gemini（串Google）</span> 可查即時資訊；<br>
+          Claude / ChatGPT（無搜尋版）只能給策略建議，<strong>不能查即時票價</strong>。
+        </div>
+        <ul style="font-size:0.87rem; list-style:none; line-height:2;">
+          <li>→ <strong>Copilot / Gemini：</strong>直接問「現在TPE飛HKT來回多少錢」→ 會搜尋回答</li>
+          <li>→ <strong>任何AI都能問：</strong>哪些廉航沒在Google Flights上？</li>
+          <li>→ 問：「1月底春節前出發哪幾天票最便宜？」</li>
+          <li>→ 問：「普吉島Kata區3-4星親子飯店推薦哪些？」</li>
+          <li>→ 問：「訂房用Booking.com還是Agoda對這個地區比較有優勢？」</li>
+        </ul>
+        <small style="color:#718096">資料：<a href="https://www.shareuhack.com/en/posts/ai-cheapest-flights-guide-2026" target="_blank">ShareUhack AI Flights Guide 2026</a></small>
+      </div>
+
+      <div style="background:#faf5ff; border-radius:10px; padding:16px; border-left:4px solid #805ad5;">
+        <h4 style="color:#553c9a; margin-bottom:10px;">Step 3｜用 Skyscanner / Kayak 補充比價</h4>
+        <ul style="font-size:0.87rem; list-style:none; line-height:2;">
+          <li>→ Skyscanner：設定「最便宜月份」整月比價</li>
+          <li>→ Kayak：開啟「Price Alert」，有異動寄通知</li>
+          <li>→ 兩個都查，因為爬的航班來源不同</li>
+          <li>→ 找到便宜票後，直接去航空公司官網買（手續費最少）</li>
+        </ul>
+      </div>
+
+      <div style="background:#fffaf0; border-radius:10px; padding:16px; border-left:4px solid #ed8936;">
+        <h4 style="color:#c05621; margin-bottom:10px;">Step 4｜Hopper APP：預測現在買或等</h4>
+        <ul style="font-size:0.87rem; list-style:none; line-height:2;">
+          <li>→ 美國熱門 APP，有 AI 預測票價走勢</li>
+          <li>→ 告訴你「現在買」或「再等X天更便宜」</li>
+          <li>→ 春節旺季通常會顯示「現在買比較好」</li>
+          <li>→ <strong>台灣出發班次較少，可能準確度低，僅供參考</strong></li>
+        </ul>
+        <small style="color:#718096">資料：<a href="https://felloai.com/how-to-find-cheap-flights-with-ai/" target="_blank">FelloAI: Find Cheap Flights with AI 2026</a></small>
+      </div>
+
+    </div><!-- end grid -->
+
+    <div style="margin-top:20px; background:#2d3748; color:white; border-radius:10px; padding:18px;">
+      <h4 style="color:#90cdf4; margin-bottom:12px;">💬 實戰 Prompt（Copilot / ChatGPT / Gemini / Claude 都能用，複製貼上）</h4>
+      <div style="background:#1a202c; border-radius:8px; padding:14px; font-size:0.85rem; line-height:1.9; font-family:monospace;">
+        <div style="color:#68d391; margin-bottom:10px;">// Prompt 1：找便宜機票策略</div>
+        <div style="color:#e2e8f0;">我要在2027年1月28日從台灣桃園出發去普吉島，4人（2大2小），回程2月3日。<br>
+        請告訴我：1）哪些航空公司沒有出現在Google Flights，但可能更便宜？<br>
+        2）這個時間是春節前旺季，訂票有什麼特別策略？<br>
+        3）有沒有轉機但更便宜的選項值得考慮？</div>
+        <div style="color:#68d391; margin-top:14px; margin-bottom:10px;">// Prompt 2：找CP值飯店</div>
+        <div style="color:#e2e8f0;">普吉島Kata Beach或Karon Beach區域，適合2大2小的親子飯店，<br>
+        有泳池、4人房，預算每晚台幣4000-8000，你推薦哪幾間？<br>
+        請說明各自的特色和位置，我會再去Booking.com和Agoda確認即時價格。</div>
+        <div style="color:#68d391; margin-top:14px; margin-bottom:10px;">// Prompt 3：比較訂房平台</div>
+        <div style="color:#e2e8f0;">訂普吉島春節期間的飯店，Agoda、Booking.com、Hotels.com 哪個平台<br>
+        對台灣旅客最划算？各自有什麼優惠或點數策略值得利用？</div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px; background:#e6fffa; border-radius:8px; padding:14px; font-size:0.87rem; border-left:4px solid #38b2ac;">
+      <strong>📊 各 AI 工具能力對照：</strong><br><br>
+      <table style="width:100%; font-size:0.84rem; border-collapse:collapse;">
+        <tr style="background:#234e52; color:white;">
+          <th style="padding:6px 10px; text-align:left">AI 工具</th>
+          <th style="padding:6px 10px">查即時票價</th>
+          <th style="padding:6px 10px">策略建議</th>
+          <th style="padding:6px 10px">旅遊規劃</th>
+          <th style="padding:6px 10px; text-align:left">最佳用途</th>
+        </tr>
+        <tr style="background:#f0fff4;">
+          <td style="padding:6px 10px"><strong>Microsoft Copilot</strong></td>
+          <td style="padding:6px 10px; text-align:center; color:#276749">✅ 可（Bing搜尋）</td>
+          <td style="padding:6px 10px; text-align:center">✅</td>
+          <td style="padding:6px 10px; text-align:center">✅</td>
+          <td style="padding:6px 10px">查即時票價範圍、最新評價</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 10px"><strong>Google Gemini</strong></td>
+          <td style="padding:6px 10px; text-align:center; color:#276749">✅ 可（Google整合）</td>
+          <td style="padding:6px 10px; text-align:center">✅</td>
+          <td style="padding:6px 10px; text-align:center">✅</td>
+          <td style="padding:6px 10px">直接串接 Google Flights 資料</td>
+        </tr>
+        <tr style="background:#f0fff4;">
+          <td style="padding:6px 10px"><strong>ChatGPT（搜尋版）</strong></td>
+          <td style="padding:6px 10px; text-align:center; color:#ed8936">⚠️ 部分可</td>
+          <td style="padding:6px 10px; text-align:center">✅</td>
+          <td style="padding:6px 10px; text-align:center">✅</td>
+          <td style="padding:6px 10px">策略諮詢、找隱藏廉航</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 10px"><strong>Claude（我）</strong></td>
+          <td style="padding:6px 10px; text-align:center; color:#e53e3e">❌ 不行</td>
+          <td style="padding:6px 10px; text-align:center">✅</td>
+          <td style="padding:6px 10px; text-align:center">✅ 最強</td>
+          <td style="padding:6px 10px">整理比較、行程規劃、製作文件</td>
+        </tr>
+        <tr style="background:#f0fff4;">
+          <td style="padding:6px 10px"><strong>Perplexity</strong></td>
+          <td style="padding:6px 10px; text-align:center; color:#276749">✅ 可（附來源）</td>
+          <td style="padding:6px 10px; text-align:center">✅</td>
+          <td style="padding:6px 10px; text-align:center">✅</td>
+          <td style="padding:6px 10px">查資訊且每筆都附出處連結</td>
+        </tr>
+      </table>
+      <div style="margin-top:10px; color:#234e52;">
+        💡 <strong>建議流程：Copilot 查票價範圍 → Google Flights 確認最低價 → Claude 整理規劃 → 官網下訂</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 機票選擇：非廉航也有！ ===== -->
+  <h2>✈️ 台北飛普吉島：傳統航空 vs 廉航</h2>
+  <table class="budget-table" style="font-size:0.87rem;">
+    <thead>
+      <tr>
+        <th style="text-align:left">航空公司</th>
+        <th>類型</th>
+        <th>直飛</th>
+        <th>含行李/餐</th>
+        <th>里程累積</th>
+        <th>春節旺季來回估價（4人）</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="background:#ebf8ff;">
+        <td><strong>中華航空 CI</strong></td>
+        <td>傳統全服務</td>
+        <td>✅</td>
+        <td>✅ 含</td>
+        <td>✅ 華夏哩程</td>
+        <td>TWD 56,000–80,000</td>
+      </tr>
+      <tr style="background:#ebf8ff;">
+        <td><strong>長榮航空 BR</strong></td>
+        <td>傳統全服務</td>
+        <td>✅</td>
+        <td>✅ 含</td>
+        <td>✅ 無限萬哩遊</td>
+        <td>TWD 56,000–80,000</td>
+      </tr>
+      <tr style="background:#ebf8ff;">
+        <td><strong>泰國國際航空 TG</strong></td>
+        <td>傳統全服務</td>
+        <td>✅</td>
+        <td>✅ 含</td>
+        <td>✅ Royal Orchid Plus</td>
+        <td>TWD 48,000–72,000</td>
+      </tr>
+      <tr>
+        <td><strong>台灣虎航 IT</strong></td>
+        <td>廉價航空</td>
+        <td>✅</td>
+        <td>❌ 另購</td>
+        <td>❌</td>
+        <td>TWD 30,000–50,000（+行李費）</td>
+      </tr>
+      <tr>
+        <td><strong>酷航 TR</strong></td>
+        <td>廉價航空</td>
+        <td>✅</td>
+        <td>❌ 另購</td>
+        <td>❌</td>
+        <td>TWD 28,000–48,000（+行李費）</td>
+      </tr>
+      <tr>
+        <td><strong>泰獅航 SL</strong></td>
+        <td>廉價航空</td>
+        <td>✅</td>
+        <td>❌ 另購</td>
+        <td>❌</td>
+        <td>TWD 26,000–44,000（+行李費）</td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="background:#fffaf0; border-left:4px solid #ed8936; border-radius:6px; padding:12px 16px; margin-bottom:24px; font-size:0.87rem;">
+    ⚠️ <strong>帶小孩訂廉航要注意：</strong>4人4件行李（每件20kg）＋機上餐費加下來，廉航與傳統航空差距可能只剩 TWD 10,000–20,000。春節旺季傳統航空服務較好（位子寬、餐點、行李保障），建議兩種都查再決定。<br>
+    📌 <strong>資料來源：</strong><a href="https://flights.china-airlines.com/zh-tw/flights-from-taipei-to-phuket" target="_blank">中華航空官網</a>・<a href="https://tw.trip.com/flights/taipei-to-phuket/airfares-tpe-hkt/" target="_blank">Trip.com TPE-HKT</a>
+  </div>
+
+  <!-- ===== 普吉換房方案 ===== -->
+  <h2>🏨 普吉島住宿方案：要不要換房？</h2>
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px; margin-bottom:16px;">
+    <div style="background:white; border-radius:10px; padding:18px; border-top:4px solid #48bb78; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+      <h4 style="color:#276749; margin-bottom:10px;">方案A｜全程不換房（最省事）</h4>
+      <p style="font-size:0.87rem; color:#4a5568; margin-bottom:10px;">住 <strong>Kata 或 Karon</strong> 一區，6晚同一飯店</p>
+      <ul style="font-size:0.85rem; list-style:none; line-height:1.9;">
+        <li>✅ 行李只搬一次，最輕鬆</li>
+        <li>✅ 熟悉環境，孩子較穩定</li>
+        <li>✅ 部分飯店多住有折扣</li>
+        <li>✅ 南部海灘最適合親子</li>
+        <li>⚠️ 普吉北部風格較不同，會錯過</li>
+      </ul>
+      <div style="background:#f0fff4; border-radius:6px; padding:8px; margin-top:10px; font-size:0.83rem;">
+        <strong>推薦：</strong>Katathani（5星）或 Novotel Kata Avista（4星）
+      </div>
+    </div>
+    <div style="background:white; border-radius:10px; padding:18px; border-top:4px solid #3182ce; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+      <h4 style="color:#2b6cb0; margin-bottom:10px;">方案B｜南部4晚 → 北部2晚（換一次）</h4>
+      <p style="font-size:0.87rem; color:#4a5568; margin-bottom:10px;"><strong>Kata/Karon 4晚</strong> → <strong>Kamala / Bang Tao 2晚</strong></p>
+      <ul style="font-size:0.85rem; list-style:none; line-height:1.9;">
+        <li>✅ 體驗兩種不同風格</li>
+        <li>✅ 北部較安靜、高級Resort多</li>
+        <li>✅ Kamala 近 Fantasea 秀場</li>
+        <li>⚠️ 行李要搬、包車移動約1小時</li>
+      </ul>
+      <div style="background:#ebf8ff; border-radius:6px; padding:8px; margin-top:10px; font-size:0.83rem;">
+        <strong>北部推薦：</strong>Hyatt Regency Kamala 或 Anantara Layan（5星）
+      </div>
+    </div>
+    <div style="background:white; border-radius:10px; padding:18px; border-top:4px solid #9f7aea; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+      <h4 style="color:#553c9a; margin-bottom:10px;">方案C｜老城1晚 → Kata/Karon 5晚</h4>
+      <p style="font-size:0.87rem; color:#4a5568; margin-bottom:10px;"><strong>普吉老城區 1晚</strong> → <strong>Kata/Karon 5晚</strong></p>
+      <ul style="font-size:0.85rem; list-style:none; line-height:1.9;">
+        <li>✅ 抵達第一天先逛老城</li>
+        <li>✅ 中葡建築、夜市、文化感</li>
+        <li>✅ 老城精品旅館有特色</li>
+        <li>⚠️ 老城無海灘，只適合住1晚</li>
+      </ul>
+      <div style="background:#faf5ff; border-radius:6px; padding:8px; margin-top:10px; font-size:0.83rem;">
+        <strong>老城推薦：</strong>The Memory at On On Hotel 或 Rommanee Classic Guesthouse
+      </div>
+    </div>
+  </div>
+  <div style="background:#f7fafc; border-radius:8px; padding:12px 16px; margin-bottom:30px; font-size:0.87rem; border-left:4px solid #718096;">
+    👨‍👩‍👧‍👦 <strong>帶小孩建議：方案A（不換房）最省力。</strong>若太太對文化有興趣可選方案C，第一晚老城體驗一下，隔天移到海灘定點。
+  </div>
+
+  <!-- ===== 訂房平台比較 ===== -->
+  <h2>🌐 訂機票 &amp; 住宿平台完整比較</h2>
+  <h3 style="color:#c05621; margin-bottom:10px;">泰國 / 馬來西亞本地訂房平台（Agoda替代方案）</h3>
+  <table class="budget-table" style="font-size:0.87rem; margin-bottom:16px;">
+    <thead>
+      <tr>
+        <th style="text-align:left">平台</th>
+        <th>屬性</th>
+        <th>優勢</th>
+        <th>注意事項</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="background:#f0fff4;">
+        <td><strong><a href="https://www.traveloka.com/" target="_blank" style="color:#276749">Traveloka ⭐</a></strong></td>
+        <td>東南亞最大本地平台</td>
+        <td>普吉＋檳城在地飯店最廣，常比Agoda便宜15-25%，春節有不同促銷</td>
+        <td>介面繁體中文支援有限，但英文易懂</td>
+      </tr>
+      <tr>
+        <td><strong><a href="https://www.wego.com/hotels" target="_blank">Wego</a></strong></td>
+        <td>亞洲/中東比價平台</td>
+        <td>同時比較Agoda、Booking、Traveloka，一頁看最低價</td>
+        <td>最終跳轉各平台下訂，注意手續費</td>
+      </tr>
+      <tr style="background:#f0fff4;">
+        <td><strong><a href="https://www.thaihotels.com/" target="_blank">ThaiHotels.com</a></strong></td>
+        <td>泰國本地旅行社</td>
+        <td>直接與飯店談泰國本地價，特色和精品飯店較多</td>
+        <td>選擇相對少，適合找獨立飯店</td>
+      </tr>
+      <tr>
+        <td><strong>飯店官網直訂</strong></td>
+        <td>最直接</td>
+        <td>通常有「官網最低價保證」，可加要求（高樓層、嬰兒床等）</td>
+        <td>需一間間查，較費時</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 style="color:#2b6cb0; margin-bottom:10px;">機票比價平台</h3>
+  <table class="budget-table" style="font-size:0.87rem;">
+    <thead>
+      <tr>
+        <th style="text-align:left">平台</th>
+        <th>適合用途</th>
+        <th>優點</th>
+        <th>注意事項</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Google Flights</strong></td>
+        <td>機票比價基準</td>
+        <td>最全面、日期格狀比價、價格追蹤通知</td>
+        <td>不含所有廉航</td>
+      </tr>
+      <tr>
+        <td><strong>Skyscanner</strong></td>
+        <td>廉航+整月比價</td>
+        <td>能找到Google沒有的廉航，整月最低價一覽</td>
+        <td>部分票跳轉第三方，注意服務費</td>
+      </tr>
+      <tr>
+        <td><strong>中華/長榮官網</strong></td>
+        <td>傳統航空直購</td>
+        <td>手續費最低、改票最方便、里程累積</td>
+        <td>需分別查兩家</td>
+      </tr>
+      <tr>
+        <td><strong>雄獅 / 易遊網</strong></td>
+        <td>台灣平台</td>
+        <td>中文客服、台灣信用卡友好、機加酒有時更便宜</td>
+        <td>有時比官網貴，先比再買</td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="background:#fff3cd; border-left:4px solid #f6ad55; border-radius:6px; padding:12px 16px; margin-top:12px; margin-bottom:30px; font-size:0.87rem;">
+    💡 <strong>防動態漲價技巧：</strong>用<strong>無痕視窗</strong>查價（避免被Cookie追蹤漲價）。Agoda / Booking.com 查完後，同樣日期去 <strong>Traveloka 和 Wego</strong> 再比一次，常有驚喜。最後去飯店官網確認有無更低官網價。
+  </div>
+
+  <!-- 太太討論區 -->
+  <div style="background:#fffaf0; border:2px dashed #ed8936; border-radius:12px; padding:20px; margin-bottom:30px;">
+    <h3 style="color:#c05621; margin-bottom:12px;">👩‍👩‍👧‍👦 跟太太討論前，先問這幾個問題：</h3>
+    <ol style="font-size:0.9rem; line-height:2; padding-left:20px;">
+      <li>這次旅行最希望的體驗是什麼？（海灘休閒 / 文化探索 / 豐富活動）</li>
+      <li>孩子們有特別想做的事嗎？（大象體驗？浮潛？水上樂園？）</li>
+      <li>可接受換一次房嗎？（若可以，選擇更多）</li>
+      <li>預算上限大概多少？（普吉 vs 檳城 差距約 2-3萬）</li>
+      <li>對飛行時間在意嗎？（普吉直飛約4h25min vs 蘇美6h+轉機）</li>
+      <li>春節期間人潮多，還是要去熱門地？還是願意去較冷門的甲米？</li>
+    </ol>
+  </div>
+
+</div><!-- end container -->
+
+<div class="footer">
+  製作日期：2026.08.12（含網路即時查證）｜ 出發：2027.01.28 ～ 回程：2027.02.03（7天6夜）<br>
+  <strong>重要：2027年農曆新年 = 2月6日 · 2/4為除夕小年夜 · 建議2026年9月前完成機票與飯店訂購</strong><br><br>
+  <span style="font-size:0.8rem; opacity:0.7;">
+  📋 資料來源（時效性資訊均網路查證）：
+  <a href="https://www.businesstoday.com.tw/article/category/183030/post/202605030005/" target="_blank" style="color:#90cdf4">今周刊2027行事曆</a> ·
+  <a href="https://www.skyscanner.com/routes/tpe/pen/taipei-taiwan-taoyuan-to-penang.html" target="_blank" style="color:#90cdf4">Skyscanner TPE-PEN</a> ·
+  <a href="https://tw.trip.com/flights/taipei-to-phuket/airfares-tpe-hkt/" target="_blank" style="color:#90cdf4">Trip.com TPE-HKT</a> ·
+  <a href="https://www.xe.com/currencyconverter/convert/?Amount=1&From=TWD&To=THB" target="_blank" style="color:#90cdf4">XE匯率TWD/THB</a> ·
+  <a href="https://www.weather2visit.com/asia/thailand/phuket-january.htm" target="_blank" style="color:#90cdf4">Phuket 1月天氣</a> ·
+  <a href="https://www.thekohsamuiguide.com/post/koh-samui-january" target="_blank" style="color:#90cdf4">Koh Samui 1月天氣</a> ·
+  <a href="https://www.xinmedia.com/article/304093" target="_blank" style="color:#90cdf4">Google Flights AI技巧2026</a> ·
+  <a href="https://www.shareuhack.com/en/posts/ai-cheapest-flights-guide-2026" target="_blank" style="color:#90cdf4">AI查票完整指南</a>
+  </span>
+</div>
+
+</body>
+</html>
