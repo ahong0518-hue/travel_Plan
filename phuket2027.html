@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2027 寒假普吉島｜家庭旅遊計畫</title>
+<style>
+  :root {
+    --teal: #00838F;
+    --teal-dark: #005F68;
+    --teal-light: #E0F4F5;
+    --coral: #F4623A;
+    --coral-light: #FEF0EB;
+    --gold: #F5A623;
+    --gold-light: #FEF9EC;
+    --green: #2E7D32;
+    --green-light: #E8F5E9;
+    --navy: #1A2B4A;
+    --gray: #6B7280;
+    --gray-light: #F3F4F6;
+    --border: #E5E7EB;
+    --white: #FFFFFF;
+    --warn: #F59E0B;
+    --warn-light: #FFFBEB;
+    --red: #DC2626;
+    --red-light: #FEF2F2;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, 'Helvetica Neue', Arial, 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+    background: #F0F4F8;
+    color: #1F2937;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #005F68 0%, #00838F 40%, #0097A7 70%, #00BCD4 100%);
+    color: white;
+    padding: 60px 24px 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: -40px;
+    width: 250px; height: 250px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 20px;
+    padding: 5px 18px;
+    font-size: 13px;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 46px);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  }
+  .hero-sub {
+    font-size: 18px;
+    opacity: 0.88;
+    margin-bottom: 36px;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .hero-stat {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 12px;
+    padding: 14px 22px;
+    min-width: 110px;
+  }
+  .hero-stat .num { font-size: 26px; font-weight: 800; display: block; }
+  .hero-stat .lbl { font-size: 12px; opacity: 0.8; letter-spacing: 0.5px; }
+
+  /* ── NAV ── */
+  .nav-wrap {
+    background: var(--white);
+    border-bottom: 2px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .nav {
+    display: flex;
+    overflow-x: auto;
+    max-width: 1100px;
+    margin: 0 auto;
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    flex: none;
+    padding: 16px 22px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--gray);
+    white-space: nowrap;
+    font-family: inherit;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+  .nav-btn:hover { color: var(--teal); }
+  .nav-btn.active { color: var(--teal); border-bottom-color: var(--teal); font-weight: 700; }
+
+  /* ── MAIN ── */
+  .main { max-width: 1100px; margin: 0 auto; padding: 32px 16px 80px; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ── SECTION TITLE ── */
+  .sec-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--navy);
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid var(--teal-light);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sec-title .icon { font-size: 24px; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .card-header {
+    background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+    color: white;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .day-badge {
+    background: rgba(255,255,255,0.22);
+    border-radius: 10px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .card-header h3 { font-size: 18px; font-weight: 700; }
+  .card-header .date { font-size: 13px; opacity: 0.82; margin-top: 2px; }
+  .card-body { padding: 22px 24px; }
+
+  /* ── ACTIVITY LIST ── */
+  .act-list { list-style: none; }
+  .act-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .act-list li:last-child { border-bottom: none; }
+  .act-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--teal);
+    margin-top: 7px;
+    flex-shrink: 0;
+  }
+  .act-time {
+    font-size: 12px;
+    color: var(--gray);
+    min-width: 70px;
+    padding-top: 1px;
+  }
+  .act-text strong { color: var(--navy); }
+
+  /* ── TIPS ── */
+  .tip {
+    margin-top: 14px;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 14px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .tip.info { background: var(--teal-light); color: var(--teal-dark); }
+  .tip.warn { background: var(--warn-light); color: #92400E; }
+  .tip.coral { background: var(--coral-light); color: #9A3412; }
+  .tip .tip-icon { flex-shrink: 0; font-size: 16px; margin-top: 1px; }
+
+  /* ── OPTIONS ── */
+  .option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+  @media(max-width: 600px) { .option-grid { grid-template-columns: 1fr; } }
+  .option-card {
+    border-radius: 12px;
+    padding: 16px;
+    border: 2px solid transparent;
+  }
+  .option-card.a { background: #EFF6FF; border-color: #BFDBFE; }
+  .option-card.b { background: #F0FDF4; border-color: #BBF7D0; }
+  .option-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+  .option-card.a h4 { color: #1D4ED8; }
+  .option-card.b h4 { color: var(--green); }
+  .option-card ul { list-style: none; font-size: 13px; color: #374151; }
+  .option-card ul li { padding: 3px 0; }
+  .option-card ul li::before { content: '• '; color: #9CA3AF; }
+
+  /* ── TABLES ── */
+  .tbl-wrap { overflow-x: auto; margin: 16px 0; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  th {
+    background: var(--navy);
+    color: white;
+    padding: 11px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  th:first-child { border-radius: 8px 0 0 0; }
+  th:last-child { border-radius: 0 8px 0 0; }
+  td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: var(--gray-light); }
+  tr:hover td { background: var(--teal-light); }
+  .tbl-note {
+    font-size: 13px;
+    color: var(--gray);
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: var(--gray-light);
+    border-radius: 8px;
+  }
+
+  /* ── HOTEL GRID ── */
+  .hotel-section { margin-bottom: 28px; }
+  .hotel-section h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 14px;
+    padding: 8px 14px;
+    background: var(--teal-light);
+    border-left: 4px solid var(--teal);
+    border-radius: 0 8px 8px 0;
+  }
+  .hotel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+  .hotel-card {
+    background: var(--white);
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    padding: 16px;
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+  .hotel-card:hover { box-shadow: 0 4px 16px rgba(0,131,143,0.15); border-color: var(--teal); }
+  .hotel-star { color: var(--gold); font-size: 13px; margin-bottom: 6px; }
+  .hotel-name { font-weight: 700; font-size: 14px; color: var(--navy); margin-bottom: 6px; }
+  .hotel-price { font-size: 13px; color: var(--coral); font-weight: 600; margin-bottom: 8px; }
+  .hotel-reason { font-size: 12px; color: var(--gray); line-height: 1.5; }
+  .hotel-links { display:flex; gap:8px; margin-top:12px; padding-top:10px; border-top:1px solid var(--border); }
+  .hotel-link {
+    flex:1; text-align:center; padding:6px 4px; border-radius:8px;
+    font-size:12px; font-weight:700; text-decoration:none;
+    transition:opacity 0.2s;
+  }
+  .hotel-link:hover { opacity:0.8; }
+  .hotel-link.official { background:#EFF6FF; color:#1D4ED8; }
+  .hotel-link.rate     { background:var(--teal-light); color:var(--teal-dark); }
+
+  /* ── BUDGET ── */
+  .budget-overview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  @media(max-width: 600px) { .budget-overview { grid-template-columns: 1fr; } }
+  .budget-card {
+    border-radius: 14px;
+    padding: 22px;
+    text-align: center;
+  }
+  .budget-card.four { background: linear-gradient(135deg, #EFF6FF, #DBEAFE); border: 2px solid #93C5FD; }
+  .budget-card.five { background: linear-gradient(135deg, #FFF7ED, #FED7AA); border: 2px solid #FDBA74; }
+  .budget-card .plan { font-size: 13px; font-weight: 700; color: var(--gray); letter-spacing: 1px; margin-bottom: 8px; }
+  .budget-card .range { font-size: 26px; font-weight: 800; color: var(--navy); }
+  .budget-card .per { font-size: 13px; color: var(--gray); margin-top: 4px; }
+
+  .budget-items { margin-bottom: 24px; }
+  .budget-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    background: var(--white);
+    border: 1px solid var(--border);
+  }
+  .budget-row .label { font-size: 14px; font-weight: 600; color: var(--navy); display: flex; align-items: center; gap: 8px; }
+  .budget-row .amount { font-size: 14px; color: var(--teal-dark); font-weight: 700; }
+  .budget-row.total {
+    background: var(--navy);
+    border-color: var(--navy);
+    margin-top: 12px;
+  }
+  .budget-row.total .label { color: white; }
+  .budget-row.total .amount { color: var(--gold); font-size: 16px; }
+
+  /* ── CHECKLIST ── */
+  .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media(max-width: 700px) { .check-grid { grid-template-columns: 1fr; } }
+  .check-card {
+    background: var(--white);
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    padding: 18px;
+  }
+  .check-card h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--teal-light);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 5px 0;
+    font-size: 13px;
+    color: #374151;
+  }
+  .check-box {
+    width: 16px; height: 16px;
+    border: 2px solid var(--teal);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ── EMERGENCY ── */
+  .emergency-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .em-card {
+    background: var(--red-light);
+    border: 1.5px solid #FECACA;
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .em-card .em-label { font-size: 12px; color: #991B1B; font-weight: 600; margin-bottom: 4px; }
+  .em-card .em-num { font-size: 20px; font-weight: 800; color: var(--red); }
+  .em-card .em-sub { font-size: 11px; color: #6B7280; margin-top: 2px; }
+
+  /* ── WEATHER ── */
+  .weather-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .weather-card {
+    background: var(--white);
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    padding: 16px;
+    text-align: center;
+  }
+  .weather-card .w-icon { font-size: 28px; margin-bottom: 6px; }
+  .weather-card .w-val { font-size: 20px; font-weight: 800; color: var(--navy); }
+  .weather-card .w-label { font-size: 12px; color: var(--gray); margin-top: 4px; }
+
+  /* ── FOOD GRID ── */
+  .food-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 24px; }
+  .food-card {
+    background: var(--white);
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    padding: 16px;
+    transition: box-shadow 0.2s;
+  }
+  .food-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.1); }
+  .food-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+  }
+  .food-tag.local { background: #FEF9C3; color: #713F12; }
+  .food-tag.seafood { background: #DBEAFE; color: #1E40AF; }
+  .food-tag.classic { background: #FCE7F3; color: #9D174D; }
+  .food-tag.sweet { background: #DCFCE7; color: #14532D; }
+  .food-name { font-weight: 700; font-size: 14px; color: var(--navy); margin-bottom: 5px; }
+  .food-desc { font-size: 12px; color: var(--gray); line-height: 1.5; }
+
+  /* ── MEDICINE ── */
+  .med-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media(max-width: 640px) { .med-grid { grid-template-columns: 1fr; } }
+  .med-group {
+    background: var(--white);
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    padding: 16px;
+  }
+  .med-group h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--white);
+    background: var(--teal);
+    margin: -16px -16px 12px;
+    padding: 8px 16px;
+    border-radius: 10px 10px 0 0;
+  }
+  .med-item { font-size: 13px; padding: 5px 0; border-bottom: 1px dashed var(--border); color: #374151; }
+  .med-item:last-child { border-bottom: none; }
+  .med-item strong { color: var(--navy); }
+
+  /* ── TAGS / BADGES ── */
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 9px;
+    border-radius: 12px;
+  }
+  .badge.est { background: var(--warn-light); color: #92400E; border: 1px solid #FCD34D; }
+  .badge.verify { background: var(--red-light); color: #991B1B; border: 1px solid #FECACA; }
+  .badge.ok { background: var(--green-light); color: #14532D; border: 1px solid #86EFAC; }
+
+  /* ── TRANSPORT NOTE ── */
+  .transport {
+    background: #F0F9FF;
+    border: 1.5px solid #BAE6FD;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-top: 14px;
+    font-size: 13px;
+    color: #0C4A6E;
+  }
+  .transport .t-title { font-weight: 700; margin-bottom: 6px; color: #075985; }
+  .transport .t-row { display: flex; justify-content: space-between; padding: 3px 0; }
+  .transport .t-warn { color: var(--red); font-weight: 600; margin-top: 6px; }
+
+  /* ── SECTION DIVIDER ── */
+  .sub-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 24px 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sub-title::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: var(--border);
+  }
+
+  /* ── AI WARNING ── */
+  .ai-warn {
+    background: #FFFBEB;
+    border: 2px solid #FCD34D;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    color: #78350F;
+  }
+  .ai-warn strong { display: block; margin-bottom: 6px; font-size: 14px; }
+
+  /* ── PRINT ── */
+  @media print {
+    .nav-wrap { display: none; }
+    .section { display: block !important; page-break-before: always; }
+    .section:first-child { page-break-before: avoid; }
+    .hero { print-color-adjust: exact; }
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--gray-light); }
+  ::-webkit-scrollbar-thumb { background: var(--teal); border-radius: 3px; }
+
+  /* ── MAP SECTION ── */
+  .map-tab-bar { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+  .map-tab {
+    padding:9px 20px; border-radius:20px; border:2px solid var(--teal);
+    background:var(--white); color:var(--teal); font-weight:700; font-size:13px;
+    cursor:pointer; font-family:inherit; transition:all 0.2s;
+  }
+  .map-tab.active { background:var(--teal); color:white; }
+  .map-wrap {
+    border-radius:14px; overflow:hidden;
+    box-shadow:0 4px 20px rgba(0,0,0,0.12);
+    border:2px solid var(--border);
+    margin-bottom:14px;
+  }
+  .map-legend {
+    display:flex; flex-wrap:wrap; gap:10px;
+    background:var(--white); border-radius:10px;
+    padding:12px 16px; border:1px solid var(--border);
+    margin-bottom:24px; font-size:13px;
+  }
+  .legend-item { display:flex; align-items:center; gap:6px; }
+  .legend-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; }
+
+  /* ── PHOTO GALLERY ── */
+  .photo-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+    gap:16px; margin-bottom:28px;
+  }
+  .photo-card {
+    border-radius:14px; overflow:hidden;
+    box-shadow:0 2px 12px rgba(0,0,0,0.1);
+    background:var(--white);
+    transition:transform 0.2s, box-shadow 0.2s;
+  }
+  .photo-card:hover { transform:translateY(-4px); box-shadow:0 8px 24px rgba(0,0,0,0.15); }
+  .photo-card img { width:100%; height:200px; object-fit:cover; display:block; }
+  .photo-caption {
+    padding:12px 14px;
+    font-size:13px; font-weight:600; color:var(--navy);
+  }
+  .photo-caption span { display:block; font-size:12px; color:var(--gray); font-weight:400; margin-top:2px; }
+  .photo-note {
+    font-size:12px; color:var(--gray); padding:10px 14px;
+    background:var(--gray-light); border-top:1px solid var(--border);
+  }
+
+  /* ── WEEK SUMMARY TABLE ── */
+  .week-table { width:100%; border-collapse:collapse; margin-bottom:24px; font-size:13px; }
+  .week-table th { background:var(--navy); color:white; padding:10px 12px; text-align:center; font-weight:700; font-size:12px; }
+  .week-table th:first-child { border-radius:8px 0 0 0; }
+  .week-table th:last-child  { border-radius:0 8px 0 0; }
+  .week-table td { padding:10px 12px; border-bottom:1px solid var(--border); vertical-align:middle; text-align:center; }
+  .week-table tr:last-child td { border-bottom:none; }
+  .week-table tr:nth-child(even) td { background:var(--gray-light); }
+  .wk-day  { font-weight:800; color:var(--navy); font-size:15px; }
+  .wk-date { font-size:11px; color:var(--gray); display:block; }
+  .wk-badge {
+    display:inline-block; font-size:11px; font-weight:700;
+    padding:2px 10px; border-radius:12px; white-space:nowrap;
+  }
+  .wk-badge.s    { background:#FEF3C7; color:#92400E; border:1px solid #FCD34D; }
+  .wk-badge.half { background:var(--teal-light); color:var(--teal-dark); border:1px solid #99E0E6; }
+  .wk-badge.free { background:#F0FDF4; color:#14532D; border:1px solid #86EFAC; }
+  .wk-badge.move { background:#F5F3FF; color:#5B21B6; border:1px solid #C4B5FD; }
+
+  /* ── PIER BOX ── */
+  .pier-box {
+    background:linear-gradient(135deg, #0D47A1, #1565C0);
+    border-radius:12px; color:white;
+    padding:14px 18px; margin-top:14px;
+    font-size:13px;
+  }
+  .pier-box .pier-title { font-weight:800; font-size:14px; margin-bottom:8px; opacity:0.95; }
+  .pier-row { display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.15); }
+  .pier-row:last-child { border-bottom:none; }
+  .pier-time { font-weight:800; color:#FCD34D; }
+  .pier-warn { color:#FCA5A5; font-weight:700; margin-top:8px; font-size:12px; }
+
+  /* ── ACTIVITY CARDS (景點總覽) ── */
+  .ac-card {
+    background:var(--white); border-radius:16px;
+    box-shadow:0 2px 12px rgba(0,0,0,0.07);
+    overflow:hidden; margin-bottom:20px;
+  }
+  .ac-header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 22px; border-bottom:1px solid var(--border);
+    flex-wrap:wrap; gap:10px;
+  }
+  .ac-title { font-size:18px; font-weight:800; color:var(--navy); }
+  .ac-badges { display:flex; gap:8px; flex-wrap:wrap; }
+  .ac-badge {
+    display:inline-block; font-size:12px; font-weight:700;
+    padding:3px 12px; border-radius:14px;
+  }
+  .ac-badge.full { background:#FEF3C7; color:#92400E; }
+  .ac-badge.half { background:var(--teal-light); color:var(--teal-dark); }
+  .ac-badge.eve  { background:#F5F3FF; color:#5B21B6; }
+  .ac-badge.s    { background:#FEE2E2; color:#991B1B; }
+  .ac-badge.a    { background:#DBEAFE; color:#1D4ED8; }
+  .ac-badge.b    { background:#F3F4F6; color:#4B5563; }
+  .ac-body { padding:20px 22px; }
+  .ac-table { width:100%; border-collapse:collapse; font-size:13px; margin-bottom:14px; }
+  .ac-table td { padding:8px 10px; border-bottom:1px solid var(--border); vertical-align:top; }
+  .ac-table tr:last-child td { border-bottom:none; }
+  .ac-table td:first-child { width:110px; font-weight:700; color:var(--navy); white-space:nowrap; }
+  .ac-info { font-size:13px; color:#374151; line-height:1.7; }
+
+  /* ── BEACH CARDS ── */
+  .beach-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:14px; margin:16px 0 24px; }
+  .beach-card {
+    background:var(--white); border-radius:14px;
+    border:1.5px solid var(--border); padding:18px;
+    transition:box-shadow 0.2s, border-color 0.2s;
+  }
+  .beach-card:hover { box-shadow:0 4px 16px rgba(0,131,143,0.15); border-color:var(--teal); }
+  .beach-name { font-size:16px; font-weight:800; color:var(--navy); margin-bottom:2px; }
+  .beach-area { font-size:12px; color:var(--gray); margin-bottom:10px; }
+  .beach-feat { font-size:13px; color:#374151; line-height:1.7; }
+  .beach-feat li { list-style:none; padding:3px 0; display:flex; gap:6px; }
+  .beach-feat li::before { content:'✦'; color:var(--teal); font-size:10px; flex-shrink:0; margin-top:4px; }
+
+  /* ── LINKS SECTION ── */
+  .links-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));
+    gap:14px; margin-bottom:16px;
+  }
+  .link-card {
+    background:var(--white); border-radius:12px;
+    border:1.5px solid var(--border);
+    padding:16px; text-decoration:none; color:inherit;
+    transition:box-shadow 0.2s, border-color 0.2s;
+    display:block;
+  }
+  .link-card:hover { box-shadow:0 4px 16px rgba(0,131,143,0.15); border-color:var(--teal); }
+  .link-icon { font-size:26px; margin-bottom:8px; }
+  .link-name { font-weight:700; font-size:14px; color:var(--navy); margin-bottom:4px; }
+  .link-desc { font-size:12px; color:var(--gray); line-height:1.5; }
+  .link-tag {
+    display:inline-block; font-size:11px; font-weight:700;
+    padding:2px 8px; border-radius:10px; margin-top:8px;
+  }
+  .link-tag.booking { background:#EFF6FF; color:#1D4ED8; }
+  .link-tag.tool    { background:var(--green-light); color:var(--green); }
+  .link-tag.info    { background:var(--teal-light); color:var(--teal-dark); }
+  .link-tag.safety  { background:var(--red-light); color:var(--red); }
+</style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+</head>
+<body>
+
+<!-- ══ HERO ══ -->
+<div class="hero">
+  <div class="hero-badge">✈ 2027 寒假家庭旅遊計畫</div>
+  <h1>普吉島 Phuket</h1>
+  <p class="hero-sub">安達曼海的蔚藍盛宴 · 7天6夜 · 家庭私家定制</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><span class="num">7</span><span class="lbl">天數</span></div>
+    <div class="hero-stat"><span class="num">4</span><span class="lbl">旅行成員</span></div>
+    <div class="hero-stat"><span class="num">2</span><span class="lbl">跳島行程</span></div>
+    <div class="hero-stat"><span class="num">1/28</span><span class="lbl">出發日期</span></div>
+    <div class="hero-stat"><span class="num">免簽</span><span class="lbl">台灣護照</span></div>
+  </div>
+</div>
+
+<!-- ══ NAV ══ -->
+<div class="nav-wrap">
+  <nav class="nav">
+    <button class="nav-btn active" onclick="show('overview')">🗂 景點總覽</button>
+    <button class="nav-btn" onclick="show('itinerary')">📅 每日行程</button>
+    <button class="nav-btn" onclick="show('hotels')">🏨 住宿選擇</button>
+    <button class="nav-btn" onclick="show('islands')">🚤 跳島攻略</button>
+    <button class="nav-btn" onclick="show('food')">🍜 美食購物</button>
+    <button class="nav-btn" onclick="show('budget')">💰 旅遊預算</button>
+    <button class="nav-btn" onclick="show('prep')">🎒 行前準備</button>
+    <button class="nav-btn" onclick="show('safety')">🏥 安全須知</button>
+    <button class="nav-btn" onclick="show('mapview')">🗺 地圖 &amp; 相片</button>
+  </nav>
+</div>
+
+<div class="main">
+
+<!-- ══════════════════════════════
+     SECTION 1：每日行程
+══════════════════════════════ -->
+<div id="itinerary" class="section">
+  <h2 class="sec-title"><span class="icon">📅</span>每日行程</h2>
+
+  <!-- 週行程一覽 -->
+  <div class="card" style="margin-bottom:28px;">
+    <div class="card-header"><div><h3>📋 一週行程一覽</h3></div></div>
+    <div class="card-body" style="padding:16px 20px;">
+      <div class="tbl-wrap">
+        <table class="week-table">
+          <tr>
+            <th>日次</th><th>日期</th><th>主題</th><th>上午</th><th>下午／傍晚</th><th>晚上</th>
+          </tr>
+          <tr>
+            <td><span class="wk-day">D1</span><span class="wk-date">1/28 四</span></td>
+            <td style="text-align:left;">抵達日</td>
+            <td><span class="wk-badge move">移動</span></td>
+            <td style="text-align:left;">桃園→普吉（轉曼谷）</td>
+            <td style="text-align:left;">入住 Kata/Karon；海灘放空</td>
+            <td style="text-align:left;">海鮮晚餐、早睡</td>
+          </tr>
+          <tr>
+            <td><span class="wk-day">D2</span><span class="wk-date">1/29 五</span></td>
+            <td style="text-align:left;">本島半日</td>
+            <td><span class="wk-badge half">半天</span></td>
+            <td style="text-align:left;">飯店私灘、泳池放空</td>
+            <td style="text-align:left;">普吉老城 → 普羅姆泰普角日落</td>
+            <td style="text-align:left;">老城晚餐；Chillva Market（選配）</td>
+          </tr>
+          <tr>
+            <td><span class="wk-day">D3</span><span class="wk-date">1/30 六</span></td>
+            <td style="text-align:left;">攀牙灣</td>
+            <td><span class="wk-badge s">S級</span></td>
+            <td style="text-align:left;">08:00 Ao Por Pier 出發</td>
+            <td style="text-align:left;">詹姆士龐德島、獨木舟穿洞</td>
+            <td style="text-align:left;">17:00 回程，晚餐休息</td>
+          </tr>
+          <tr>
+            <td><span class="wk-day">D4</span><span class="wk-date">1/31 日</span></td>
+            <td style="text-align:left;">披披島</td>
+            <td><span class="wk-badge s">S級</span></td>
+            <td style="text-align:left;">07:30 Chalong Pier 出發</td>
+            <td style="text-align:left;">瑪雅灣、披披東島浮潛</td>
+            <td style="text-align:left;">老城週日步行街（選配）</td>
+          </tr>
+          <tr>
+            <td><span class="wk-day">D5</span><span class="wk-date">2/1 一</span></td>
+            <td style="text-align:left;">換飯店</td>
+            <td><span class="wk-badge move">移動</span></td>
+            <td style="text-align:left;">退房、包車 → Kamala/Bang Tao</td>
+            <td style="text-align:left;">Layan 海灘、泳池放空</td>
+            <td style="text-align:left;">Bang Tao 夕陽晚餐</td>
+          </tr>
+          <tr>
+            <td><span class="wk-day">D6</span><span class="wk-date">2/2 二</span></td>
+            <td style="text-align:left;">度假日</td>
+            <td><span class="wk-badge free">純度假</span></td>
+            <td style="text-align:left;">海灘水上活動（香蕉船/拖曳傘）</td>
+            <td style="text-align:left;">飯店泳池 → Boat Avenue</td>
+            <td style="text-align:left;">Sundowner 看夕陽、海灘晚餐</td>
+          </tr>
+          <tr>
+            <td><span class="wk-day">D7</span><span class="wk-date">2/3 三</span></td>
+            <td style="text-align:left;">回程日</td>
+            <td><span class="wk-badge move">移動</span></td>
+            <td style="text-align:left;">最後早餐、退房</td>
+            <td style="text-align:left;">普吉機場 → 曼谷轉機 → 桃園</td>
+            <td style="text-align:left;">—</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 1 -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="day-badge">DAY 1</div>
+      </div>
+      <div>
+        <h3>抵達日 · 普吉初體驗</h3>
+        <div class="date">2027年1月28日（週四）</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="act-list">
+        <li><div class="act-dot"></div><span class="act-time">全天</span><div class="act-text">桃園 → 普吉，飛行約 <strong>4小時25分</strong></div></li>
+        <li><div class="act-dot"></div><span class="act-time">抵達後</span><div class="act-text">包車或計程車 → 飯店 Kata/Karon 區辦理入住</div></li>
+        <li><div class="act-dot"></div><span class="act-time">15:00–17:00</span><div class="act-text">【選配·若14:00前入住】Kata 海灘水上活動：<strong>香蕉船＋飛魚 Flying Fish</strong>，現場報名 THB 400–600/人</div></li>
+        <li><div class="act-dot"></div><span class="act-time">傍晚</span><div class="act-text">輕鬆漫步 Kata 海灘，欣賞海景日落</div></li>
+        <li><div class="act-dot"></div><span class="act-time">晚餐</span><div class="act-text">海灘旁海鮮餐廳，早睡調整時差</div></li>
+      </ul>
+      <div class="tip info"><span class="tip-icon">💡</span><span>水上活動不急，建議留到 Day 6 再安排，抵達日以休息為主。</span></div>
+    </div>
+  </div>
+
+  <!-- Day 2 -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="day-badge">DAY 2</div>
+      </div>
+      <div>
+        <h3>本島半日 · 老城 ＋ 日落</h3>
+        <div class="date">2027年1月29日（週五）</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="act-list">
+        <li><div class="act-dot"></div><span class="act-time">上午</span><div class="act-text"><strong>飯店私灘 / 泳池</strong>：自由放空，孩子玩水、大人喝飲料</div></li>
+        <li><div class="act-dot"></div><span class="act-time">午餐</span><div class="act-text">飯店附近餐廳，不趕行程</div></li>
+        <li><div class="act-dot"></div><span class="act-time">13:30出發</span><div class="act-text"><strong>普吉老城 Phuket Old Town</strong>：葡萄牙殖民式建築、街頭塗鴉、老咖啡館（逛 2 小時）</div></li>
+        <li><div class="act-dot"></div><span class="act-time">⚠ 17:15前</span><div class="act-text">從老城出發 → 普羅姆泰普角（旺季塞車，需 25–35 分鐘 + 停車場步行 15 分鐘）</div></li>
+        <li><div class="act-dot"></div><span class="act-time">約18:30</span><div class="act-text"><strong>普羅姆泰普角 Promthep Cape</strong> 日落：全普吉最佳夕陽觀賞點</div></li>
+        <li><div class="act-dot"></div><span class="act-time">晚餐</span><div class="act-text">老城區特色餐廳（旺季建議提前訂位）</div></li>
+        <li><div class="act-dot"></div><span class="act-time">晚餐後</span><div class="act-text">Chillva Market 夜市（選配）：街食、小物、輕鬆夜逛</div></li>
+      </ul>
+      <div class="transport">
+        <div class="t-title">🚗 交通規劃</div>
+        <div class="t-row"><span>包半日車（下午出發）</span><span><strong>THB 800–1,000</strong></span></div>
+        <div class="t-row"><span>飯店 → 老城</span><span>約 25 分鐘</span></div>
+        <div class="t-row"><span>老城 → 普羅姆泰普角</span><span>約 25–35 分鐘（旺季）</span></div>
+        <div class="t-warn">⚠ 日落約 18:30，老城最晚 17:15 出發；停車場到觀景台步行 15 分鐘，旺季停車場常塞車</div>
+      </div>
+      <div class="tip info"><span class="tip-icon">💡</span><span>大佛 + 查龍寺可在 Day 2 上午選配排入，或完全捨棄（B 級景點，不影響S級體驗）。詳見景點總覽。</span></div>
+    </div>
+  </div>
+
+  <!-- Day 3 -->
+  <div class="card">
+    <div class="card-header" style="background: linear-gradient(135deg, #0D47A1, #1565C0);">
+      <div>
+        <div class="day-badge">DAY 3</div>
+      </div>
+      <div>
+        <h3>🚤 攀牙灣全日跳島</h3>
+        <div class="date">2027年1月30日（週六）· 私包快艇</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="act-list">
+        <li><div class="act-dot"></div><span class="act-time">08:00</span><div class="act-text">Ao Por Pier 出發，私包快艇啟程</div></li>
+        <li><div class="act-dot"></div><span class="act-time">全天</span><div class="act-text"><strong>詹姆士龐德島 James Bond Island</strong>（Ko Tapu 著名石灰岩柱，電影取景地）</div></li>
+        <li><div class="act-dot"></div><span class="act-time">全天</span><div class="act-text"><strong>攀牙灣 Phang Nga Bay</strong>：石灰岩柱群、漁村、壯闊地景</div></li>
+        <li><div class="act-dot"></div><span class="act-time">必體驗</span><div class="act-text"><strong>海上獨木舟</strong>：穿越海蝕洞、紅樹林秘境（孩子超愛）</div></li>
+        <li><div class="act-dot"></div><span class="act-time">午餐</span><div class="act-text">船上或島上海鮮午餐（含在快艇費內）</div></li>
+        <li><div class="act-dot"></div><span class="act-time">17:00–18:00</span><div class="act-text">返回碼頭，包車回飯店</div></li>
+      </ul>
+      <div class="pier-box">
+        <div class="pier-title">⚓ 碼頭交通 · Ao Por Pier（Day 3 出發點）</div>
+        <div class="pier-row"><span>飯店（Kata）→ Ao Por Pier</span><span class="pier-time">約 50–60 分鐘</span></div>
+        <div class="pier-row"><span>快艇出發</span><span class="pier-time">08:00</span></div>
+        <div class="pier-warn">⚠ 出發 08:00 → 需 07:00 前出門！請前一晚安排包車，旺季早晨 Grab 難叫</div>
+        <div class="pier-warn">⚠ 暈船藥出發前 30 分鐘服用</div>
+      </div>
+      <div class="tip info"><span class="tip-icon">💡</span><span>從 Ao Por Pier 出發比巴東省 30 分鐘車程，是攀牙灣最佳出發碼頭。</span></div>
+    </div>
+  </div>
+
+  <!-- Day 4 -->
+  <div class="card">
+    <div class="card-header" style="background: linear-gradient(135deg, #006064, #00838F);">
+      <div>
+        <div class="day-badge">DAY 4</div>
+      </div>
+      <div>
+        <h3>🚤 披披島全日跳島</h3>
+        <div class="date">2027年1月31日（週日）· 私包快艇</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="act-list">
+        <li><div class="act-dot"></div><span class="act-time">07:30</span><div class="act-text">Chalong Pier 出發（越早越好，避開人潮）</div></li>
+        <li><div class="act-dot"></div><span class="act-time">全天</span><div class="act-text"><strong>瑪雅灣 Maya Bay</strong>：電影《海灘》取景地，翡翠色海水、白沙灘（現設每日限流）</div></li>
+        <li><div class="act-dot"></div><span class="act-time">全天</span><div class="act-text"><strong>披披東島 Phi Phi Don</strong>：觀景點健行、村落風情</div></li>
+        <li><div class="act-dot"></div><span class="act-time">浮潛</span><div class="act-text"><strong>Shark Point</strong>（小礁鯊出沒）、<strong>Loh Samah Bay</strong>（珊瑚豐富、熱帶魚群密集）</div></li>
+        <li><div class="act-dot"></div><span class="act-time">午餐</span><div class="act-text">島上餐廳用餐</div></li>
+        <li><div class="act-dot"></div><span class="act-time">17:00</span><div class="act-text">返回 Chalong Pier</div></li>
+        <li><div class="act-dot"></div><span class="act-time">傍晚（選配）</span><div class="act-text"><strong>老城週日步行街 Lard Yai</strong>（Thalang Rd）：週日限定夜市，在地小吃、手工藝、紀念品；碼頭→老城約 30 分鐘，步行街至 21:00</div></li>
+      </ul>
+      <div class="pier-box">
+        <div class="pier-title">⚓ 碼頭交通 · Chalong Pier（Day 4 出發點）</div>
+        <div class="pier-row"><span>飯店（Kata）→ Chalong Pier</span><span class="pier-time">約 15–20 分鐘</span></div>
+        <div class="pier-row"><span>快艇出發</span><span class="pier-time">07:30</span></div>
+        <div class="pier-row"><span>回程碼頭</span><span class="pier-time">約 17:00</span></div>
+        <div class="pier-warn">⚠ 07:30 出發 → 07:00 出門即可（Kata 飯店出發最近，無需包車也可叫 Grab）</div>
+        <div class="pier-warn">⚠ 瑪雅灣限流，確認 2027 年是否需線上預約入場</div>
+        <div class="pier-warn">⚠ 暈船藥出發前 30 分鐘服用</div>
+        <div class="pier-warn" style="color:#86EFAC;">💡 接週日步行街：17:00 返港，包車直奔老城 30 分鐘，步行街 21:00，時間充裕</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 5 -->
+  <div class="card">
+    <div class="card-header" style="background: linear-gradient(135deg, #0D47A1, #1976D2);">
+      <div>
+        <div class="day-badge">DAY 5</div>
+      </div>
+      <div>
+        <h3>換飯店 · 入住新 Resort</h3>
+        <div class="date">2027年2月1日（週一）</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="act-list">
+        <li><div class="act-dot"></div><span class="act-time">上午</span><div class="act-text">辦理退房，包車前往 <strong>Kamala/Bang Tao 區</strong>新飯店辦理入住（帶行李需包車）</div></li>
+        <li><div class="act-dot"></div><span class="act-time">下午</span><div class="act-text">入住後直奔 <strong>Layan 海灘 / 飯店私灘</strong>：帶孩子玩水，感受換環境的新鮮感</div></li>
+        <li><div class="act-dot"></div><span class="act-time">下午</span><div class="act-text">飯店泳池放空，品嚐 Sundowner 調酒</div></li>
+        <li><div class="act-dot"></div><span class="act-time">晚餐</span><div class="act-text">Bang Tao 海灘旁餐廳看夕陽，或飯店內用（旺季建議提前訂位）</div></li>
+      </ul>
+      <div class="transport">
+        <div class="t-title">🚗 交通規劃</div>
+        <div class="t-row"><span>Kata/Karon → Kamala/Bang Tao</span><span>約 35–45 分鐘</span></div>
+        <div class="t-warn">✅ 帶全部行李，務必包車（勿叫 Grab）</div>
+      </div>
+      <div class="tip info"><span class="tip-icon">💡</span><span>今天是過渡日，不排外部行程。入住 Anantara Layan 或 Cassia，讓孩子好好享受新飯店設施。</span></div>
+    </div>
+  </div>
+
+  <!-- Day 6 -->
+  <div class="card">
+    <div class="card-header" style="background: linear-gradient(135deg, #00838F, #0097A7);">
+      <div>
+        <div class="day-badge">DAY 6</div>
+      </div>
+      <div>
+        <h3>度假日 · 海灘 ＋ 放空</h3>
+        <div class="date">2027年2月2日（週二）</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="act-list">
+        <li><div class="act-dot"></div><span class="act-time">上午</span><div class="act-text">飯店私灘 / Bang Tao 海灘：<strong>香蕉船、拖曳傘</strong>（現場或飯店 Tour Desk 報名；大人兩個玩，孩子看）</div></li>
+        <li><div class="act-dot"></div><span class="act-time">中午</span><div class="act-text">飯店午餐或海灘餐廳，不趕時間</div></li>
+        <li><div class="act-dot"></div><span class="act-time">14:00–16:30</span><div class="act-text">飯店泳池、躺椅發呆，讓孩子盡情泡水</div></li>
+        <li><div class="act-dot"></div><span class="act-time">16:30–18:00</span><div class="act-text"><strong>Boat Avenue 市集</strong>：精品小店、紀念品、輕食掃貨</div></li>
+        <li><div class="act-dot"></div><span class="act-time">傍晚</span><div class="act-text">Bang Tao / Layan 海灘 Sundowner，看夕陽喝飲料</div></li>
+        <li><div class="act-dot"></div><span class="act-time">晚餐</span><div class="act-text">海灘旁餐廳，最後一頓泰式海鮮（旺季提前訂位）</div></li>
+      </ul>
+      <div class="tip warn"><span class="tip-icon">🛒</span><span>伴手禮掃貨：Boat Avenue 後可順道去 <strong>Big C / Lotus's 超市</strong>，腰果、椰子脆片、泰式奶茶粉最划算，比機場便宜且選擇多。</span></div>
+      <div class="tip info" style="margin-top:10px;"><span class="tip-icon">💡</span><span>今天才是「住5星值不值得」的關鍵日——Anantara Layan 私灣或 Cassia 的廣大空間，整天在飯店都不無聊。</span></div>
+    </div>
+  </div>
+
+  <!-- Day 7 -->
+  <div class="card">
+    <div class="card-header" style="background: linear-gradient(135deg, #37474F, #546E7A);">
+      <div>
+        <div class="day-badge">DAY 7</div>
+      </div>
+      <div>
+        <h3>回程日</h3>
+        <div class="date">2027年2月3日（週三）</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="act-list">
+        <li><div class="act-dot"></div><span class="act-time">早餐後</span><div class="act-text">最後一次海灘或飯店泳池自由活動</div></li>
+        <li><div class="act-dot"></div><span class="act-time">依班機</span><div class="act-text">辦理退房，前往普吉機場（HKT）</div></li>
+        <li><div class="act-dot"></div><span class="act-time">機場</span><div class="act-text">機場免稅店（腰果、泰式奶茶）、飛回桃園</div></li>
+      </ul>
+      <div class="tip warn"><span class="tip-icon">⚠️</span><span>航班時間未定，退房與機場交通時間待訂票後確認。機場建議提前 2.5–3 小時抵達。</span></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════
+     SECTION 2：住宿
+══════════════════════════════ -->
+<div id="hotels" class="section">
+  <h2 class="sec-title"><span class="icon">🏨</span>住宿選擇</h2>
+
+  <div class="hotel-section">
+    <h3>📍 Kata / Karon 區　Day 1–4（4晚）</h3>
+    <div class="hotel-grid">
+      <div class="hotel-card">
+        <div class="hotel-star">★★★★★ 五星 <span class="badge" style="background:#D1FAE5;color:#065F46;margin-left:6px;">⭐ 首選</span></div>
+        <div class="hotel-name">Katathani Phuket Beach Resort</div>
+        <div class="hotel-price">TWD 12,000–20,000／晚 <span class="badge est">估算</span></div>
+        <div class="hotel-reason">飯店直接連接 Kata Noi 私灘，無外客進入，浪況平穩安靜；最適合帶孩子的家庭放鬆與玩水</div>
+        <div class="hotel-links">
+          <a class="hotel-link official" href="https://www.katathani.com" target="_blank" rel="noopener">🌐 官方網站</a>
+        </div>
+      </div>
+      <div class="hotel-card">
+        <div class="hotel-star">★★★★ 四星 <span class="badge" style="background:#DBEAFE;color:#1E40AF;margin-left:6px;">次選</span></div>
+        <div class="hotel-name">Avista Grande Karon (MGallery)</div>
+        <div class="hotel-price">TWD 5,500–9,000／晚 <span class="badge est">估算</span></div>
+        <div class="hotel-reason">設施新穎、質感好；Karon 海灘步行可達（有一小段距離）；4星精品 CP 值佳</div>
+        <div class="hotel-links">
+          <a class="hotel-link official" href="https://mgallery.accor.com/en/hotels/A224.html" target="_blank" rel="noopener">🌐 MGallery 官網</a>
+        </div>
+      </div>
+      <div class="hotel-card">
+        <div class="hotel-star">★★★★★ 五星</div>
+        <div class="hotel-name">Avani+ Karon Phuket Resort</div>
+        <div class="hotel-price">TWD 10,000–16,000／晚 <span class="badge est">估算</span></div>
+        <div class="hotel-reason">高空無邊際泳池、壯闊海景；設施完整，CP值高</div>
+        <div class="hotel-links">
+          <a class="hotel-link official" href="https://www.avanihotels.com/en/karon-phuket" target="_blank" rel="noopener">🌐 官方網站</a>
+        </div>
+      </div>
+      <div class="hotel-card">
+        <div class="hotel-star">★★★★ 四星</div>
+        <div class="hotel-name">Novotel Phuket Kata Avista</div>
+        <div class="hotel-price">TWD 5,000–8,000／晚 <span class="badge est">估算</span></div>
+        <div class="hotel-reason">連鎖品牌服務有保障；步行5分鐘到沙灘；預算友好選項</div>
+        <div class="hotel-links">
+          <a class="hotel-link official" href="https://www.novotelphuketresortkata.com/" target="_blank" rel="noopener">🌐 官方網站</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hotel-section">
+    <h3>📍 Kamala / Bang Tao 區　Day 5–6（2晚）</h3>
+    <div class="hotel-grid">
+      <div class="hotel-card">
+        <div class="hotel-star">★★★★★ 五星 <span class="badge" style="background:#D1FAE5;color:#065F46;margin-left:6px;">⭐ 預算充足首選</span></div>
+        <div class="hotel-name">Anantara Layan</div>
+        <div class="hotel-price">TWD 15,000–25,000／晚 <span class="badge est">估算</span></div>
+        <div class="hotel-reason">私人 Layan 海灣，極度安靜；假期後半段休閒度假感極佳</div>
+        <div class="hotel-links">
+          <a class="hotel-link official" href="https://www.anantara.com/en/layan-phuket" target="_blank" rel="noopener">🌐 官方網站</a>
+        </div>
+      </div>
+      <div class="hotel-card">
+        <div class="hotel-star">★★★★ 四星 <span class="badge" style="background:#D1FAE5;color:#065F46;margin-left:6px;">⭐ 家庭CP值首選</span></div>
+        <div class="hotel-name">Cassia Phuket</div>
+        <div class="hotel-price">TWD 5,000–8,000／晚 <span class="badge est">估算</span></div>
+        <div class="hotel-reason">雙臥室套房／公寓型，附獨立廚房與客廳；空間充裕，非常適合 2大2中童的家庭；Bang Tao 海灘步行可達</div>
+        <div class="hotel-links">
+          <a class="hotel-link official" href="https://www.cassia.com/thailand/cassia-phuket" target="_blank" rel="noopener">🌐 官方網站</a>
+        </div>
+      </div>
+      <div class="hotel-card">
+        <div class="hotel-star">★★★★★ 五星</div>
+        <div class="hotel-name">Trisara</div>
+        <div class="hotel-price">TWD 20,000–40,000／晚 <span class="badge est">估算</span></div>
+        <div class="hotel-reason">私人 Villa 等級，獨立泳池；頂級度假體驗<br><span class="badge verify">⚠ 實際位置靠近 Nai Thon，訂房前確認距離</span></div>
+        <div class="hotel-links">
+          <a class="hotel-link official" href="https://www.trisara.com" target="_blank" rel="noopener">🌐 官方網站</a>
+        </div>
+      </div>
+      <div class="hotel-card">
+        <div class="hotel-star">★★★★ 四星</div>
+        <div class="hotel-name">SALA Phuket</div>
+        <div class="hotel-price">TWD 5,500–9,000／晚 <span class="badge est">估算</span></div>
+        <div class="hotel-reason">精品型白色建築風格；生活機能佳，環境清幽</div>
+        <div class="hotel-links">
+          <a class="hotel-link official" href="https://www.salahospitality.com/phuket/" target="_blank" rel="noopener">🌐 官方網站</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip info"><span class="tip-icon">📋</span><span><strong>共同篩選標準</strong>：有兒童泳池或分齡泳池、離沙灘步行可達、春節期間有庫存、評分 8.0 以上。所有估價須以 <strong>Traveloka / Agoda</strong> 訂房當下報價為準。</span></div>
+
+  <!-- Beach Characteristics -->
+  <div class="sub-title">🏖 各海灘特色比較</div>
+  <div class="beach-grid">
+    <div class="beach-card">
+      <div class="beach-name">Kata Noi Beach</div>
+      <div class="beach-area">📍 Kata 南端・Day 1–4 住宿區</div>
+      <ul class="beach-feat">
+        <li>Katathani 飯店私灘，外人難進入</li>
+        <li>浪況平穩，適合家庭泳水</li>
+        <li>沙灘短小精緻，人數自然控制</li>
+        <li>白沙細膩，水色碧藍</li>
+        <li>旺季比 Kata 主灘安靜許多</li>
+      </ul>
+    </div>
+    <div class="beach-card">
+      <div class="beach-name">Karon Beach</div>
+      <div class="beach-area">📍 Karon・Day 1–4 住宿區</div>
+      <ul class="beach-feat">
+        <li>長達 3 公里的開放式沙灘</li>
+        <li>沙粒較粗，踩踏有嘎吱聲（特色）</li>
+        <li>⚠ 旺季有離岸流，孩子須成人陪同</li>
+        <li>比 Patong 安靜、比 Kata 開闊</li>
+        <li>Avista Grande / Avani+ 步行可達</li>
+      </ul>
+    </div>
+    <div class="beach-card">
+      <div class="beach-name">Bang Tao Beach</div>
+      <div class="beach-area">📍 Bang Tao・Day 5–6 住宿區</div>
+      <ul class="beach-feat">
+        <li>長達 8 公里的北部大沙灘</li>
+        <li>Cassia / Boat Avenue 就在這區</li>
+        <li>度假村密集，設施完整</li>
+        <li>浪況較 Karon 溫和，適合孩子</li>
+        <li>沙灘餐廳多，Sundowner 氛圍佳</li>
+      </ul>
+    </div>
+    <div class="beach-card">
+      <div class="beach-name">Layan Beach</div>
+      <div class="beach-area">📍 Bang Tao 北端・Anantara 飯店前</div>
+      <ul class="beach-feat">
+        <li>Bang Tao 最北端的私密小灣</li>
+        <li>Anantara Layan 飯店前方，外客稀少</li>
+        <li>周遭有紅樹林保護，水質特別清澈</li>
+        <li>浪況平穩，幾乎無人潮</li>
+        <li>適合純粹放空、不受干擾的度假感</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sub-title">📌 訂房建議平台</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>平台</th><th>特色</th></tr>
+      <tr><td><strong>Traveloka</strong> ⭐ 優先</td><td>東南亞本地平台，常比 Agoda 便宜 15–25%</td></tr>
+      <tr><td>Wego</td><td>一頁比較多平台，快速看價差</td></tr>
+      <tr><td>Agoda / Booking.com</td><td>用無痕視窗查，避免動態漲價</td></tr>
+      <tr><td>飯店官網</td><td>最後確認有無「官網最低價」優惠</td></tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════
+     SECTION 3：跳島攻略
+══════════════════════════════ -->
+<div id="islands" class="section">
+  <h2 class="sec-title"><span class="icon">🚤</span>跳島攻略</h2>
+
+  <div class="sub-title">💰 私包 vs 拼團費用比較</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>行程</th><th>私包整船（4人）</th><th>拼團（每人）</th><th>4人拼團合計</th></tr>
+      <tr><td>攀牙灣全日</td><td>THB 15,000–20,000</td><td>THB 1,800–2,500</td><td>THB 7,200–10,000</td></tr>
+      <tr><td>披披島全日</td><td>THB 15,000–22,000</td><td>THB 1,500–2,200</td><td>THB 6,000–8,800</td></tr>
+      <tr><td>拉查島半日（選配）</td><td>THB 8,000–12,000</td><td>THB 1,200–1,800</td><td>THB 4,800–7,200</td></tr>
+      <tr><td><strong>2天必排小計</strong></td><td><strong>THB 30,000–42,000</strong></td><td>—</td><td>THB 13,200–18,800</td></tr>
+    </table>
+    <div class="tbl-note">匯率基準：1 TWD ≈ 1.02 THB（估算，出發前查即時匯率）</div>
+  </div>
+
+  <div class="tip coral"><span class="tip-icon">✅</span><span>兩天私包合計約 THB 34,000 ≈ TWD 33,000，每人只需多花約 <strong>TWD 4,000–5,000</strong> 即可升級為整艘專屬快艇。<strong>春節旺季帶孩子，強烈建議私包。</strong></span></div>
+
+  <div class="sub-title" style="margin-top:24px;">📋 訂購步驟</div>
+  <div class="card">
+    <div class="card-body">
+      <ul class="act-list">
+        <li><div class="act-dot"></div><span class="act-time">Step 1</span><div class="act-text">上 <strong>Klook</strong> 搜尋 "Phang Nga Bay Private Boat" / "Phi Phi Private Speedboat"，篩選 Private（整船包），確認含午餐、導遊、浮潛設備</div></li>
+        <li><div class="act-dot"></div><span class="act-time">Step 2</span><div class="act-text"><strong>Viator</strong> 同步比價，同一家船公司有時不同平台有價差</div></li>
+        <li><div class="act-dot"></div><span class="act-time">Step 3</span><div class="act-text">選可免費取消方案（通常 24–48 小時前取消免費）</div></li>
+        <li><div class="act-dot"></div><span class="act-time">Step 4</span><div class="act-text">確認出發碼頭：攀牙灣 → <strong>Ao Por Pier</strong>（省30分鐘）；披披島 → <strong>Chalong Pier</strong></div></li>
+        <li><div class="act-dot"></div><span class="act-time">時間</span><div class="act-text">出發前 <strong>1–2 個月</strong>預訂，旺季私包整船時段容易售罄</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sub-title">⚠️ 取消備案</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>情況</th><th>處理方式</th></tr>
+      <tr><td>Klook/Viator 訂購遇天氣取消</td><td>通常全額退款，可嘗試立即改期（旺季名額少需快）</td></tr>
+      <tr><td>Day 3 攀牙灣取消</td><td>改排普吉老城深度遊、Chillva Market、海灘水上活動</td></tr>
+      <tr><td>Day 4 披披島取消</td><td>改排拉查島（較近、浪較小）或本島一日包車</td></tr>
+      <tr><td>注意</td><td>私包業者取消政策各異，訂購前務必確認條款</td></tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════
+     SECTION 4：美食購物
+══════════════════════════════ -->
+<div id="food" class="section">
+  <h2 class="sec-title"><span class="icon">🍜</span>美食、購物與伴手禮</h2>
+
+  <div class="sub-title">🍽 普吉必吃</div>
+  <div class="food-grid">
+    <div class="food-card">
+      <span class="food-tag local">普吉在地</span>
+      <div class="food-name">O-Tao 蚵仔煎</div>
+      <div class="food-desc">普吉福建移民帶來，口感比泰式更厚實，老城必吃。泰文：ออตาว</div>
+    </div>
+    <div class="food-card">
+      <span class="food-tag local">普吉在地</span>
+      <div class="food-name">Mee Hokkien 福建炒麵</div>
+      <div class="food-desc">老城咖啡店常見，豬油香氣濃郁，配咖啡最搭</div>
+    </div>
+    <div class="food-card">
+      <span class="food-tag local">普吉在地</span>
+      <div class="food-name">Dim Sum 老城點心</div>
+      <div class="food-desc">老城早餐文化，咖啡館配中式點心，感受福建移民文化</div>
+    </div>
+    <div class="food-card">
+      <span class="food-tag seafood">海鮮</span>
+      <div class="food-name">現烤龍蝦 / 老虎蝦 / 螃蟹</div>
+      <div class="food-desc">Kata/Karon 海灘旁餐廳，依重量計價，現選現烤</div>
+    </div>
+    <div class="food-card">
+      <span class="food-tag classic">泰式經典</span>
+      <div class="food-name">打拋豬飯 / 綠咖哩 / 瑪沙曼咖哩</div>
+      <div class="food-desc">全島皆有，老城餐廳水準較高，瑪沙曼是普吉特色</div>
+    </div>
+    <div class="food-card">
+      <span class="food-tag sweet">甜點</span>
+      <div class="food-name">芒果糯米飯 Mango Sticky Rice</div>
+      <div class="food-desc">1月芒果產季，品質最佳，街邊攤或市場均有</div>
+    </div>
+    <div class="food-card">
+      <span class="food-tag sweet">甜點</span>
+      <div class="food-name">Roti 煎餅（香蕉／蛋）</div>
+      <div class="food-desc">街邊現做，薄脆外皮搭配甜餡，孩子最愛</div>
+    </div>
+    <div class="food-card">
+      <span class="food-tag classic">泰式經典</span>
+      <div class="food-name">冬蔭功 Tom Yum Goong</div>
+      <div class="food-desc">酸辣鮮蝦湯，點微辣版孩子也能接受</div>
+    </div>
+  </div>
+
+  <div class="sub-title">🛍 伴手禮推薦</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>品項</th><th>說明</th><th>哪裡買</th></tr>
+      <tr><td><strong>腰果 Cashew Nuts ⭐</strong></td><td>普吉名產，原味/辣味/蒜味，真空包裝易攜帶</td><td>超市、市場、機場</td></tr>
+      <tr><td><strong>椰子脆片 Coconut Chips</strong></td><td>薄片烤椰子，香甜不膩，老少咸宜</td><td>Big C、Lotus's</td></tr>
+      <tr><td>乾燥芒果 Dried Mango</td><td>泰國芒果品質高，乾燥版糖度適中</td><td>超市、7-11</td></tr>
+      <tr><td>菠蘿蜜脆片 Jackfruit Chips</td><td>炸脆口感，特殊香氣</td><td>超市、市場</td></tr>
+      <tr><td>椰奶糖 Coconut Candy</td><td>傳統泰式軟糖，小包裝適合分送親友</td><td>市場、機場</td></tr>
+      <tr><td><strong>泰式奶茶粉 Thai Tea Mix</strong></td><td>ChaTraMue 品牌最知名，沖泡即可</td><td>超市、機場</td></tr>
+      <tr><td>泰式手工皂</td><td>Lemongrass/椰奶/薑黃，天然香氣，輕巧好帶</td><td>老城、市集</td></tr>
+      <tr><td>泰式咖哩醬</td><td>真空包裝，帶回台灣自己煮</td><td>超市</td></tr>
+    </table>
+  </div>
+
+  <div class="sub-title">🗺 購物地點指南</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>地點</th><th>位置</th><th>適合買什麼</th><th>行程對應</th></tr>
+      <tr><td><strong>Big C / Lotus's ⭐</strong></td><td>全島多點</td><td>零食伴手禮掃貨，CP值最高</td><td>Day 6 最佳時機</td></tr>
+      <tr><td>Boat Avenue</td><td>Bang Tao</td><td>精品小店、紀念品、輕食</td><td>Day 6 方案B下午</td></tr>
+      <tr><td><strong>老城週日步行街 Lard Yai</strong></td><td>Phuket Old Town Thalang Rd</td><td>在地小吃、手工藝、紀念品</td><td><strong>Day 4 傍晚</strong>（1/31 週日，船返後約 17:30 抵達，至 21:00）</td></tr>
+      <tr><td>Chillva Market</td><td>市區</td><td>夜市風格，街食衣服小物</td><td><strong>Day 2 晚餐後</strong>（選配）</td></tr>
+      <tr><td>Central Festival Phuket</td><td>市區</td><td>百貨、超市、藥妝</td><td>機動安排</td></tr>
+      <tr><td>普吉機場免稅店</td><td>機場</td><td>腰果、奶茶（價格不比超市便宜）</td><td>Day 7 出發前</td></tr>
+    </table>
+  </div>
+  <div class="tip info"><span class="tip-icon">💡</span><span>伴手禮建議 <strong>Day 6 在 Big C / Lotus's 超市一次掃貨</strong>，比機場便宜且選擇多。</span></div>
+</div>
+
+
+<!-- ══════════════════════════════
+     SECTION 5：預算
+══════════════════════════════ -->
+<div id="budget" class="section">
+  <h2 class="sec-title"><span class="icon">💰</span>旅遊預算（4人）</h2>
+
+  <div class="ai-warn">
+    <strong>⚠️ 所有金額均為估算值</strong>
+    以 AI 訓練資料（截至 2025/08）為基礎，實際費用以訂購當下報價為準。匯率基準：1 TWD ≈ 1.02 THB（估算）。
+  </div>
+
+  <div class="sub-title">📊 總預算概覽</div>
+  <div class="budget-overview">
+    <div class="budget-card four">
+      <div class="plan">★★★★ 4星方案</div>
+      <div class="range">TWD 18–29 萬</div>
+      <div class="per">每人約 TWD 45,000–72,000</div>
+    </div>
+    <div class="budget-card five">
+      <div class="plan">★★★★★ 5星方案</div>
+      <div class="range">TWD 23–37 萬</div>
+      <div class="per">每人約 TWD 57,000–92,000</div>
+    </div>
+  </div>
+
+  <div class="sub-title">📋 逐項費用明細</div>
+  <div class="budget-items">
+    <div class="budget-row">
+      <span class="label">✈️ 機票（4人來回，需經曼谷轉機）</span>
+      <span class="amount">TWD 60,000–80,000 <span class="badge est">估算</span></span>
+    </div>
+    <div class="budget-row">
+      <span class="label">🏨 住宿 4星（6晚）</span>
+      <span class="amount">TWD 31,000–50,000 <span class="badge est">估算</span></span>
+    </div>
+    <div class="budget-row">
+      <span class="label">🏨 住宿 5星（6晚）</span>
+      <span class="amount">TWD 78,000–130,000 <span class="badge est">估算</span></span>
+    </div>
+    <div class="budget-row">
+      <span class="label">🚤 跳島（攀牙灣＋披披島私包）</span>
+      <span class="amount">TWD 29,000–41,000 <span class="badge est">估算</span></span>
+    </div>
+    <div class="budget-row">
+      <span class="label">🏝 拉查島（選配）</span>
+      <span class="amount">TWD 7,800–11,800 <span class="badge est">估算</span></span>
+    </div>
+    <div class="budget-row">
+      <span class="label">🐘 大象保護區（含接送）</span>
+      <span class="amount">TWD 9,800–13,700 <span class="badge est">估算</span></span>
+    </div>
+    <div class="budget-row">
+      <span class="label">🚗 交通（包車＋Grab）</span>
+      <span class="amount">TWD 7,000–12,000 <span class="badge est">估算</span></span>
+    </div>
+    <div class="budget-row">
+      <span class="label">🍽 餐費（7天）</span>
+      <span class="amount">TWD 25,000–45,000 <span class="badge est">估算</span></span>
+    </div>
+    <div class="budget-row">
+      <span class="label">🌊 海灘水上活動</span>
+      <span class="amount">TWD 3,000–7,000 <span class="badge est">估算</span></span>
+    </div>
+    <div class="budget-row">
+      <span class="label">🛡 保險＋eSIM＋門票＋購物</span>
+      <span class="amount">TWD 14,000–38,000 <span class="badge est">估算</span></span>
+    </div>
+    <div class="budget-row total">
+      <span class="label">💳 4星方案總計</span>
+      <span class="amount">約 TWD 179,000–287,000</span>
+    </div>
+  </div>
+
+  <div class="sub-title">💡 節省費用建議</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>方式</th><th>可省金額（估算）</th></tr>
+      <tr><td>廉航取代傳統航空</td><td>TWD 10,000–25,000</td></tr>
+      <tr><td>4星取代5星住宿</td><td>TWD 30,000–80,000</td></tr>
+      <tr><td>跳島選拼團取代私包</td><td>TWD 15,000–22,000（但時間彈性降低）</td></tr>
+      <tr><td>大象保護區自行叫車取代含接送</td><td>TWD 2,000–3,000</td></tr>
+      <tr><td>Big C 超市買伴手禮取代機場免稅</td><td>TWD 1,000–3,000</td></tr>
+    </table>
+  </div>
+
+  <div class="sub-title">☑️ 待確認項目</div>
+  <div class="check-card">
+    <h4>出發前需實際查詢報價</h4>
+    <div class="check-item"><div class="check-box"></div><span>機票實際報價（Google Flights 查詢）</span></div>
+    <div class="check-item"><div class="check-box"></div><span>飯店春節旺季實際房價（Traveloka / Agoda）</span></div>
+    <div class="check-item"><div class="check-box"></div><span>跳島私包快艇即時報價（Klook / Viator）</span></div>
+    <div class="check-item"><div class="check-box"></div><span>大象保護區目前票價</span></div>
+    <div class="check-item"><div class="check-box"></div><span>瑪雅灣環境保育費現行金額</span></div>
+    <div class="check-item"><div class="check-box"></div><span>匯率即時查詢（出發前1週再確認）</span></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════
+     SECTION 6：行前準備
+══════════════════════════════ -->
+<div id="prep" class="section">
+  <h2 class="sec-title"><span class="icon">🎒</span>行前準備</h2>
+
+  <div class="sub-title">☀️ 天氣概況（歷史平均值）</div>
+  <div class="tip warn"><span class="tip-icon">⚠️</span><span>以下為普吉 1月下旬至2月初的<strong>歷史氣候平均值</strong>，非實際預報。出發前2週請查 AccuWeather 或泰國氣象局確認。</span></div>
+  <div class="weather-grid">
+    <div class="weather-card"><div class="w-icon">🌡️</div><div class="w-val">28–34°C</div><div class="w-label">白天氣溫</div></div>
+    <div class="weather-card"><div class="w-icon">🌙</div><div class="w-val">23–26°C</div><div class="w-label">夜晚氣溫</div></div>
+    <div class="weather-card"><div class="w-icon">☔</div><div class="w-val">極低</div><div class="w-label">降雨機率</div></div>
+    <div class="weather-card"><div class="w-icon">🌊</div><div class="w-val">平穩</div><div class="w-label">海況（浮潛絕佳）</div></div>
+    <div class="weather-card"><div class="w-icon">☀️</div><div class="w-val">UV 8–11</div><div class="w-label">紫外線（極高）</div></div>
+    <div class="weather-card"><div class="w-icon">🌅</div><div class="w-val">06:50 / 18:30</div><div class="w-label">日出 / 日落</div></div>
+  </div>
+
+  <div class="sub-title" style="margin-top:24px;">📅 訂購時間表</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>項目</th><th>說明</th><th>建議時間</th></tr>
+      <tr><td>✈️ 機票</td><td>台灣→普吉無直飛，需經曼谷轉機；春節旺季越早訂越好</td><td><strong>2026/9 前</strong></td></tr>
+      <tr><td>🏨 飯店</td><td>旺季熱門房型快速售罄</td><td><strong>2026/9 前</strong></td></tr>
+      <tr><td>🚤 跳島快艇（Day 3、4）</td><td>Klook/Viator 私包</td><td><strong>2026/11–12</strong></td></tr>
+      <tr><td>🐘 大象保護區（Day 5）</td><td>官網或 Klook，含接送</td><td><strong>2026/12 前</strong></td></tr>
+      <tr><td>🛡️ 旅遊保險</td><td>需含水上活動保障</td><td>訂票後辦理</td></tr>
+      <tr><td>📱 泰國 eSIM</td><td>Klook 購買 AIS/DTAC，4人各一張</td><td>出發前</td></tr>
+      <tr><td>💊 暈船藥</td><td>台灣購買較方便（旅行錠/斯泰隆）</td><td>出發前備齊</td></tr>
+      <tr><td>🌊 瑪雅灣入場</td><td>確認 2027 年是否需線上預約</td><td>訂快艇時確認</td></tr>
+    </table>
+  </div>
+
+  <div class="sub-title">💊 藥品清單</div>
+  <div class="med-grid">
+    <div class="med-group">
+      <h4>🤢 暈船 / 暈車</h4>
+      <div class="med-item"><strong>暈船藥</strong>（旅行錠 / 斯泰隆）— Day 3、4、6A 各服用，出發前30分鐘</div>
+      <div class="med-item"><strong>薑糖 / 薑片</strong> — 輕度不適的自然緩解</div>
+    </div>
+    <div class="med-group">
+      <h4>🫃 腸胃</h4>
+      <div class="med-item"><strong>止瀉藥</strong>（Imodium / 正露丸）</div>
+      <div class="med-item"><strong>腸胃藥</strong>（胃乳 / 制酸劑）</div>
+      <div class="med-item"><strong>益生菌</strong> — 出發前1週開始吃</div>
+      <div class="med-item"><strong>口服電解質粉</strong> — 防脫水，孩子尤需</div>
+    </div>
+    <div class="med-group">
+      <h4>🤒 發燒 / 疼痛</h4>
+      <div class="med-item"><strong>普拿疼 Panadol</strong> — 成人、兒童劑量各備</div>
+      <div class="med-item"><strong>布洛芬 Ibuprofen</strong> — 消炎止痛，曬傷後適用</div>
+    </div>
+    <div class="med-group">
+      <h4>🦟 皮膚 / 外傷</h4>
+      <div class="med-item"><strong>驅蚊劑</strong>（含 DEET / Picaridin）— 登革熱白天也傳播</div>
+      <div class="med-item"><strong>蚊蟲叮咬藥膏</strong>（無比滴 / 曼秀雷敦）</div>
+      <div class="med-item"><strong>防水OK繃</strong> + <strong>消毒藥水</strong></div>
+      <div class="med-item"><strong>蘆薈膠</strong> — 曬傷急救</div>
+    </div>
+    <div class="med-group">
+      <h4>👁️ 眼睛 / 過敏</h4>
+      <div class="med-item"><strong>人工淚液</strong> — 浮潛後海水刺激、冷氣乾燥</div>
+      <div class="med-item"><strong>抗組織胺</strong> — 海鮮過敏、蚊蟲過敏備用</div>
+    </div>
+    <div class="med-group">
+      <h4>🤧 其他</h4>
+      <div class="med-item"><strong>喉糖 / 感冒藥</strong> — 冷氣強容易感冒</div>
+      <div class="med-item"><strong>體溫計</strong> — 孩子發燒用</div>
+    </div>
+  </div>
+
+  <div class="sub-title" style="margin-top:24px;">👗 穿著建議</div>
+  <div class="check-grid">
+    <div class="check-card">
+      <h4>🏖 每天必備</h4>
+      <div class="check-item"><div class="check-box"></div><span>泳衣 2–3 套</span></div>
+      <div class="check-item"><div class="check-box"></div><span>防曬衣 Rash Guard 1–2 件</span></div>
+      <div class="check-item"><div class="check-box"></div><span>防曬帽 + 太陽眼鏡</span></div>
+      <div class="check-item"><div class="check-box"></div><span>輕薄透氣上衣 4–5 件</span></div>
+      <div class="check-item"><div class="check-box"></div><span>短褲 3–4 件</span></div>
+      <div class="check-item"><div class="check-box"></div><span>夾腳拖 / 涼鞋</span></div>
+    </div>
+    <div class="check-card">
+      <h4>🚤 跳島日</h4>
+      <div class="check-item"><div class="check-box"></div><span>防風薄外套（早出發船上冷）</span></div>
+      <div class="check-item"><div class="check-box"></div><span>防水涼鞋（登島步行用）</span></div>
+      <div class="check-item"><div class="check-box"></div><span>快乾褲（直接穿出門）</span></div>
+    </div>
+    <div class="check-card">
+      <h4>🛕 寺廟日（Day 2）</h4>
+      <div class="check-item"><div class="check-box"></div><span>長褲 1 件（遮膝）</span></div>
+      <div class="check-item"><div class="check-box"></div><span>薄長袖（遮肩）</span></div>
+      <div class="check-item"><div class="check-box"></div><span>易穿脫的平底鞋（需脫鞋）</span></div>
+    </div>
+    <div class="check-card">
+      <h4>📱 離線準備</h4>
+      <div class="check-item"><div class="check-box"></div><span>Google Maps 下載普吉島離線地圖</span></div>
+      <div class="check-item"><div class="check-box"></div><span>平板下載離線影片（飛機+船上用）</span></div>
+      <div class="check-item"><div class="check-box"></div><span>重要文件截圖存手機相簿</span></div>
+      <div class="check-item"><div class="check-box"></div><span>翻譯 App 下載泰語離線包</span></div>
+    </div>
+    <div class="check-card">
+      <h4>📄 必帶文件</h4>
+      <div class="check-item"><div class="check-box"></div><span>全員護照（效期至2027/7/28後）</span></div>
+      <div class="check-item"><div class="check-box"></div><span>機票電子票（截圖離線備份）</span></div>
+      <div class="check-item"><div class="check-box"></div><span>飯店訂房確認單（2份）</span></div>
+      <div class="check-item"><div class="check-box"></div><span>快艇 / 大象訂購確認單</span></div>
+      <div class="check-item"><div class="check-box"></div><span>旅遊保險保單</span></div>
+      <div class="check-item"><div class="check-box"></div><span>飯店泰文地址（列印給司機）</span></div>
+    </div>
+    <div class="check-card">
+      <h4>🎒 行李必帶</h4>
+      <div class="check-item"><div class="check-box"></div><span>水下相機 / GoPro</span></div>
+      <div class="check-item"><div class="check-box"></div><span>礦物防曬（Mineral Sunscreen）</span></div>
+      <div class="check-item"><div class="check-box"></div><span>輕便防風外套</span></div>
+      <div class="check-item"><div class="check-box"></div><span>泰銖現金（至少 THB 3,000–5,000）</span></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════
+     SECTION 7：安全須知
+══════════════════════════════ -->
+<div id="safety" class="section">
+  <h2 class="sec-title"><span class="icon">🏥</span>安全須知</h2>
+
+  <div class="sub-title">🚨 緊急聯絡資訊</div>
+  <div class="tip coral"><span class="tip-icon">📋</span><span>建議截圖存手機，或列印一張放行李袋隨身攜帶。</span></div>
+  <div class="emergency-grid" style="margin-top:16px;">
+    <div class="em-card">
+      <div class="em-label">泰國報警</div>
+      <div class="em-num">191</div>
+    </div>
+    <div class="em-card">
+      <div class="em-label">泰國救護車</div>
+      <div class="em-num">1669</div>
+    </div>
+    <div class="em-card">
+      <div class="em-label">觀光警察（英語）</div>
+      <div class="em-num">1155</div>
+    </div>
+    <div class="em-card">
+      <div class="em-label">普吉國際醫院</div>
+      <div class="em-num" style="font-size:16px;">+66 76 249 400</div>
+      <div class="em-sub">24小時急診</div>
+    </div>
+    <div class="em-card">
+      <div class="em-label">曼谷醫院普吉</div>
+      <div class="em-num" style="font-size:16px;">+66 76 254 425</div>
+    </div>
+    <div class="em-card">
+      <div class="em-label">台灣駐泰代表處（急難）</div>
+      <div class="em-num" style="font-size:14px;">+66 81 666 2111</div>
+      <div class="em-sub">緊急聯絡</div>
+    </div>
+  </div>
+
+  <div class="sub-title" style="margin-top:24px;">🌊 海灘安全</div>
+  <div class="card">
+    <div class="card-body">
+      <ul class="act-list">
+        <li><div class="act-dot" style="background:var(--red);"></div><span class="act-time">紅旗</span><div class="act-text"><strong>紅旗 = 禁止下水</strong>：普吉海灘旗幟警示系統，紅旗代表水流危險，必須遵守</div></li>
+        <li><div class="act-dot" style="background:var(--red);"></div><span class="act-time">Karon</span><div class="act-text">歷史上曾有<strong>離岸流（rip current）</strong>事故，孩子不可單獨下水</div></li>
+        <li><div class="act-dot"></div><span class="act-time">離岸流</span><div class="act-text">不要對抗水流往岸邊游，順流<strong>平行岸邊游</strong>至離流區域再靠岸</div></li>
+        <li><div class="act-dot"></div><span class="act-time">水母</span><div class="act-text">1月通常少量，被刺不可用淡水沖（改用海水或醋），嚴重立即就醫</div></li>
+        <li><div class="act-dot"></div><span class="act-time">浮潛</span><div class="act-text"><strong>不踩珊瑚</strong>：保育考量，且礁石割傷在熱帶高溫下難以癒合</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sub-title">🛂 簽證與護照</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>項目</th><th>說明</th></tr>
+      <tr><td>台灣護照 → 泰國</td><td><strong>免簽</strong>，觀光停留最長 30 天，不需事先辦理</td></tr>
+      <tr><td>護照效期要求</td><td>入境時效期需剩 <strong>至少 6 個月</strong>（2027/1/28 入境，需有效至 2027/7/28 後）</td></tr>
+      <tr><td>孩子護照</td><td>確認孩子護照效期也符合規定</td></tr>
+    </table>
+  </div>
+  <div class="tip warn"><span class="tip-icon">⚠️</span><span>免簽政策請出發前至<strong>泰國移民局官網</strong>或<strong>中華民國外交部</strong>確認最新規定。</span></div>
+
+  <div class="sub-title" style="margin-top:24px;">💵 現金與小費</div>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>場合</th><th>建議小費</th></tr>
+      <tr><td>餐廳（已含服務費）</td><td>可不給，或留 THB 20–50 零錢</td></tr>
+      <tr><td>餐廳（未含服務費）</td><td>約消費 10%</td></tr>
+      <tr><td>包車司機（全天）</td><td>THB 100–200</td></tr>
+      <tr><td>飯店行李員</td><td>THB 20–50 / 次</td></tr>
+      <tr><td>ATM 每筆手續費</td><td>約 THB 220，盡量減少次數一次提多</td></tr>
+    </table>
+  </div>
+
+  <div class="sub-title">🛃 出境注意</div>
+  <div class="card">
+    <div class="card-body">
+      <ul class="act-list">
+        <li><div class="act-dot" style="background:var(--red);"></div><span class="act-time">禁止帶回</span><div class="act-text">新鮮水果、生鮮肉品、植物種子（海關查獲罰款）</div></li>
+        <li><div class="act-dot" style="background:var(--green);"></div><span class="act-time">可帶回</span><div class="act-text">真空包裝食品、零食、乾燥品、椰子油護膚品</div></li>
+        <li><div class="act-dot"></div><span class="act-time">免稅限額</span><div class="act-text">每人 TWD 20,000 以內免申報，超過需繳稅</div></li>
+        <li><div class="act-dot"></div><span class="act-time">菸酒</span><div class="act-text">每人限帶菸 1 條（200 支）、酒 1 公升</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sub-title">⚠️ AI 資訊說明</div>
+  <div class="ai-warn">
+    <strong>本文件資訊以 AI 訓練資料為基礎，以下項目出發前務必重新確認：</strong>
+    瑪雅灣入場規定（限流每年調整）／匯率（即時查詢）／大象保護區開放狀況／SuperRich 換匯在普吉的據點位置／礦物防曬禁令範圍／飯店及餐廳最新評價
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     SECTION 8：地圖、相片、連結
+══════════════════════════════ -->
+<div id="mapview" class="section">
+  <h2 class="sec-title"><span class="icon">🗺</span>地圖、景點相片與建議連結</h2>
+
+  <!-- MAP TABS -->
+  <div class="map-tab-bar">
+    <button class="map-tab active" id="tab-phuket" onclick="switchMap('phuket')">🗺 普吉島景點全圖</button>
+    <button class="map-tab" id="tab-region" onclick="switchMap('region')">🌊 周邊島嶼地圖</button>
+  </div>
+
+  <!-- PHUKET LOCAL MAP -->
+  <div class="map-wrap" id="wrap-phuket">
+    <div id="map-phuket" style="height:480px;"></div>
+  </div>
+
+  <!-- REGIONAL MAP -->
+  <div class="map-wrap" id="wrap-region" style="display:none;">
+    <div id="map-region" style="height:480px;"></div>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="map-legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#E65100;"></div>景點 / 寺廟</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#1565C0;"></div>海灘 / 住宿區</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#6A1B9A;"></div>碼頭（出發點）</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#00838F;"></div>島嶼景點</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#C62828;"></div>醫院 / 機場</div>
+  </div>
+
+  <!-- RECOMMENDED LINKS -->
+  <div class="sub-title">🔗 建議參考連結</div>
+
+  <div class="sub-title" style="font-size:14px; margin-top:8px;">✈️ 機票 &amp; 訂房</div>
+  <div class="links-grid">
+    <a class="link-card" href="https://www.google.com/flights" target="_blank" rel="noopener">
+      <div class="link-icon">✈️</div>
+      <div class="link-name">Google Flights</div>
+      <div class="link-desc">日期格狀比價，一眼看出最低票價日期</div>
+      <span class="link-tag booking">訂機票</span>
+    </a>
+    <a class="link-card" href="https://www.skyscanner.com.tw" target="_blank" rel="noopener">
+      <div class="link-icon">🔍</div>
+      <div class="link-name">Skyscanner</div>
+      <div class="link-desc">廉航補漏、整月比價，有中文介面</div>
+      <span class="link-tag booking">訂機票</span>
+    </a>
+    <a class="link-card" href="https://www.traveloka.com" target="_blank" rel="noopener">
+      <div class="link-icon">🏨</div>
+      <div class="link-name">Traveloka ⭐</div>
+      <div class="link-desc">東南亞本地平台，常比 Agoda 便宜 15–25%</div>
+      <span class="link-tag booking">訂飯店</span>
+    </a>
+    <a class="link-card" href="https://www.agoda.com" target="_blank" rel="noopener">
+      <div class="link-icon">🛏️</div>
+      <div class="link-name">Agoda</div>
+      <div class="link-desc">用無痕視窗查，避免動態漲價</div>
+      <span class="link-tag booking">訂飯店</span>
+    </a>
+    <a class="link-card" href="https://www.booking.com" target="_blank" rel="noopener">
+      <div class="link-icon">📋</div>
+      <div class="link-name">Booking.com</div>
+      <div class="link-desc">免費取消選項多，適合彈性行程</div>
+      <span class="link-tag booking">訂飯店</span>
+    </a>
+  </div>
+
+  <div class="sub-title" style="font-size:14px; margin-top:4px;">🎫 行程體驗 &amp; 票券</div>
+  <div class="links-grid">
+    <a class="link-card" href="https://www.klook.com" target="_blank" rel="noopener">
+      <div class="link-icon">🎟️</div>
+      <div class="link-name">Klook</div>
+      <div class="link-desc">跳島快艇私包、大象保護區、水上活動，評價完整</div>
+      <span class="link-tag booking">體驗票券</span>
+    </a>
+    <a class="link-card" href="https://www.viator.com" target="_blank" rel="noopener">
+      <div class="link-icon">🚤</div>
+      <div class="link-name">Viator</div>
+      <div class="link-desc">同步比價，部分行程比 Klook 便宜</div>
+      <span class="link-tag booking">體驗票券</span>
+    </a>
+    <a class="link-card" href="https://www.phuketelephant.org" target="_blank" rel="noopener">
+      <div class="link-icon">🐘</div>
+      <div class="link-name">Phuket Elephant Sanctuary</div>
+      <div class="link-desc">普吉最知名保育象園，官網直訂最早確認名額</div>
+      <span class="link-tag info">官方網站</span>
+    </a>
+  </div>
+
+  <div class="sub-title" style="font-size:14px; margin-top:4px;">🛠 實用工具</div>
+  <div class="links-grid">
+    <a class="link-card" href="https://www.xe.com" target="_blank" rel="noopener">
+      <div class="link-icon">💱</div>
+      <div class="link-name">XE Currency</div>
+      <div class="link-desc">即時匯率查詢 TWD ↔ THB，出發前確認</div>
+      <span class="link-tag tool">匯率工具</span>
+    </a>
+    <a class="link-card" href="https://www.accuweather.com" target="_blank" rel="noopener">
+      <div class="link-icon">⛅</div>
+      <div class="link-name">AccuWeather</div>
+      <div class="link-desc">普吉天氣預報，出發前2週查詢最準確</div>
+      <span class="link-tag tool">天氣預報</span>
+    </a>
+    <a class="link-card" href="https://www.grab.com" target="_blank" rel="noopener">
+      <div class="link-icon">🚗</div>
+      <div class="link-name">Grab</div>
+      <div class="link-desc">普吉叫車首選，比路邊計程車便宜且安全</div>
+      <span class="link-tag tool">叫車 App</span>
+    </a>
+    <a class="link-card" href="https://www.boca.gov.tw" target="_blank" rel="noopener">
+      <div class="link-icon">🇹🇼</div>
+      <div class="link-name">外交部領事事務局</div>
+      <div class="link-desc">確認泰國最新入境規定、護照申辦</div>
+      <span class="link-tag safety">簽證 / 護照</span>
+    </a>
+    <a class="link-card" href="https://www.tourismthailand.org" target="_blank" rel="noopener">
+      <div class="link-icon">🏖️</div>
+      <div class="link-name">泰國觀光局</div>
+      <div class="link-desc">官方旅遊資訊、景點最新開放狀況</div>
+      <span class="link-tag info">官方資訊</span>
+    </a>
+    <a class="link-card" href="https://unsplash.com/s/photos/phuket" target="_blank" rel="noopener">
+      <div class="link-icon">📷</div>
+      <div class="link-name">Unsplash — Phuket 相片</div>
+      <div class="link-desc">免費高畫質普吉風景照，可下載替換本頁示意圖</div>
+      <span class="link-tag tool">免費相片</span>
+    </a>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     SECTION 9：景點總覽
+══════════════════════════════ -->
+<div id="overview" class="section active">
+  <h2 class="sec-title"><span class="icon">🗂</span>景點總覽</h2>
+  <p style="color:var(--gray);font-size:14px;margin-bottom:24px;">所有活動卡片一覽，方便決定哪些要排、哪些可捨棄。</p>
+
+  <!-- 1. 攀牙灣 -->
+  <div class="ac-card">
+    <div class="ac-header">
+      <div class="ac-title">🚤 攀牙灣 Phang Nga Bay</div>
+      <div class="ac-badges">
+        <span class="ac-badge full">全天</span>
+        <span class="ac-badge s">S 級・必去</span>
+        <span class="ac-badge" style="background:#EFF6FF;color:#1D4ED8;">Day 3 (1/30 六)</span>
+      </div>
+    </div>
+    <div class="ac-body">
+      <table class="ac-table">
+        <tr><td>出發碼頭</td><td><strong>Ao Por Pier</strong>（北部）・飯店→碼頭約 50–60 分鐘</td></tr>
+        <tr><td>出發時間</td><td><strong>08:00</strong>（需 07:00 前離開飯店，前晚安排包車）</td></tr>
+        <tr><td>回程</td><td>約 17:00–18:00 返回碼頭</td></tr>
+        <tr><td>必去景點</td><td>
+          <strong>詹姆士龐德島 Ko Tapu</strong>：標誌性石灰岩柱，007 電影取景地，停留約 1 小時<br>
+          <strong>攀牙灣石灰岩群</strong>：數十座岩柱聳立海面，地景壯闊<br>
+          <strong>海上獨木舟穿洞</strong>：穿越海蝕洞、紅樹林秘境（強烈推薦，孩子超愛）
+        </td></tr>
+        <tr><td>費用估算</td><td>私包快艇（4人整船）約 THB 15,000–20,000；通常含午餐、導遊、獨木舟</td></tr>
+        <tr><td>訂購平台</td><td>Klook「Phang Nga Bay Private Speedboat」/ Viator 同步比價</td></tr>
+        <tr><td>注意</td><td>暈船藥出發前 30 分鐘服用；春節旺季 1–2 個月前預訂</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 2. 披披島 -->
+  <div class="ac-card">
+    <div class="ac-header">
+      <div class="ac-title">🏝 披披島 ＋ 瑪雅灣 Maya Bay</div>
+      <div class="ac-badges">
+        <span class="ac-badge full">全天</span>
+        <span class="ac-badge s">S 級・必去</span>
+        <span class="ac-badge" style="background:#EFF6FF;color:#1D4ED8;">Day 4 (1/31 日)</span>
+      </div>
+    </div>
+    <div class="ac-body">
+      <table class="ac-table">
+        <tr><td>出發碼頭</td><td><strong>Chalong Pier</strong>（南部）・飯店（Kata）→ 碼頭約 <strong>15–20 分鐘</strong></td></tr>
+        <tr><td>出發時間</td><td><strong>07:30</strong>（07:00 出門即可；越早越好，避開人潮）</td></tr>
+        <tr><td>回程</td><td>約 17:00 返回 Chalong Pier</td></tr>
+        <tr><td>必去景點</td><td>
+          <strong>瑪雅灣 Maya Bay</strong>：電影《海灘》取景地，翡翠色海水白沙灘（每日限流）<br>
+          <strong>披披東島觀景台</strong>：健行 20–30 分鐘俯瞰雙灣，景色絕美<br>
+          <strong>Shark Point 浮潛</strong>：小礁鯊出沒、熱帶魚群密集<br>
+          <strong>Loh Samah Bay 浮潛</strong>：珊瑚礁豐富，適合孩子
+        </td></tr>
+        <tr><td>費用估算</td><td>私包快艇（4人整船）約 THB 15,000–22,000；通常含午餐、導遊、浮潛設備</td></tr>
+        <tr><td>訂購平台</td><td>Klook「Phi Phi Private Speedboat」/ Viator</td></tr>
+        <tr><td>注意</td><td>⚠ 瑪雅灣每日限流，確認 2027 年是否需線上預約入場；暈船藥出發前 30 分鐘服用</td></tr>
+      </table>
+      <div class="tip info" style="margin-top:0;"><span class="tip-icon">💡</span><span>Day 4 傍晚（週日）回程後可接 <strong>老城週日步行街 Lard Yai</strong>，碼頭→老城約 30 分鐘，步行街至 21:00。</span></div>
+    </div>
+  </div>
+
+  <!-- 3. 老城 + 普羅姆泰普角 -->
+  <div class="ac-card">
+    <div class="ac-header">
+      <div class="ac-title">🏙 普吉老城 ＋ 普羅姆泰普角日落</div>
+      <div class="ac-badges">
+        <span class="ac-badge half">半天下午</span>
+        <span class="ac-badge a">A 級・推薦</span>
+        <span class="ac-badge" style="background:#EFF6FF;color:#1D4ED8;">Day 2 (1/29 五)</span>
+      </div>
+    </div>
+    <div class="ac-body">
+      <table class="ac-table">
+        <tr><td>出發時間</td><td>飯店 <strong>13:30 出發</strong>（下午包半日車 THB 800–1,000）</td></tr>
+        <tr><td>老城</td><td>約 2 小時漫步 Thalang Rd 葡萄牙殖民式建築、街頭塗鴉、老咖啡館；逛到 17:00 即可</td></tr>
+        <tr><td>⚠ 關鍵時間</td><td><strong>17:15 前</strong> 從老城出發，旺季塞車 25–35 分鐘 + 停車場步行 15 分鐘</td></tr>
+        <tr><td>普羅姆泰普角</td><td>約 <strong>18:30 日落</strong>，全普吉最佳日落觀賞點；停車場到觀景台約 15 分鐘步行</td></tr>
+        <tr><td>晚餐</td><td>老城區特色餐廳（旺季建議提前訂位）</td></tr>
+        <tr><td>選配</td><td>晚餐後 Chillva Market 夜市（步行或 Grab，街食小物）</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 4. 大佛 + 查龍寺 -->
+  <div class="ac-card">
+    <div class="ac-header">
+      <div class="ac-title">🛕 大佛 Big Buddha ＋ 查龍寺 Wat Chalong</div>
+      <div class="ac-badges">
+        <span class="ac-badge half">半天上午</span>
+        <span class="ac-badge b">B 級・可選</span>
+      </div>
+    </div>
+    <div class="ac-body">
+      <table class="ac-table">
+        <tr><td>安排建議</td><td>可在 Day 2 上午（7:00–11:00）排入，或完全捨棄；不影響 S 級體驗</td></tr>
+        <tr><td>大佛</td><td>全島最高點 Nakkerd Hill，360° 環島海景；免費入場；車程飯店→大佛約 20 分鐘</td></tr>
+        <tr><td>查龍寺</td><td>普吉最重要佛寺，金碧輝煌；免費入場；大佛→查龍寺約 10 分鐘</td></tr>
+        <tr><td>著裝要求</td><td>⚠ 兩處均需遮肩蓋膝，入口通常備有借用布</td></tr>
+        <tr><td>評估</td><td>泰國寺廟到處都有，若行程已滿可優先捨棄；大佛視野值得，查龍寺可取捨</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 5. 週日步行街 -->
+  <div class="ac-card">
+    <div class="ac-header">
+      <div class="ac-title">🛍 老城週日步行街 Lard Yai</div>
+      <div class="ac-badges">
+        <span class="ac-badge eve">週日傍晚</span>
+        <span class="ac-badge a">A 級・推薦</span>
+        <span class="ac-badge" style="background:#EFF6FF;color:#1D4ED8;">Day 4 (1/31 日)</span>
+      </div>
+    </div>
+    <div class="ac-body">
+      <table class="ac-table">
+        <tr><td>位置</td><td>普吉老城 Thalang Rd（週日限定，僅週日開放）</td></tr>
+        <tr><td>營業時間</td><td>約 17:00–21:00</td></tr>
+        <tr><td>行程銜接</td><td>Day 4 披披島回程 17:00 抵 Chalong Pier → 包車直奔老城約 30 分鐘 → 約 17:30 抵達</td></tr>
+        <tr><td>亮點</td><td>在地小吃（O-Tao 蚵仔煎、Mee Hokkien）、手工藝品、紀念品；夜晚老城氛圍特別迷人</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 6. 海灘水上活動 -->
+  <div class="ac-card">
+    <div class="ac-header">
+      <div class="ac-title">🏄 海灘水上活動</div>
+      <div class="ac-badges">
+        <span class="ac-badge half">半天上午</span>
+        <span class="ac-badge b">B 級・選配</span>
+        <span class="ac-badge" style="background:#EFF6FF;color:#1D4ED8;">Day 6 (2/2 二) 推薦</span>
+      </div>
+    </div>
+    <div class="ac-body">
+      <table class="ac-table">
+        <tr><td>地點</td><td>Kata 海灘（Day 1–4）或 Bang Tao 海灘（Day 6）</td></tr>
+        <tr><td>活動選項</td><td>
+          🍌 香蕉船：THB 400–600/人，適合全家；刺激但安全<br>
+          🐟 飛魚 Flying Fish：THB 400–600/人，拖曳在水面上彈跳<br>
+          🪂 拖曳傘 Parasailing：THB 800–1,200/人，大人限定，高空俯瞰海灘<br>
+          🏄 水上摩托車（慎選，需注意業者合法性）
+        </td></tr>
+        <tr><td>報名方式</td><td>現場報名（海灘攤販）或飯店 Tour Desk；Day 6 最適合安排</td></tr>
+        <tr><td>費用估算</td><td>香蕉船＋飛魚（4人）約 THB 3,200–4,800；拖曳傘（大人2人）約 THB 1,600–2,400</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 7. Boat Avenue -->
+  <div class="ac-card">
+    <div class="ac-header">
+      <div class="ac-title">🛒 Boat Avenue ＋ 伴手禮掃貨</div>
+      <div class="ac-badges">
+        <span class="ac-badge half">下午 1–2 小時</span>
+        <span class="ac-badge b">B 級・選配</span>
+        <span class="ac-badge" style="background:#EFF6FF;color:#1D4ED8;">Day 6 (2/2 二)</span>
+      </div>
+    </div>
+    <div class="ac-body">
+      <table class="ac-table">
+        <tr><td>位置</td><td>Bang Tao 區（飯店步行可達或短程 Grab）</td></tr>
+        <tr><td>時間</td><td>約 16:30–18:00 逛完，接傍晚 Sundowner</td></tr>
+        <tr><td>適合買</td><td>精品小店、設計師紀念品、輕食、飾品；氛圍比大型市場精緻</td></tr>
+        <tr><td>伴手禮重點</td><td>腰果、椰子脆片、泰式奶茶粉建議去 <strong>Big C / Lotus's</strong> 超市（便宜且量大），Boat Avenue 後可順道</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="tip info"><span class="tip-icon">💡</span><span><strong>行程取捨建議</strong>：S 級（攀牙灣、披披島）全排；A 級（老城+日落、週日步行街）盡量排；B 級（大佛、查龍寺、水上活動）視體力和時間選配，捨棄不影響整體滿意度。</span></div>
+</div>
+
+</div><!-- end .main -->
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+/* ── 導覽切換 ── */
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (id === 'mapview') initMaps();
+}
+
+/* ── 地圖初始化（只執行一次）── */
+let mapsInited = false;
+let mapPhuket, mapRegion;
+
+function initMaps() {
+  if (mapsInited) return;
+  mapsInited = true;
+
+  /* CartoDB Voyager：英文地名，清晰易讀 */
+  const tiles = () => L.tileLayer(
+    'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+    { attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/attributions">CARTO</a>', maxZoom:19, subdomains:'abcd' }
+  );
+
+  /* Day 標籤圖示 */
+  function dayIcon(label, bg) {
+    return L.divIcon({
+      className: '',
+      html: `<div style="
+        background:${bg};color:#fff;border-radius:50%;
+        width:36px;height:36px;display:flex;flex-direction:column;
+        align-items:center;justify-content:center;
+        font-size:10px;font-weight:800;line-height:1.1;
+        border:2.5px solid #fff;
+        box-shadow:0 2px 8px rgba(0,0,0,0.35);
+        font-family:-apple-system,sans-serif;">${label}</div>`,
+      iconSize:[36,36], iconAnchor:[18,18], popupAnchor:[0,-20]
+    });
+  }
+
+  /* Popup 樣式 */
+  function pop(title, day, desc) {
+    const dayBadge = day
+      ? `<span style="background:#00838F;color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:6px;">${day}</span>`
+      : '';
+    return `<div style="font-family:-apple-system,sans-serif;min-width:180px;">
+      <div style="font-size:14px;font-weight:700;color:#1A2B4A;margin-bottom:4px;">${title}${dayBadge}</div>
+      <div style="font-size:12px;color:#555;line-height:1.5;">${desc}</div>
+    </div>`;
+  }
+
+  /* ──────── 普吉島全圖 ──────── */
+  mapPhuket = L.map('map-phuket').setView([7.92, 98.35], 11);
+  tiles().addTo(mapPhuket);
+
+  [
+    /* 景點 — 橘 */
+    { ll:[7.8272,98.3064], icon:dayIcon('D2\n🏛','#E65100'), title:'大佛 Big Buddha',     day:'Day 2', desc:'全島最高點，360°環島海景；與查龍寺同日' },
+    { ll:[7.8455,98.3362], icon:dayIcon('D2\n🛕','#E65100'), title:'查龍寺 Wat Chalong',  day:'Day 2', desc:'普吉最重要寺廟，金碧輝煌；需遮肩蓋膝' },
+    { ll:[7.8841,98.3923], icon:dayIcon('D2\n🏙','#E65100'), title:'普吉老城 Old Town',    day:'Day 2', desc:'葡萄牙式建築、街頭塗鴉、老咖啡館' },
+    { ll:[7.7641,98.3028], icon:dayIcon('D2\n🌅','#E65100'), title:'普羅姆泰普角',         day:'Day 2', desc:'全普吉最佳日落點，日落約18:30，老城須17:45前出發' },
+    /* 住宿海灘 — 藍 */
+    { ll:[7.8199,98.2978], icon:dayIcon('D1-4\n🏖','#1565C0'), title:'Kata 海灘',          day:'Day 1–4', desc:'住宿基地，家庭友善、浪況平穩' },
+    { ll:[7.8461,98.2974], icon:dayIcon('D1-4\n🏖','#1565C0'), title:'Karon 海灘',         day:'Day 1–4', desc:'住宿基地，注意離岸流，孩子不可單獨下水' },
+    { ll:[7.9391,98.2799], icon:dayIcon('D5-6\n🏖','#0277BD'), title:'Kamala 海灘',        day:'Day 5–6', desc:'換房後新住宿區，海灘寬闊安靜' },
+    { ll:[8.0183,98.2939], icon:dayIcon('D5-6\n🏖','#0277BD'), title:'Bang Tao 海灘',      day:'Day 5–6', desc:'住宿基地，5公里長沙灘；Boat Avenue 在此' },
+    /* 碼頭 — 紫 */
+    { ll:[7.8166,98.3605], icon:dayIcon('D4\n⚓','#6A1B9A'),  title:'Chalong Pier 碼頭',  day:'Day 4', desc:'披披島出發點（Day 4），也可Day 6A拉查島出發；車程15–20分' },
+    { ll:[8.0760,98.4185], icon:dayIcon('D3\n⚓','#6A1B9A'),  title:'Ao Por Pier 碼頭',   day:'Day 3', desc:'攀牙灣出發點（Day 3）；車程50–60分，07:00前出門' },
+    /* 設施 — 紅 */
+    { ll:[8.1132,98.3168], icon:dayIcon('D1\nD7\n✈️','#C62828'), title:'普吉機場 HKT',    day:'Day 1 / Day 7', desc:'Day 1 抵達、Day 7 回程桃園' },
+    { ll:[7.9009,98.3675], icon:dayIcon('急\n🏥','#C62828'),  title:'普吉國際醫院',        day:'急診', desc:'+66 76 249 400（24小時）' },
+  ].forEach(p => L.marker(p.ll, {icon:p.icon}).addTo(mapPhuket).bindPopup(pop(p.title, p.day, p.desc)));
+
+  /* ──────── 周邊島嶼地圖 ──────── */
+  mapRegion = L.map('map-region').setView([7.95, 98.55], 9);
+  tiles().addTo(mapRegion);
+
+  [
+    { ll:[7.8800,98.3100], icon:dayIcon('基地\n🏝','#1565C0'), title:'普吉島 Phuket',              day:'全程', desc:'本島，住宿基地，所有行程的起點' },
+    { ll:[7.8166,98.3605], icon:dayIcon('D4\n⚓','#6A1B9A'),  title:'Chalong Pier',               day:'Day 4 / 6A', desc:'披披島、拉查島出發碼頭' },
+    { ll:[8.0760,98.4185], icon:dayIcon('D3\n⚓','#6A1B9A'),  title:'Ao Por Pier',                day:'Day 3', desc:'攀牙灣出發碼頭（省30分鐘車程）' },
+    { ll:[8.2752,98.5050], icon:dayIcon('D3\n🎬','#00838F'),  title:'詹姆士龐德島',               day:'Day 3', desc:'Ko Tapu 石灰岩柱，攀牙灣行程必去' },
+    { ll:[8.1500,98.5200], icon:dayIcon('D3\n🌊','#00838F'),  title:'攀牙灣 Phang Nga Bay',        day:'Day 3', desc:'海上獨木舟穿越海蝕洞、石灰岩地景' },
+    { ll:[7.7400,98.7731], icon:dayIcon('D4\n🏝','#00838F'),  title:'披披島 Phi Phi Don',          day:'Day 4', desc:'觀景點健行、村落，快艇約1.5小時' },
+    { ll:[7.6782,98.7660], icon:dayIcon('D4\n🏖','#00838F'),  title:'瑪雅灣 Maya Bay',             day:'Day 4', desc:'電影《海灘》場景，翡翠色海水；每日限流，越早越好' },
+    { ll:[7.6087,98.3664], icon:dayIcon('D6A\n🤿','#00897B'), title:'拉查島 Racha Yai',            day:'Day 6A', desc:'選配行程，水清人少，浮潛絕佳；Chalong Pier 出發' },
+  ].forEach(p => L.marker(p.ll, {icon:p.icon}).addTo(mapRegion).bindPopup(pop(p.title, p.day, p.desc)));
+}
+
+/* ── 地圖子頁切換 ── */
+function switchMap(which) {
+  document.querySelectorAll('.map-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + which).classList.add('active');
+  document.getElementById('wrap-phuket').style.display  = which === 'phuket'  ? '' : 'none';
+  document.getElementById('wrap-region').style.display  = which === 'region'  ? '' : 'none';
+  // 強制重繪（Leaflet 在 display:none 時不會正確計算尺寸）
+  if (which === 'phuket' && mapPhuket)  mapPhuket.invalidateSize();
+  if (which === 'region' && mapRegion)  mapRegion.invalidateSize();
+}
+</script>
+</body>
+</html>
