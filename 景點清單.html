@@ -1,0 +1,3097 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>景點口袋清單</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+    background: #f5f0ea;
+    color: #333;
+    padding: 20px;
+  }
+  header {
+    background: linear-gradient(135deg, #5b8c5a, #a8c686);
+    color: white;
+    padding: 24px 32px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+  }
+  header h1 { font-size: 1.6rem; margin-bottom: 6px; }
+  header p { opacity: 0.88; font-size: 0.92rem; }
+
+  .legend {
+    background: white;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    font-size: 0.85rem;
+    color: #666;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .legend b { color: #2d5a2d; }
+
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .filter-bar button {
+    border: none;
+    background: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: #5b8c5a;
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    transition: all 0.15s;
+  }
+  .filter-bar button:hover { background: #5b8c5a; color: white; }
+  .filter-bar button.active { background: #5b8c5a; color: white; }
+
+  .table-wrap {
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th, td { padding: 12px 14px; text-align: left; vertical-align: top; }
+  thead th {
+    background: #e8f0e4;
+    color: #2d5a2d;
+    font-weight: 700;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+  tbody tr { border-bottom: 1px solid #f0f0f0; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #fafff8; }
+
+  .place-name { font-weight: 700; color: #2d5a2d; }
+  .region-tag {
+    display: inline-block;
+    background: #f0f7ee;
+    color: #5b8c5a;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 20px;
+  }
+  .type-tag {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 20px;
+    background: #fdebd0;
+    color: #c0671a;
+    margin: 2px 0;
+  }
+  .diff-easy { color: #2e7d32; font-weight: 600; }
+  .diff-medium { color: #c0671a; font-weight: 600; }
+  .diff-hard { color: #c0392b; font-weight: 600; }
+  .type-tag-solo {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    background: #dbeafe;
+    color: #1d4ed8;
+    margin: 2px 0 2px 4px;
+  }
+
+  .status-select {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 0.82rem;
+    font-family: inherit;
+    color: #555;
+    background: white;
+    cursor: pointer;
+  }
+  .status-todo { border-color: #5b8c5a; color: #2d5a2d; font-weight: 600; }
+  .status-done { border-color: #aaa; color: #999; }
+  .status-skip { border-color: #ccc; color: #bbb; }
+
+  td.notes {
+    color: #777;
+    font-size: 0.85rem;
+    width: 38%;
+    min-width: 260px;
+  }
+  td.notes textarea {
+    width: 100%;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 56px;
+    color: #444;
+    line-height: 1.6;
+    overflow: hidden;
+  }
+  a.source-link {
+    color: #5b8c5a;
+    text-decoration: none;
+    font-size: 0.82rem;
+  }
+  a.source-link:hover { text-decoration: underline; }
+
+  .add-row {
+    padding: 16px;
+    text-align: center;
+    color: #aaa;
+    font-size: 0.85rem;
+    background: #fafafa;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.8rem;
+    color: #aaa;
+  }
+
+  /* ── 搜尋與多維篩選 ── */
+  .filter-panel {
+    background: white;
+    border-radius: 14px;
+    padding: 18px 20px 12px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+  }
+  .search-wrap {
+    position: relative;
+    margin-bottom: 14px;
+  }
+  .search-wrap input {
+    width: 100%;
+    border: 1.5px solid #dde8d9;
+    border-radius: 10px;
+    padding: 10px 40px 10px 14px;
+    font-size: 0.93rem;
+    font-family: inherit;
+    outline: none;
+    background: #f9fdf7;
+    transition: border 0.15s;
+    color: #333;
+  }
+  .search-wrap input:focus { border-color: #5b8c5a; background: white; }
+  .search-wrap input::placeholder { color: #aaa; }
+  .clear-btn {
+    position: absolute; right: 10px; top: 50%;
+    transform: translateY(-50%);
+    border: none; background: none; cursor: pointer;
+    color: #bbb; font-size: 1rem; padding: 4px; line-height: 1;
+  }
+  .clear-btn:hover { color: #666; }
+  .filter-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #999;
+    min-width: 28px;
+    white-space: nowrap;
+  }
+  .filter-bar {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 0;
+  }
+  .filter-bar button {
+    border: none;
+    background: #f0f7ee;
+    padding: 5px 13px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    color: #5b8c5a;
+    font-weight: 600;
+    transition: all 0.13s;
+  }
+  .filter-bar button:hover { background: #5b8c5a; color: white; }
+  .filter-bar button.active { background: #5b8c5a; color: white; }
+  .result-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #f0f0f0;
+  }
+  .result-count { font-size: 0.82rem; color: #5b8c5a; font-weight: 700; }
+  .reset-all {
+    font-size: 0.78rem; color: #aaa; cursor: pointer;
+    background: none; border: none; padding: 2px 6px;
+    font-family: inherit;
+  }
+  .reset-all:hover { color: #666; text-decoration: underline; }
+  tbody tr.hidden { display: none; }
+
+/* ── 地區標題列 ── */
+.area-header td {
+  background: linear-gradient(135deg, #2d5a2d, #4a7c59);
+  color: white;
+  padding: 11px 20px;
+  font-weight: 700;
+  border-radius: 0;
+  border-bottom: none;
+}
+.area-title { font-size: 1rem; font-weight: 800; letter-spacing: 0.5px; }
+.area-desc { font-size: 0.78rem; opacity: 0.82; margin-left: 10px; font-weight: 400; }
+tr.area-header + tr td { border-top: none; }
+tr.area-header { cursor: pointer; user-select: none; }
+tr.area-header:hover td { filter: brightness(1.08); }
+.area-chevron { display: inline-block; margin-right: 8px; transition: transform 0.15s; font-size: 0.85rem; }
+tr.area-header.collapsed .area-chevron { transform: rotate(-90deg); }
+tr[data-status].sec-collapsed { display: none !important; }
+.area-count { font-size: 0.76rem; opacity: 0.75; margin-left: 8px; font-weight: 400; }
+
+/* ── 分頁切換 ── */
+.view-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+.view-tabs button {
+  border: none; background: white; padding: 9px 20px; border-radius: 10px;
+  font-size: 0.9rem; font-weight: 700; color: #999; cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08); transition: all 0.15s;
+}
+.view-tabs button.active { background: #5b8c5a; color: white; }
+.view-tabs button:hover:not(.active) { color: #5b8c5a; }
+
+/* ── 地區快速跳轉 ── */
+.quick-nav {
+  position: sticky; top: 0; z-index: 20;
+  background: #f5f0ea; padding: 10px 0 12px;
+  margin-bottom: 4px;
+}
+.quick-nav-inner {
+  display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+.quick-nav-inner button {
+  flex-shrink: 0; border: none; background: white; color: #5b8c5a;
+  padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;
+  cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.08); white-space: nowrap;
+}
+.quick-nav-inner button:hover { background: #5b8c5a; color: white; }
+
+/* ── 地圖檢視（預設顯示） ── */
+.map-note {
+  background: #fff8e6; border: 1px solid #f0dca0; color: #8a6d1a;
+  border-radius: 10px; padding: 10px 16px; margin-bottom: 14px; font-size: 0.85rem;
+}
+#leaflet-map {
+  width: 100%; height: 70vh; border-radius: 14px; overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+}
+.leaflet-popup-content { font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif; font-size: 0.85rem; line-height: 1.6; }
+.leaflet-popup-content b { color: #2d5a2d; }
+.map-popup-link { color: #5b8c5a; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📍 景點口袋清單</h1>
+  <p>大台北輕鬆出遊景點管理 ｜ 從這裡挑選週二/週四的行程</p>
+</header>
+
+<div class="legend">
+  <b>使用說明：</b>把看到的景點記在這裡，去之前先確認季節/天氣是否合適。狀態欄可改成「已去」標記，避免重複規劃。週報排行程時可從「待去」中挑選。
+</div>
+
+<div class="view-tabs">
+  <button id="tab-map" class="active" onclick="switchView('map')">🗺️ 地圖檢視</button>
+  <button id="tab-list" onclick="switchView('list')">📋 清單檢視</button>
+</div>
+
+<div class="quick-nav" id="quick-nav" style="display:none">
+  <div class="quick-nav-inner" id="quick-nav-inner"></div>
+</div>
+
+<div id="view-list" style="display:none">
+
+<div class="filter-panel">
+  <div class="search-wrap">
+    <input type="text" id="search-input" placeholder="🔍 輸入景點名稱、地區、美食、咖啡…">
+    <button class="clear-btn" id="clear-btn" onclick="clearSearch()" style="display:none" title="清除">✕</button>
+  </div>
+  <div class="filter-row">
+    <span class="filter-label">狀態</span>
+    <div class="filter-bar" data-group="status">
+      <button class="active" data-val="all">全部</button>
+      <button data-val="待去">待去</button>
+      <button data-val="已去">已去</button>
+      <button data-val="不適合">不適合</button>
+    </div>
+  </div>
+  <div class="filter-row">
+    <span class="filter-label">地區</span>
+    <div class="filter-bar" data-group="region">
+      <button class="active" data-val="all">全部</button>
+      <button data-val="台北市">台北市</button>
+      <button data-val="新北市">新北市</button>
+      <button data-val="基隆">基隆</button>
+      <button data-val="桃園">桃園</button>
+      <button data-val="宜蘭">宜蘭</button>
+    </div>
+  </div>
+  <div class="filter-row">
+    <span class="filter-label">類型</span>
+    <div class="filter-bar" data-group="type">
+      <button class="active" data-val="all">全部</button>
+      <button data-val="景點步道">景點步道</button>
+      <button data-val="咖啡茶館">咖啡茶館</button>
+      <button data-val="美食餐廳">美食餐廳</button>
+      <button data-val="體驗活動">體驗活動</button>
+      <button data-val="獨行路線">🧍 獨行路線</button>
+    </div>
+  </div>
+  <div class="filter-row">
+    <span class="filter-label">步行</span>
+    <div class="filter-bar" data-group="diff">
+      <button class="active" data-val="all">全部</button>
+      <button data-val="輕鬆">輕鬆</button>
+      <button data-val="緩坡注意">緩坡/注意</button>
+    </div>
+  </div>
+  <div class="result-bar">
+    <span class="result-count" id="result-count">載入中…</span>
+    <button class="reset-all" onclick="resetAll()">↺ 清除所有篩選</button>
+  </div>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>景點名稱</th>
+        <th>地區</th>
+        <th>類型</th>
+        <th>步行難度</th>
+        <th>樹蔭/遮蔭</th>
+        <th>來源</th>
+        <th>狀態</th>
+        <th>備註</th>
+      </tr>
+    </thead>
+    <tbody id="list-body">
+      <tr class="area-header" data-lat="25.2912996" data-lng="121.5676837"><td colspan="8"><span class="area-title">🌿 石門・北海岸</span><span class="area-desc">梯田步道・老梅石槽・燈塔・海岸景觀</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">嵩山百年梯田步道</td>
+        <td><span class="region-tag">新北市石門區</span></td>
+        <td><span class="type-tag">步道 / 梯田景觀</span></td>
+        <td><span class="diff-medium">未確認（待查）</span></td>
+        <td>未確認（待查）</td>
+        <td><a class="source-link" href="https://www.facebook.com/share/p/1YDEizBENz/" target="_blank">FB貼文 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea placeholder="例如：交通方式、停車、最佳季節...">百年石砌梯田，石門近海邊。需查詢步道長度、是否平緩、有無遮蔭。</textarea></td>
+      </tr>
+      <tr class="area-header" data-lat="24.9530571" data-lng="121.3567408"><td colspan="8"><span class="area-title">🏺 鶯歌</span><span class="area-desc">陶瓷老街・美術館・捏陶體驗・老店美食</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">新北市美術館</td>
+        <td><span class="region-tag">新北市鶯歌區</span></td>
+        <td><span class="type-tag">美術館 / 免費入場</span></td>
+        <td><span class="diff-easy">輕鬆（全平地）</span></td>
+        <td>✅ 室內展館 + 戶外遮蔭</td>
+        <td><a class="source-link" href="https://www.funliday.com/posts/yingge-onedaytour/" target="_blank">Funliday ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>館前路300號，從鶯歌車站文化路出口步行約6分鐘。免費入場，有四大主題展覽與互動體驗。雨天備案首選，全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">新北市立鶯歌陶瓷博物館</td>
+        <td><span class="region-tag">新北市鶯歌區</span></td>
+        <td><span class="type-tag">博物館 / 文化</span></td>
+        <td><span class="diff-easy">輕鬆（全室內）</span></td>
+        <td>✅ 全室內空調</td>
+        <td><a class="source-link" href="https://www.ceramics.ntpc.gov.tw/" target="_blank">官網 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>文化路200號。全台首座陶瓷專業博物館，65歲以上免費入場。平日9:30-17:00，假日至18:00。每月第一個週一休館。全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">鶯歌老街</td>
+        <td><span class="region-tag">新北市鶯歌區</span></td>
+        <td><span class="type-tag">老街 / 陶瓷購物</span></td>
+        <td><span class="diff-easy">輕鬆（平地老街）</span></td>
+        <td>⚠️ 建築部分遮蔭</td>
+        <td><a class="source-link" href="https://www.funliday.com/posts/yingge-onedaytour/" target="_blank">Funliday ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>文化路、尖山埔路一帶，陶瓷商店林立。平地好走，建議平日人少時前往。夏天正午熱，早上或傍晚較舒適。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">三鶯之心公園</td>
+        <td><span class="region-tag">新北市鶯歌區</span></td>
+        <td><span class="type-tag">公共藝術 / 河濱公園</span></td>
+        <td><span class="diff-easy">輕鬆（全平地）</span></td>
+        <td>❌ 無遮蔭</td>
+        <td><a class="source-link" href="https://www.funliday.com/posts/yingge-onedaytour/" target="_blank">Funliday ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>館前路旁，大型公共藝術裝置，又稱「台版羚羊谷」。無遮蔭，建議清晨、黃昏或冬天前往。緊鄰新北市美術館，可一併安排。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">鶯歌山水步道</td>
+        <td><span class="region-tag">新北市鶯歌區</span></td>
+        <td><span class="type-tag">河濱步道 / 散步</span></td>
+        <td><span class="diff-easy">輕鬆（平緩大漢溪沿岸）</span></td>
+        <td>⚠️ 部分樹蔭</td>
+        <td><a class="source-link" href="https://www.funliday.com/posts/yingge-onedaytour/" target="_blank">Funliday ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>環河路沿大漢溪畔，有觀景平台。平緩好走，部分路段有樹蔭，秋冬涼爽最佳。可搭配三鶯龍窯橋一起散步。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">鶯歌永吉公園（炮仗花隧道）</td>
+        <td><span class="region-tag">新北市鶯歌區</span></td>
+        <td><span class="type-tag">公園 / 季節限定</span></td>
+        <td><span class="diff-easy">輕鬆（平地公園）</span></td>
+        <td>✅ 花隧道遮蔭</td>
+        <td><a class="source-link" href="https://www.funliday.com/posts/yingge-onedaytour/" target="_blank">Funliday ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>鶯桃路296號。每年約1-3月炮仗花盛開形成橘色花隧道，非常漂亮。平地公園好走，季節限定，花期前需查詢開花狀況。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">捏陶 / 手拉坯體驗</td>
+        <td><span class="region-tag">新北市鶯歌區</span></td>
+        <td><span class="type-tag">陶藝體驗 / DIY</span></td>
+        <td><span class="diff-easy">輕鬆（室內坐著操作）</span></td>
+        <td>✅ 全室內</td>
+        <td><a class="source-link" href="https://www.funliday.com/posts/yingge-onedaytour/" target="_blank">Funliday ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>新旺集瓷（尖山埔路81號）、源陶工坊、豐陶藝坊等多家可選。約350元/人，作品可宅配。建議事先預約，全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">日和 LiHer 咖啡</td>
+        <td><span class="region-tag">新北市鶯歌區</span></td>
+        <td><span class="type-tag">咖啡廳 / 下午茶</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內座位</td>
+        <td><a class="source-link" href="https://www.funliday.com/posts/yingge-onedaytour/" target="_blank">Funliday ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>永昌街11號，清水模獨棟建築。台灣茶、花茶、司康、磅蛋糕，不限用餐時間。老街散步後休憩的好選擇。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">厚道飲食店</td>
+        <td><span class="region-tag">新北市鶯歌區</span></td>
+        <td><span class="type-tag">台菜 / 午餐</span></td>
+        <td><span class="diff-easy">輕鬆（室內用餐）</span></td>
+        <td>✅ 室內座位</td>
+        <td><a class="source-link" href="https://www.funliday.com/posts/yingge-onedaytour/" target="_blank">Funliday ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>尖山埔路79號，民初復古風格台菜料理，位於老街步行範圍內。建議事先查詢營業時間與是否需要候位。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">勇伯垃圾麵</td>
+        <td><span class="region-tag">新北市鶯歌區</span></td>
+        <td><span class="type-tag">麵食 / 在地老店</span></td>
+        <td><span class="diff-easy">輕鬆（室內用餐）</span></td>
+        <td>✅ 室內座位</td>
+        <td><a class="source-link" href="https://www.funliday.com/posts/yingge-onedaytour/" target="_blank">Funliday ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>中正一路157號，50年老字號乾麵，特製辣油香氣十足。價格平實，在地人常客。建議早去避免售完。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">J歌客家手工麻糬</td>
+        <td><span class="region-tag">新北市鶯歌區</span></td>
+        <td><span class="type-tag">甜點 / 伴手禮</span></td>
+        <td><span class="diff-easy">輕鬆（老街購買）</span></td>
+        <td>⚠️ 老街建築遮蔭</td>
+        <td><a class="source-link" href="https://www.funliday.com/posts/yingge-onedaytour/" target="_blank">Funliday ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>尖山埔路245號，純手工製作多種口味麻糬。老街散步時順手買，可當伴手禮。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">阿嬤ㄟ豆花</td>
+        <td><span class="region-tag">新北市鶯歌區</span></td>
+        <td><span class="type-tag">甜點 / 古早味</span></td>
+        <td><span class="diff-easy">輕鬆（老街購買）</span></td>
+        <td>⚠️ 老街建築遮蔭</td>
+        <td><a class="source-link" href="https://www.funliday.com/posts/yingge-onedaytour/" target="_blank">Funliday ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>尖山埔路115號，黃豆/黑豆花，只要50元。老街走累了消暑首選，古早味平價。</textarea></td>
+      </tr>
+      <tr class="area-header" data-lat="25.1087190" data-lng="121.8435077"><td colspan="8"><span class="area-title">🏮 九份・金瓜石</span><span class="area-desc">山城老街・景觀茶館・黃金博物館・陰陽海</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">九份老街（豎崎路）</td>
+        <td><span class="region-tag">新北市瑞芳區</span></td>
+        <td><span class="type-tag">老街 / 山城夜景</span></td>
+        <td><span class="diff-medium">緩坡＋石階（需爬樓梯）</span></td>
+        <td>⚠️ 建築巷弄半遮蔭</td>
+        <td><a class="source-link" href="https://www.funliday.com/posts/2026-jiufen-onedaytour/" target="_blank">Funliday ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>黃昏前抵達、欣賞燈籠點燈最美。石階多需小心，穿好走鞋。平日人少。順遊：阿柑姨芋圓（頂端有海景座位）、金枝紅糟肉圓、阿珠雪在燒。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">阿妹茶樓 / 海悅樓景觀茶坊</td>
+        <td><span class="region-tag">新北市瑞芳區</span></td>
+        <td><span class="type-tag">景觀茶館 / 下午茶</span></td>
+        <td><span class="diff-easy">輕鬆（室內坐賞景）</span></td>
+        <td>✅ 室內座位</td>
+        <td><a class="source-link" href="https://www.funliday.com/posts/2026-jiufen-onedaytour/" target="_blank">Funliday ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>阿妹茶樓（市下巷20號）傳說神隱少女場景原型，高山茶＋點心。海悅樓（豎崎路31號）觀賞燈籠排排夜景最佳位置。黃昏前訂位或早到。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">黃金博物館</td>
+        <td><span class="region-tag">新北市瑞芳區（金瓜石）</span></td>
+        <td><span class="type-tag">博物館 / 採金體驗</span></td>
+        <td><span class="diff-easy">輕鬆（室內為主，戶外平緩）</span></td>
+        <td>✅ 室內展館</td>
+        <td><a class="source-link" href="https://www.funliday.com/posts/2026-jiufen-onedaytour/" target="_blank">Funliday ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>金光路8號。展示220公斤世界最大金礦石，可觸摸、體驗淘金砂。從九份開車約10分鐘可到金瓜石，可一日串聯。</textarea></td>
+      </tr>
+      <!-- 九份/金瓜石補充 -->
+      <tr data-status="待去">
+        <td class="place-name">水湳洞陰陽海</td>
+        <td><span class="region-tag">新北市瑞芳區</span></td>
+        <td><span class="type-tag">海岸景觀 / 礦場遺跡</span></td>
+        <td><span class="diff-easy">輕鬆（平地觀景台）</span></td>
+        <td>❌ 無遮蔭</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>黃藍交錯口袋海灣，舊礦場流出的金屬礦水造就奇特顏色。停車場即可看到，無需步行。建議晴天上午光線最美，可搭配金瓜石同日遊。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">報時山步道</td>
+        <td><span class="region-tag">新北市瑞芳區（金瓜石）</span></td>
+        <td><span class="type-tag">短程步道 / 陰陽海觀景</span></td>
+        <td><span class="diff-easy">輕鬆（5分鐘石階）</span></td>
+        <td>❌ 無遮蔭</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>勸濟堂旁，石階5分鐘即到頂，可一望陰陽海漸層全景。全程短、難度低，但無遮蔭，建議秋冬或清晨前往。可搭配水湳洞同日遊。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">暇咖啡 HIMA CAFE</td>
+        <td><span class="region-tag">新北市瑞芳區（九份）</span></td>
+        <td><span class="type-tag">景觀咖啡館 / 手沖</span></td>
+        <td><span class="diff-easy">輕鬆（老街步行可到）</span></td>
+        <td>✅ 玻璃屋室內座位</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>豎崎路18號。玻璃屋框住陰陽海景，職人手沖咖啡。九份老街逛完後的最佳休憩點，坐著喝咖啡看海。建議平日前往，假日座位難求。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">水心月茶坊</td>
+        <td><span class="region-tag">新北市瑞芳區（九份）</span></td>
+        <td><span class="type-tag">景觀茶坊 / 古厝</span></td>
+        <td><span class="diff-easy">輕鬆（室內坐賞景）</span></td>
+        <td>✅ 室內老宅</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>輕便路308號，紅磚古厝，天空之城視野。台灣高山茶配點心，靜靜看海。比阿妹茶樓低調，人潮相對少，適合慢慢坐。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">貓十五義式冰淇淋</td>
+        <td><span class="region-tag">新北市瑞芳區（九份）</span></td>
+        <td><span class="type-tag">冰淇淋 / 老宅甜點</span></td>
+        <td><span class="diff-easy">輕鬆（室內/半戶外）</span></td>
+        <td>✅ 室內老宅座位</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>輕便路129-3號2樓，老宅改建，陰陽海景配手工義式冰淇淋。九份下午茶的清爽選擇，台灣在地口味優先。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">吾穀茶糧九份食茶館</td>
+        <td><span class="region-tag">新北市瑞芳區（九份）</span></td>
+        <td><span class="type-tag">擂茶 / 台式餐點</span></td>
+        <td><span class="diff-easy">輕鬆（室內用餐）</span></td>
+        <td>✅ 室內窗景座位</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>基山街166號，擂茶特色餐點，山海窗景。可體驗台灣客家擂茶文化，午餐兼喝茶，是九份老街上較特別的飲食體驗。</textarea></td>
+      </tr>
+      <tr class="area-header" data-lat="25.2113474" data-lng="121.6963751"><td colspan="8"><span class="area-title">🌊 萬里・金山・野柳</span><span class="area-desc">野柳女王頭・金山老街鴨肉・繡球花田・溫泉</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">野柳地質公園</td>
+        <td><span class="region-tag">新北市萬里區</span></td>
+        <td><span class="type-tag">地質景觀 / 女王頭</span></td>
+        <td><span class="diff-easy">輕鬆（平坦步道）</span></td>
+        <td>❌ 無遮蔭</td>
+        <td><a class="source-link" href="https://taiwantour.net/new-taipei-city-wanli/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>步道平坦好走，但完全無遮蔭，夏天正午極熱。建議秋冬或清晨前往，穿防滑鞋。女王頭、燭台石是必拍地標。需購票。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">金山老街 ＋ 廟口鴨肉</td>
+        <td><span class="region-tag">新北市金山區</span></td>
+        <td><span class="type-tag">老街 / 在地美食</span></td>
+        <td><span class="diff-easy">輕鬆（全平地）</span></td>
+        <td>⚠️ 建築遮蔭</td>
+        <td><a class="source-link" href="https://bobolife77.com/%E9%87%91%E5%B1%B1%E8%90%AC%E9%87%8C%E6%99%AF%E9%BB%9E%E6%87%B6%E4%BA%BA%E5%8C%85/" target="_blank">藍波波 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>金山廟口鴨肉是必吃在地美食，平日人少較舒適。可順遊朱銘美術館（戶外雕塑園區，需體力）或金山溫泉。</textarea></td>
+      </tr>
+      <tr data-status="不適合">
+        <td class="place-name">神秘海岸・一線天</td>
+        <td><span class="region-tag">新北市金山區</span></td>
+        <td><span class="type-tag">海蝕地形 / 秘境</span></td>
+        <td><span class="diff-hard">不適合（岩石地形需手腳並用）</span></td>
+        <td>❌ 無遮蔭</td>
+        <td><a class="source-link" href="https://jfsblog.com/blog/post/mysterious-coast" target="_blank">部落格 ↗</a></td>
+        <td>
+          <select class="status-select status-skip" onchange="updateStatus(this)">
+            <option>待去</option><option>已去</option><option selected>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>水尾漁港入口進入。穿越海蝕洞「一線天」出口即見燭台雙嶼壯景。但海岸全是岩石堆積、路面濕滑，需手腳並用，且須注意潮汐時間，不建議銀髮族前往。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">金山老街美食三連（鴨肉・檸檬・豆花）</td>
+        <td><span class="region-tag">新北市金山區</span></td>
+        <td><span class="type-tag">在地美食 / 老街小吃</span></td>
+        <td><span class="diff-easy">輕鬆（平地老街）</span></td>
+        <td>⚠️ 建築騎樓遮蔭</td>
+        <td><a class="source-link" href="https://newtaipei.travel/zh-tw/attractions/detail/109616" target="_blank">新北觀旅 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>三家必吃：①金包里鴨肉（金包里街104號）②華芝香檸檬店（金包里街118號，現榨檸檬飲）③張記手工豆花仙草（中山路190巷2號，消暑甜點）。可與金山老街/廟口同日遊，步行串連。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">高家繡球花田（萬里第三園區）</td>
+        <td><span class="region-tag">新北市萬里區</span></td>
+        <td><span class="type-tag">花田 / 季節限定</span></td>
+        <td><span class="diff-easy">輕鬆（平緩花田步道）</span></td>
+        <td>❌ 無遮蔭（大晴天熱）</td>
+        <td><a class="source-link" href="https://newtaipei.travel/zh-tw/attractions/detail/403312" target="_blank">新北觀旅 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>大坪路32-6號。1.8萬坪、40萬株繡球花，花色多樣。門票$200可折抵消費$100。花期：5月中-10月（今年新品種延長至秋季）。5:00-18:00。無遮蔭，建議清晨或陰天，天氣確認後再出發。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">金山溫泉（碳酸氫鈉泉）</td>
+        <td><span class="region-tag">新北市金山區</span></td>
+        <td><span class="type-tag">溫泉 / 戶外泡湯</span></td>
+        <td><span class="diff-easy">輕鬆（室內/戶外泡湯）</span></td>
+        <td>✅ 部分遮蔭設施</td>
+        <td><a class="source-link" href="https://bobolife77.com/%E9%87%91%E5%B1%B1%E8%90%AC%E9%87%8C%E6%99%AF%E9%BB%9E%E6%87%B6%E4%BA%BA%E5%8C%85/" target="_blank">藍波波 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>金山有多處溫泉旅館及公共浴池，富基漁港旁有平價大眾池。碳酸氫鈉泉「美人湯」護膚效果好。秋冬泡湯最舒適，可搭配老街美食一日遊。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">龜吼漁港（萬里蟹）</td>
+        <td><span class="region-tag">新北市萬里區</span></td>
+        <td><span class="type-tag">漁港 / 季節美食</span></td>
+        <td><span class="diff-easy">輕鬆（平地漁港）</span></td>
+        <td>⚠️ 部分遮蔭</td>
+        <td><a class="source-link" href="https://taiwantour.net/new-taipei-city-wanli/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>每年約9-11月萬里蟹季，在地現煮最新鮮。漁港平地好走。可搭配野柳同日遊（車程約10分鐘）。三協香等店家可直接購買煮熟螃蟹。</textarea></td>
+      </tr>
+      <tr class="area-header" data-lat="24.9327939" data-lng="121.3692838"><td colspan="8"><span class="area-title">🏛️ 三峽</span><span class="area-desc">巴洛克老街・祖師廟・藍染體驗</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">三峽老街（民權街）</td>
+        <td><span class="region-tag">新北市三峽區</span></td>
+        <td><span class="type-tag">百年老街 / 巴洛克建築</span></td>
+        <td><span class="diff-easy">輕鬆（全平地）</span></td>
+        <td>✅ 拱廊建築全程遮蔭</td>
+        <td><a class="source-link" href="https://www.klook.com/zh-TW/blog/sanxia-old-street-food/" target="_blank">Klook ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>民權街37-147號，紅磚拱廊建築，全程有騎樓遮蔭，夏天也適合！必吃：金牛角麵包、古早味豆花、清水冬瓜茶。24小時開放。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">三峽藍染 DIY 體驗</td>
+        <td><span class="region-tag">新北市三峽區</span></td>
+        <td><span class="type-tag">文化體驗 / DIY</span></td>
+        <td><span class="diff-easy">輕鬆（室內操作）</span></td>
+        <td>✅ 室內工作室</td>
+        <td><a class="source-link" href="https://travelss.net/2026/03/04/2026-%E4%B8%89%E5%B3%BD%E8%80%81%E8%A1%97%E6%B7%B1%E5%BA%A6%E6%97%85%E9%81%8A%E6%8C%87%E5%8D%97%EF%BC%9A%E8%B5%B0%E5%85%A5%E7%B4%85%E7%A3%9A%E6%8B%B1%E5%BB%8A%E7%9A%84%E7%99%BE%E5%B9%B4%E6%AD%B2/" target="_blank">旅遊誌 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>三峽在地染坊，體驗綁紮到浸染的藍染全流程，完成可帶走作品。室內全程不受天氣影響。建議事先預約。老街旁步行可達。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">三峽祖師廟</td>
+        <td><span class="region-tag">新北市三峽區</span></td>
+        <td><span class="type-tag">廟宇 / 百年建築</span></td>
+        <td><span class="diff-easy">輕鬆（平地廟宇）</span></td>
+        <td>✅ 廟頂遮蔭</td>
+        <td><a class="source-link" href="https://www.klook.com/zh-TW/blog/sanxia-old-street-food/" target="_blank">Klook ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>緊鄰老街，國寶級廟宇，雕刻精細堪稱「東方藝術殿堂」。參觀免費，老街出口步行即到。全年皆宜。</textarea></td>
+      </tr>
+      <tr class="area-header" data-lat="24.8186137" data-lng="121.4497278"><td colspan="8"><span class="area-title">🍁 滿月圓</span><span class="area-desc">國家森林遊樂區・楓紅・瀑布步道</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">滿月圓國家森林遊樂區</td>
+        <td><span class="region-tag">新北市三峽區</span></td>
+        <td><span class="type-tag">森林步道 / 楓紅瀑布</span></td>
+        <td><span class="diff-easy">輕鬆（平緩鋪面林道）</span></td>
+        <td>✅ 全程林蔭茂密</td>
+        <td><a class="source-link" href="https://newtaipei.travel/zh-tw/attractions/detail/109649" target="_blank">新北觀旅 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>從遊客中心到第一瀑布觀景台約40-50分鐘，路面平整鋪設，全程林蔭負離子，推輪椅亦可行。12月楓紅「台灣最美低海拔楓紅」。夏天消暑、冬天賞楓，全年皆宜。需購票。</textarea></td>
+      </tr>
+      <tr class="area-header" data-lat="24.8649300" data-lng="121.5516800"><td colspan="8"><span class="area-title">💧 烏來</span><span class="area-desc">泰雅老街・台車瀑布・溫泉湯屋</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">烏來老街 ＋ 泰雅美食</td>
+        <td><span class="region-tag">新北市烏來區</span></td>
+        <td><span class="type-tag">老街 / 原民美食</span></td>
+        <td><span class="diff-easy">輕鬆（平地老街）</span></td>
+        <td>⚠️ 建築部分遮蔭</td>
+        <td><a class="source-link" href="https://gofunit.com/%E7%83%8F%E4%BE%86%E8%80%81%E8%A1%97%E4%B8%80%E6%97%A5%E9%81%8A/" target="_blank">好好玩 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>必吃：小米麻糬（水芙蓉創始店）、炸溪蝦、竹筒飯、黑豬肉香腸、馬告山豬肉香腸。假日人潮多，建議平日前往。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">烏來台車 ＋ 瀑布</td>
+        <td><span class="region-tag">新北市烏來區</span></td>
+        <td><span class="type-tag">台車 / 瀑布觀景</span></td>
+        <td><span class="diff-easy">輕鬆（搭台車為主）</span></td>
+        <td>✅ 溪谷樹蔭</td>
+        <td><a class="source-link" href="https://gofunit.com/%E7%83%8F%E4%BE%86%E8%80%81%E8%A1%97%E4%B8%80%E6%97%A5%E9%81%8A/" target="_blank">好好玩 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>全台唯一動力小火車，從老街搭台車約10分鐘直達瀑布廣場，免去步行。烏來瀑布高約80公尺，雨季水量大更壯觀。假日台車排隊長，建議平日。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">烏來溫泉湯屋</td>
+        <td><span class="region-tag">新北市烏來區</span></td>
+        <td><span class="type-tag">溫泉 / 湯屋</span></td>
+        <td><span class="diff-easy">輕鬆（室內泡湯）</span></td>
+        <td>✅ 室內湯屋</td>
+        <td><a class="source-link" href="https://gofunit.com/%E7%83%8F%E4%BE%86%E8%80%81%E8%A1%97%E4%B8%80%E6%97%A5%E9%81%8A/" target="_blank">好好玩 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>碳酸氫鈉泉「美人湯」，無色無味護膚。私人湯屋約200元/人起，馥森阪治Trio、湯布苑溫泉會館等。秋冬最適合老街逛完再泡湯。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">內洞森林遊樂區</td>
+        <td><span class="region-tag">新北市烏來區</span></td>
+        <td><span class="type-tag">國家森林遊樂區 / 瀑布步道</span></td>
+        <td><span class="diff-easy">輕鬆（全平路，輪椅可行）</span></td>
+        <td>✅ 全程林蔭，負離子全台最高</td>
+        <td><a class="source-link" href="https://www.welcometw.com/%E5%85%A7%E6%B4%9E%E5%9C%8B%E5%AE%B6%E6%A3%AE%E6%9E%97%E9%81%8A%E6%A8%82%E5%8D%80/" target="_blank">好好玩 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>信賢村，觀瀑步道全程平路，娃娃車輪椅皆可通行，全程大樹遮蔭。三層瀑布壯觀，空氣中負離子含量全台最高，夏天消暑極佳。門票150元(成人)。與信賢步道相鄰，可合併半日遊。全年皆宜，夏天最涼爽。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">拔刀爾山步道</td>
+        <td><span class="region-tag">新北市烏來區</span></td>
+        <td><span class="type-tag">登山步道 / 林蔭展望</span><span class="type-tag-solo">🧍 獨行路線</span></td>
+        <td><span class="diff-hard">爬山（中等，來回約4-5km）</span></td>
+        <td>✅ 全程濃密林蔭</td>
+        <td><a class="source-link" href="https://vocus.cc/article/69c7e887fd897800015b012a" target="_blank">方格子 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>烏來區，來回約4-5km中等難度，全程濃密林蔭涼爽，兼具自然景觀與文化意涵的經典郊山路線。春季沿途賞櫻。路跡清楚，登山客多，適合男主角單獨前往。⚠️ 對女主角難度稍高，建議男主角獨行日。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">信賢步道</td>
+        <td><span class="region-tag">新北市烏來區</span></td>
+        <td><span class="type-tag">溪畔步道 / 親子</span></td>
+        <td><span class="diff-easy">輕鬆（1.5km平緩溪畔）</span></td>
+        <td>✅ 全程綠蔭</td>
+        <td><a class="source-link" href="https://hiking.biji.co/index.php?q=trail&act=detail&id=284" target="_blank">健行筆記 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>烏來信賢村，南勢溪旁1.5km親子步道，全程平緩溪畔林蔭，水聲潺潺，夏日消暑首選。可搭配烏來老街、台車、溫泉同日遊，打造完整烏來行程。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">紅河谷步道</td>
+        <td><span class="region-tag">新北市烏來區</span></td>
+        <td><span class="type-tag">溪谷步道 / 吊橋</span></td>
+        <td><span class="diff-easy">輕鬆（大部分平緩，少量緩坡）</span></td>
+        <td>✅ 全程林蔭涼爽</td>
+        <td><a class="source-link" href="https://hiking.biji.co/index.php?q=review&act=info&review_id=23952" target="_blank">健行筆記 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>加九寮溪旁越嶺古道，沿途3座吊橋，約一二成路段有緩坡，其餘全程平緩，兩旁綠樹成蔭，有筆筒樹、鳳蝶、小樹蛙，夏天戲水踏溪絕佳。與加九寮步道相鄰可合併遊。全年皆宜，夏天最舒爽。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">五重溪瀑布（蘭吼瀑布）</td>
+        <td><span class="region-tag">新北市烏來區</span></td>
+        <td><span class="type-tag">瀑布景觀 / 路邊即看</span></td>
+        <td><span class="diff-easy">輕鬆（下車即看，零步行）</span></td>
+        <td>⚠️ 谷地遮蔭尚可</td>
+        <td><a class="source-link" href="https://bunnyann.tw/golanhou-waterfall/" target="_blank">Bunny Ann ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>北107縣道9公里處（往福山部落途中），路邊下車即見壯觀多層瀑布，完全不用爬山。岩層疊落形成大小瀑布接力，可停車拍照。需開車前往，路面尚好。可順路搭配內洞、福山部落同日遊。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">桂山發電廠冰品部</td>
+        <td><span class="region-tag">新北市新店區</span></td>
+        <td><span class="type-tag">古早味冰棒 / 隱藏美食</span></td>
+        <td><span class="diff-easy">輕鬆（停車場步行5分鐘）</span></td>
+        <td>✅ 有頂蓋遮蔭</td>
+        <td><a class="source-link" href="https://bunnyann.tw/wulai-popsicle/" target="_blank">Bunny Ann ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>桂山路34號（台電桂山電廠內），前往烏來途中必停。清冰8元，其他口味12元，用料實在銅板價。3-10月營業，週一～五08:30-17:30，週六日09:00-18:00。附免費停車場，可宅配訂購。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">獅仔頭山步道</td>
+        <td><span class="region-tag">新北市新店區</span></td>
+        <td><span class="type-tag">登山步道 / 小百岳</span><span class="type-tag-solo">🧍 獨行路線</span></td>
+        <td><span class="diff-hard">爬山（有90度天梯，技術性）</span></td>
+        <td>✅ 幾乎全程遮蔭，照不到太陽</td>
+        <td><a class="source-link" href="https://hiking.biji.co/index.php?q=trail&act=detail&id=185" target="_blank">健行筆記 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>新店，台灣小百岳，海拔857m，後段有90度天梯需技術攀岩，全程幾乎照不到太陽，體感涼爽。⚠️ 難度較高，女主角不適合；適合男主角獨行挑戰。雨後路滑需登山鞋。搭公車可達（綠13、849路）。</textarea></td>
+      </tr>
+      <tr class="area-header" data-lat="24.9568045" data-lng="121.5345806"><td colspan="8"><span class="area-title">🚣 碧潭・新店</span><span class="area-desc">水岸划船・水舞季・河濱散步</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">碧潭水岸 ＋ 划船</td>
+        <td><span class="region-tag">新北市新店區</span></td>
+        <td><span class="type-tag">水岸景觀 / 划船體驗</span></td>
+        <td><span class="diff-easy">輕鬆（全平地水岸）</span></td>
+        <td>✅ 水岸綠樹遮蔭</td>
+        <td><a class="source-link" href="https://www.welcometw.com/%E7%A2%A7%E6%BD%AD%E4%B8%80%E6%97%A5%E9%81%8A/" target="_blank">好好玩 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>捷運新店站出口步行2分鐘即到，非常方便。水岸平坦好走、綠樹成蔭。可租腳踏船在湖上賞景。周邊光明街有多家特色餐廳。全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">碧潭水舞季（季節限定）</td>
+        <td><span class="region-tag">新北市新店區</span></td>
+        <td><span class="type-tag">水舞聲光秀 / 夜間活動</span></td>
+        <td><span class="diff-easy">輕鬆（全平地觀賞）</span></td>
+        <td>⚠️ 夜間無遮蔭</td>
+        <td><a class="source-link" href="https://www.walkerland.com.tw/subject/view/423137" target="_blank">窩客島 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>每年約5-10月夜間水舞秀（具體日期每年公告）。平地觀賞好走，夏天夜晚涼爽，是不錯的夜間活動選擇。</textarea></td>
+      </tr>
+      <tr class="area-header" data-lat="24.9369904" data-lng="121.7116814"><td colspan="8"><span class="area-title">🍵 坪林</span><span class="area-desc">包種茶鄉・老街・茶業博物館・溪畔自行車</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">南山寺景觀平台</td>
+        <td><span class="region-tag">新北市坪林區</span></td>
+        <td><span class="type-tag">景觀平台 / 寺廟</span></td>
+        <td><span class="diff-medium">未確認（待查）</span></td>
+        <td>未確認（待查）</td>
+        <td><a class="source-link" href="https://www.facebook.com/hashtag/南山寺景觀平台" target="_blank">FB貼文 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea placeholder="例如：交通方式、停車、最佳季節...">坪林山區景觀平台，可眺望北勢溪。需查詢步行距離與是否有停車場。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">坪林老街 ＋ 茶鄉美食</td>
+        <td><span class="region-tag">新北市坪林區</span></td>
+        <td><span class="type-tag">老街 / 包種茶鄉</span></td>
+        <td><span class="diff-easy">輕鬆（200公尺平地老街）</span></td>
+        <td>⚠️ 部分建築遮蔭</td>
+        <td><a class="source-link" href="https://almablog.tw/blog/post/pinglin-street" target="_blank">艾瑪部落格 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>坪林街，全長200公尺輕鬆逛完。必吃：72小時茶葉蛋、茶油麵線、茶香冰淇淋、茶粿、茶饅頭。可搭配茶業博物館同日遊。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">坪林茶業博物館</td>
+        <td><span class="region-tag">新北市坪林區</span></td>
+        <td><span class="type-tag">博物館 / 茶文化</span></td>
+        <td><span class="diff-easy">輕鬆（室內展覽）</span></td>
+        <td>✅ 室內展館</td>
+        <td><a class="source-link" href="https://bjsmile.tw/piling-old-street/" target="_blank">紫色微笑 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>過橋即到老街，展示包種茶製程與茶文化歷史。室內冷氣，雨天備案。有茶皂DIY體驗課程可預約。全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">北勢溪自行車道</td>
+        <td><span class="region-tag">新北市坪林區</span></td>
+        <td><span class="type-tag">河濱自行車道 / 森林散步</span></td>
+        <td><span class="diff-easy">輕鬆（平緩溪畔步道）</span></td>
+        <td>✅ 林蔭茂密</td>
+        <td><a class="source-link" href="https://lordcat.net/archives/2427" target="_blank">貓大爺 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>沿北勢溪畔，群山環繞、林蔭充足、芬多精豐沛。可步行或租自行車。夏天清涼，全年皆宜。坪林老街旁即可出發。</textarea></td>
+      </tr>
+      <tr class="area-header" data-lat="24.9960183" data-lng="121.5762960"><td colspan="8"><span class="area-title">🚡 貓空</span><span class="area-desc">纜車・樟樹步道・景觀茶館</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">貓空纜車</td>
+        <td><span class="region-tag">台北市文山區</span></td>
+        <td><span class="type-tag">纜車 / 茶園景觀</span></td>
+        <td><span class="diff-easy">輕鬆（全程搭乘）</span></td>
+        <td>✅ 纜車廂內遮蔭</td>
+        <td><a class="source-link" href="https://www.funliday.com/posts/mao-kong-gondola/" target="_blank">Funliday ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>動物園站搭纜車上山，俯瞰台北市區與茶園。假日排隊需時，建議平日。周一部分維修休館，出發前確認。可選水晶透明地板車廂（額外收費）。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">貓空樟樹步道</td>
+        <td><span class="region-tag">台北市文山區</span></td>
+        <td><span class="type-tag">森林步道 / 賞景</span></td>
+        <td><span class="diff-easy">輕鬆（平緩林間步道）</span></td>
+        <td>✅ 樟樹全程遮蔭</td>
+        <td><a class="source-link" href="https://gofunit.com/%E8%B2%93%E7%A9%BA%E4%B8%80%E6%97%A5%E9%81%8A-%E6%97%85%E9%81%8A%E6%94%BB%E7%95%A5-%E4%BA%A4%E9%80%9A%E3%80%81%E6%99%AF%E9%BB%9E%E3%80%81%E7%BE%8E%E9%A3%9F/" target="_blank">好好玩 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>貓空纜車站附近，樟樹成蔭特別適合夏天散步，沿途芬多精清新。輕鬆平緩，搭配纜車同日安排最佳。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">貓空茶館（邀月茶坊／四哥的店）</td>
+        <td><span class="region-tag">台北市文山區</span></td>
+        <td><span class="type-tag">景觀茶館 / 台灣茶</span></td>
+        <td><span class="diff-easy">輕鬆（室內或戶外遮棚）</span></td>
+        <td>✅ 室內座位或遮棚</td>
+        <td><a class="source-link" href="https://gofunit.com/%E8%B2%93%E7%A9%BA%E5%96%9D%E8%8C%B6%E6%8E%A8%E8%96%A6-5%E5%A4%A7%E4%BA%BA%E6%B0%A3%E8%B3%9E%E6%99%AF-%E6%B3%A1%E8%8C%B6-%E6%99%AF%E8%A7%80%E8%8C%B6%E9%A4%90%E5%BB%B3-%E8%8C%B6%E9%A4%A8/" target="_blank">好好玩 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>邀月茶坊：景觀茶料理，可俯瞰台北夜景，適合悠閒下午茶。四哥的店：纜車終點步行6分鐘，人氣景觀餐廳。兩者皆建議平日前往、可預訂座位。</textarea></td>
+      </tr>
+      <tr class="area-header" data-lat="25.1446147" data-lng="121.8037133"><td colspan="8"><span class="area-title">⚓ 基隆</span><span class="area-desc">潮境公園・正濱彩色屋・和平島・白沙灘・景觀咖啡</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">潮境公園</td>
+        <td><span class="region-tag">基隆市中正區</span></td>
+        <td><span class="type-tag">海洋公園 / 親子</span></td>
+        <td><span class="diff-easy">輕鬆（路面略不平）</span></td>
+        <td>❌ 無遮蔭</td>
+        <td><a class="source-link" href="https://taiwantour.net/keelung/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>北寧路369巷。潮境智能海洋館、鸚鵡螺溜滑梯。無遮蔭夏天辛苦，建議秋冬或傍晚；路面崎嶇請穿好走的鞋。</textarea></td>
+      </tr>
+      <tr data-status="不適合">
+        <td class="place-name">大坪海岸</td>
+        <td><span class="region-tag">基隆市中正區</span></td>
+        <td><span class="type-tag">海蝕平台 / 秘境</span></td>
+        <td><span class="diff-hard">不適合（石頭路面滑）</span></td>
+        <td>❌ 無遮蔭</td>
+        <td><a class="source-link" href="https://taiwantour.net/daping-coast/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-skip" onchange="updateStatus(this)">
+            <option>待去</option>
+            <option>已去</option>
+            <option selected>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>八斗子漁港一街底。春天綠藻美，但岩石濕滑、無廁所無沖水設備、無遮蔭，體力要求高，不建議。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">大武崙白沙灘（外木山）</td>
+        <td><span class="region-tag">基隆市安樂區</span></td>
+        <td><span class="type-tag">沙灘 / 戲水玩沙</span></td>
+        <td><span class="diff-easy">輕鬆（平坦沙灘）</span></td>
+        <td>❌ 無遮蔭（可租帳篷）</td>
+        <td><a class="source-link" href="https://taiwantour.net/dawulun/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>外木山澳底海灘，免費入場，有廁所沖腳設備。細沙金黃乾淨，可租帳篷遮陽。從基隆車站搭305、310公車至「大武崙沙灘站」步行100公尺即到。夏天玩水、秋冬賞景皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">松萱休閒咖啡館</td>
+        <td><span class="region-tag">基隆市安樂區</span></td>
+        <td><span class="type-tag">景觀咖啡廳 / 海景餐廳</span></td>
+        <td><span class="diff-easy">輕鬆（室內二樓座位）</span></td>
+        <td>✅ 室內＋露天遮棚海景座位</td>
+        <td><a class="source-link" href="https://www.walkerland.com.tw/article/view/335595" target="_blank">窩客島 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>湖海路二段140號2樓，11:00-23:00。二樓海景第一排，正對外木山大武崙白沙灘，蔡依林打卡名店，評分4.9。推薦海味水餃、壺裝熱奶茶。價格親民40-150元。可搭配白沙灘同日遊。</textarea></td>
+      </tr>
+      <!-- 基隆補充 -->
+      <tr data-status="待去">
+        <td class="place-name">正濱漁港彩色屋</td>
+        <td><span class="region-tag">基隆市中正區</span></td>
+        <td><span class="type-tag">彩色漁港 / 打卡景點</span></td>
+        <td><span class="diff-easy">輕鬆（全平地）</span></td>
+        <td>❌ 無遮蔭</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>中正路一帶，馬卡龍色系漁港屋舍映在水面，倒影極美。平地好走，無遮蔭，建議上午光線充足時前往。可搭配和平島公園同日遊（車程約5分鐘）。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">基隆和平島公園</td>
+        <td><span class="region-tag">基隆市中正區</span></td>
+        <td><span class="type-tag">地質公園 / 海岸</span></td>
+        <td><span class="diff-easy">輕鬆（平緩步道）</span></td>
+        <td>❌ 無遮蔭</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>平一路360號，需購票。多樣岩石地質地形，步道平緩。夏天有戲水區。無遮蔭，建議秋冬或清晨，夏天避正午。可與正濱漁港串聯。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">望海巷跨海景觀橋</td>
+        <td><span class="region-tag">基隆市中正區</span></td>
+        <td><span class="type-tag">景觀橋 / 海景</span></td>
+        <td><span class="diff-easy">輕鬆（橋上平地步行）</span></td>
+        <td>❌ 無遮蔭</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>北寧路472號對面，170公尺跨海步橋，黃昏景色優美。平地好走，無遮蔭。傍晚夕陽時分最佳，可搭配潮境公園同日遊。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">基隆燈塔</td>
+        <td><span class="region-tag">基隆市中正區</span></td>
+        <td><span class="type-tag">燈塔 / 港灣景觀</span></td>
+        <td><span class="diff-easy">輕鬆（平地公路可達）</span></td>
+        <td>❌ 無遮蔭</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>光華路51號，潔白燈塔俯瞰基隆港與基隆嶼全景。開車可到附近停車，步行距離短。秋冬清爽季節最適合，可搭配正濱漁港同日遊。</textarea></td>
+      </tr>
+      <tr class="area-header" data-lat="25.2935059" data-lng="121.5423299"><td colspan="8"><span class="area-title">🌿 新北散步</span><span class="area-desc">老梅石槽・麟山鼻・八連溪・觀音山・千島湖・望古瀑布</span></td></tr>
+      <tr data-status="待去" data-cluster="北海岸・三芝">
+        <td class="place-name">老梅綠石槽</td>
+        <td><span class="region-tag">新北市石門區</span></td>
+        <td><span class="type-tag">海岸景觀 / 季節限定</span></td>
+        <td><span class="diff-easy">輕鬆（平坦海岸）</span></td>
+        <td>❌ 無遮蔭</td>
+        <td><a class="source-link" href="https://taiwantour.net/taipei-travel/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>每年3-4月石槽覆滿綠藻最美，5月後枯黃。無遮蔭，建議早上或陰天前往，夏天避開。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="北海岸・三芝">
+        <td class="place-name">麟山鼻木棧道</td>
+        <td><span class="region-tag">新北市三芝區</span></td>
+        <td><span class="type-tag">海岸步道 / 木棧道</span></td>
+        <td><span class="diff-easy">輕鬆（平緩木棧道）</span></td>
+        <td>❌ 無遮蔭</td>
+        <td><a class="source-link" href="https://taiwantour.net/taipei-travel/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>三芝海邊木棧道，可看礁石地形。無遮蔭，秋冬涼爽時最適合；夏天清晨前往或避開。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="北海岸・三芝">
+        <td class="place-name">八連溪生態步道</td>
+        <td><span class="region-tag">新北市三芝區</span></td>
+        <td><span class="type-tag">生態步道 / 溪谷</span></td>
+        <td><span class="diff-easy">輕鬆（平緩溪畔小徑）</span></td>
+        <td>✅ 林蔭充足</td>
+        <td><a class="source-link" href="https://taiwantour.net/taipei-travel/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>三芝溪畔親子步道，林蔭涼爽。夏天也舒適。可觀賞溪流生態，全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="五股觀音山">
+        <td class="place-name">觀音山林稍步道</td>
+        <td><span class="region-tag">新北市五股區</span></td>
+        <td><span class="type-tag">森林步道 / 親子</span></td>
+        <td><span class="diff-easy">輕鬆（平緩林間小路）</span></td>
+        <td>✅ 樹蔭良好</td>
+        <td><a class="source-link" href="https://taiwantour.net/taipei-travel/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>觀音山腳平緩林間步道（非硬漢嶺），樹蔭涼爽。注意與硬漢嶺步道區分，勿走錯。全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="新店・石碇">
+        <td class="place-name">千島湖八卦茶園</td>
+        <td><span class="region-tag">新北市新店區</span></td>
+        <td><span class="type-tag">茶園景觀 / 觀景台</span></td>
+        <td><span class="diff-easy">輕鬆（平緩茶園小路）</span></td>
+        <td>❌ 無遮蔭</td>
+        <td><a class="source-link" href="https://taiwantour.net/taipei-travel/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>新店翡翠水庫旁，俯瞰湖光山色。步行平緩但無遮蔭，建議清晨或秋冬前往，夏天請避開正午。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="平溪・雙溪・汐止">
+        <td class="place-name">望古瀑布</td>
+        <td><span class="region-tag">新北市平溪區</span></td>
+        <td><span class="type-tag">瀑布步道 / 生態</span></td>
+        <td><span class="diff-easy">輕鬆（緩坡步道約20分）</span></td>
+        <td>✅ 林蔭充足</td>
+        <td><a class="source-link" href="https://taiwantour.net/taipei-travel/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>平溪線小車站旁，步行約20分可到瀑布，全程林蔭。可順遊十分老街。雨後水量大更壯觀，全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="平溪・雙溪・汐止">
+        <td class="place-name">雙溪上林荷花園</td>
+        <td><span class="region-tag">新北市雙溪區</span></td>
+        <td><span class="type-tag">景點 / 荷花田 / 季節限定</span></td>
+        <td><span class="diff-easy">輕鬆（平地田區）</span></td>
+        <td>⚠️ 田區無遮蔭，夜間打卡有燈光</td>
+        <td><a class="source-link" href="https://newtaipei.travel/zh-tw/calendar/detail/3872" target="_blank">新北旅遊網 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>台2丙公路16.3公里處，佔地7.5公頃有機荷田。2026花期6月已進入滿開高峰，預計延續至6月底。每晚7-9點蓮花池點亮球燈可夜間賞荷打卡，避開日曬好選擇。可搭配十分老街同日遊。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="新店・石碇">
+        <td class="place-name">銀河洞越嶺步道</td>
+        <td><span class="region-tag">新北市新店區</span></td>
+        <td><span class="type-tag">瀑布步道 / 越嶺</span></td>
+        <td><span class="diff-easy">輕鬆緩坡（2.5km單程）</span></td>
+        <td>✅ 樹蔭充足（路面潮濕注意）</td>
+        <td><a class="source-link" href="https://hiking.biji.co/index.php?q=trail&act=detail&id=208" target="_blank">健行筆記 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>新店廣興，銀河洞瀑布為主景，全程2.5km難度★★，天然樹蔭涼爽。⚠️ 地面青苔濕滑，雨後建議穿防滑登山鞋。可越嶺至新烏路出口，或原路折返。秋冬或晴天最佳，夏天樹蔭也舒適。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="平溪・雙溪・汐止">
+        <td class="place-name">姜子寮絕壁步道</td>
+        <td><span class="region-tag">新北市汐止區</span></td>
+        <td><span class="type-tag">絕壁步道 / 生態</span></td>
+        <td><span class="diff-easy">輕鬆（300m主景，30分鐘）</span></td>
+        <td>✅ 林蔭涼爽</td>
+        <td><a class="source-link" href="https://hiking.biji.co/index.php?q=trail&act=detail&id=1074" target="_blank">健行筆記 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>汐止姜子寮山區，主景絕壁高聳壯觀，步道至絕壁僅300m約30分鐘，全程林蔭涼快。難度極低，適合輕鬆出遊。可延伸至基隆山或原路折返。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="新店・石碇">
+        <td class="place-name">烏塗溪步道</td>
+        <td><span class="region-tag">新北市石碇區</span></td>
+        <td><span class="type-tag">溪畔步道 / 竹林</span></td>
+        <td><span class="diff-easy">輕鬆（竹林平緩溪畔）</span></td>
+        <td>✅ 竹林夾道全程遮蔭</td>
+        <td><a class="source-link" href="https://hiking.biji.co/index.php?q=trail&act=detail&id=769" target="_blank">健行筆記 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>石碇烏塗溪旁，竹林夾道步道，全程平緩遮蔭，親子友善。有溪流石頭可踏水戲玩，夏天消暑極佳。可搭配石碇老街豆腐料理同日遊。</textarea></td>
+      </tr>
+      <tr class="area-header" data-lat="25.2913253" data-lng="121.5396932"><td colspan="8"><span class="area-title">☕ 北海岸景觀咖啡</span><span class="area-desc">石門・三芝・金山・海景咖啡・景觀餐廳</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">小日波咖啡館</td>
+        <td><span class="region-tag">新北市金山區</span></td>
+        <td><span class="type-tag">景觀咖啡廳 / 海景</span></td>
+        <td><span class="diff-easy">輕鬆（室內用餐）</span></td>
+        <td>✅ 室內玻璃窗框海景</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>海興路176-2號。純白希臘風建築，大面積玻璃直接框住壯闊藍海。坐在室內即可賞海，全年皆宜。建議平日前往、假日人多。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">海上日出海洋咖啡</td>
+        <td><span class="region-tag">新北市金山區</span></td>
+        <td><span class="type-tag">景觀咖啡廳 / 玻璃屋</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內頂樓玻璃屋</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>海興路172-2號4樓。中角灣最美景點，樓頂玻璃屋360度海景。可與小日波、靠北過日子在金山區串聯半日。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">靠北過日子</td>
+        <td><span class="region-tag">新北市金山區</span></td>
+        <td><span class="type-tag">景觀餐廳 / 海景</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內座位</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>海興路174號，寶藍色建築靠海，療癒系餐飲。三家金山海景咖啡廳（小日波、海上日出、靠北過日子）都在同一條路上，可一次串遊。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">跳石車站（海邊公車站）</td>
+        <td><span class="region-tag">新北市金山區</span></td>
+        <td><span class="type-tag">特色景點 / 打卡</span></td>
+        <td><span class="diff-easy">輕鬆（路邊即景）</span></td>
+        <td>❌ 無遮蔭</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>台2線省道34-39公里處，海邊公車站可眺望基隆嶼，是北海岸必拍打卡點。開車路過即可停車拍照，不需步行，全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">白日夢 Tea &amp; Cafe</td>
+        <td><span class="region-tag">新北市石門區</span></td>
+        <td><span class="type-tag">景觀咖啡廳 / 廢校改建</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內座位</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>阿里荖47-2號，廢棄國小改建，山腰俯瞰海景。室內環境舒適，茶飲精緻。建議事先查詢營業日，假日可能需要排隊候位。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">豹豹咖啡</td>
+        <td><span class="region-tag">新北市石門區</span></td>
+        <td><span class="type-tag">景觀咖啡廳 / 玻璃屋</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 純白玻璃屋室內</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>下員坑33-6號，純白玻璃屋90度框住最美海岸線。窗景極具衝擊感，室內涼爽。與草里一號店相近，可石門區串聯半日咖啡廳之旅。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">草里一號店</td>
+        <td><span class="region-tag">新北市石門區</span></td>
+        <td><span class="type-tag">景觀咖啡廳 / 白色老宅</span></td>
+        <td><span class="diff-easy">輕鬆（室內＋露台）</span></td>
+        <td>✅ 室內座位</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>阿里荖1號，白色老宅改建，二樓露台極致望海。石門區景觀咖啡廳之一，與豹豹咖啡、白日夢在同一帶，可規劃石門咖啡半日遊。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">石門風車公園</td>
+        <td><span class="region-tag">新北市石門區</span></td>
+        <td><span class="type-tag">公園 / 風車景觀</span></td>
+        <td><span class="diff-easy">輕鬆（平地公園）</span></td>
+        <td>❌ 無遮蔭</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>乾華里小坑12號。紅白大型風車居高臨下眺望海景，平地公園輕鬆散步。無遮蔭，建議秋冬或清晨前往。石門一帶可搭配白日夢咖啡同日遊。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">茶山步道</td>
+        <td><span class="region-tag">新北市石門區</span></td>
+        <td><span class="type-tag">生態步道 / 梯田茶園</span></td>
+        <td><span class="diff-easy">輕鬆（1公里平緩步道）</span></td>
+        <td>✅ 竹林樹蔭</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>草埔尾18-2號附近。1公里清幽步道，梯田茶園與竹林交錯，全程有竹蔭涼爽。石門區輕鬆散步首選，夏天也舒適，全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">富貴角公園</td>
+        <td><span class="region-tag">新北市石門區</span></td>
+        <td><span class="type-tag">公園 / 燈塔 / 木棧道</span></td>
+        <td><span class="diff-easy">輕鬆（平緩木棧道）</span></td>
+        <td>❌ 無遮蔭</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>富基里，台灣最北端。直通大海的木棧步道，可看富貴角燈塔（黑白條紋），秋冬季東北季風強勁壯觀。無遮蔭，建議秋冬或清晨前往。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">海邊灶咖</td>
+        <td><span class="region-tag">新北市三芝區</span></td>
+        <td><span class="type-tag">景觀餐廳 / 海景第一排</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內座位</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>北勢子19-1號，淺水灣海景第一排，餐點份量扎實，海景加分。建議事先訂位，平日較有座位。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">中角沙珠灣</td>
+        <td><span class="region-tag">新北市三芝區</span></td>
+        <td><span class="type-tag">海灣 / 木棧道</span></td>
+        <td><span class="diff-easy">輕鬆（平地沙灘步道）</span></td>
+        <td>❌ 防風林部分遮蔭</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>三芝中角灣，防風林木棧道延伸至海邊，遼闊海灣開闊心曠神怡。可搭配附近八連溪生態步道或海邊灶咖同日遊。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">三芝山豬堀牡丹蓮</td>
+        <td><span class="region-tag">新北市三芝區</span></td>
+        <td><span class="type-tag">景點 / 荷花田 / 季節限定</span></td>
+        <td><span class="diff-easy">輕鬆（平地田區）</span></td>
+        <td>⚠️ 田區無遮蔭</td>
+        <td><a class="source-link" href="https://travel366days.com/lotus-sanzhi-newtaipei-taiwan/" target="_blank">環遊世界366天 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>古庄里，鄰近馬偕醫學院，佔地約0.4公頃，免費入場。種植來自泰國的特有牡丹蓮品種，粉嫩花色夢幻。花期5月下旬至7月，全日開花（不像一般荷花只開早上）。搭公車：捷運淡水站搭821/860/861等至福成橋頭站步行500m。可搭配麟山鼻木棧道同日遊。</textarea></td>
+      </tr>
+      <tr class="area-header" data-lat="25.1220428" data-lng="121.8881840"><td colspan="8"><span class="area-title">🚲 東北角・瑞芳</span><span class="area-desc">深澳鐵道 Railbike・象鼻岩・景觀咖啡</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">Railbike 深澳鐵道自行車</td>
+        <td><span class="region-tag">新北市瑞芳區</span></td>
+        <td><span class="type-tag">體驗活動 / 廢鐵道</span></td>
+        <td><span class="diff-easy">輕鬆（坐著踩踏）</span></td>
+        <td>✅ 部分隧道遮蔭</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>建基路二段121號，河豚造型四輪自行車，沿廢棄深澳鐵道騎行，終點可看海。坐著踩踏不累，適合銀髮族。需提前網路預約，全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">深澳岬象鼻岩</td>
+        <td><span class="region-tag">新北市瑞芳區</span></td>
+        <td><span class="type-tag">海蝕地形 / 打卡景點</span></td>
+        <td><span class="diff-easy">輕鬆（平地觀景台）</span></td>
+        <td>❌ 無遮蔭</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>深澳里深澳路20號，象鼻形海蝕奇景，停車場步行幾分鐘即可到觀景台。無遮蔭，建議秋冬清晨，可搭配Railbike同日遊（車程約10分鐘）。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">吃飯看海（東北角景觀餐廳）</td>
+        <td><span class="region-tag">新北市貢寮區</span></td>
+        <td><span class="type-tag">景觀餐廳 / 漁港美食</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內座位</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>香蘭街3-2號，橘色鐵皮屋沖繩感，漁港現撈海鮮料理。東北角旅遊中少見的室內海景餐廳，可搭配三貂角燈塔或舊草嶺隧道同日遊。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">海立方景觀咖啡</td>
+        <td><span class="region-tag">新北市瑞芳區</span></td>
+        <td><span class="type-tag">景觀咖啡館 / 廢墟風</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內座位</td>
+        <td><a class="source-link" href="https://annieko.tw/taipei-trips/" target="_blank">安妮ko ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>海濱路3巷，紅磚城堡廢墟感設計，面對無敵海景，咖啡甜點水準不錯。東北角看海咖啡廳的代表，可搭配深澳象鼻岩同日遊。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">龍洞灣岬步道</td>
+        <td><span class="region-tag">新北市貢寮區</span></td>
+        <td><span class="type-tag">景點 / 海景步道 / 岬角地形</span></td>
+        <td><span class="diff-easy">輕鬆（緩坡石板路，銀髮友善）</span></td>
+        <td>☀️ 無遮蔭（需防曬）</td>
+        <td><a class="source-link" href="https://egoldenyears.com/69421/" target="_blank">銀髮一起玩 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>全長約3.5km，3500萬年歷史岬角地形，壯觀斷崖峭壁＋無敵海景。全程花崗石鋪設，緩坡好走，老少咸宜。從西靈巖寺停車場出發，走到觀景台單趟最快15分鐘即有美景。⚠️ 全程無遮蔭，夏天需防曬備水，建議秋冬或清晨前往。可搭配福隆同日遊。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">Cafe Hytte</td>
+        <td><span class="region-tag">新北市瑞芳區</span></td>
+        <td><span class="type-tag">咖啡廳 / 廢墟老屋 / 手沖</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>魚寮路113號，搭台鐵至三貂嶺站步行約10分鐘（班次少，出發前查時刻表）。廢棄小站旁的老屋手沖咖啡廳，不在地圖上的秘境，有店貓，可麗露好吃。週一至五12:00-17:00（週日休，週六不定期）。⚠️ 需開車或搭鐵路，班次稀少需事先規劃。</textarea></td>
+      </tr>
+      <tr class="area-header" data-lat="25.0363683" data-lng="121.5874593"><td colspan="8"><span class="area-title">🌿 台北・郊區步道</span><span class="area-desc">虎山・松山文創・大溝溪・湖山步道・陽明山野人花園・陽明山繡球花・平溪十分</span></td></tr>
+      <tr data-status="待去" data-cluster="市區步道">
+        <td class="place-name">虎山溪生態步道</td>
+        <td><span class="region-tag">台北市信義區</span></td>
+        <td><span class="type-tag">生態步道 / 溪谷</span></td>
+        <td><span class="diff-easy">輕鬆（平緩溪畔步道）</span></td>
+        <td>✅ 林蔭充足</td>
+        <td><a class="source-link" href="https://taiwantour.net/taipei-trip/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>信義區松山慈惠堂旁，溪畔林蔭步道，與象山步道相鄰但輕鬆許多。市區內即可親近自然，全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="市區步道">
+        <td class="place-name">松山文創園區</td>
+        <td><span class="region-tag">台北市信義區</span></td>
+        <td><span class="type-tag">文創園區 / 室內展覽</span></td>
+        <td><span class="diff-easy">輕鬆（全平地）</span></td>
+        <td>✅ 室內+戶外樹蔭</td>
+        <td><a class="source-link" href="https://taiwantour.net/taipei-trip/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>舊菸廠改建，室內外皆有展覽。平地好走，有室內可乘涼。雨天備案首選，全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="市區步道">
+        <td class="place-name">大溝溪親水公園</td>
+        <td><span class="region-tag">台北市內湖區</span></td>
+        <td><span class="type-tag">親水公園 / 溪流</span></td>
+        <td><span class="diff-easy">輕鬆（全平地）</span></td>
+        <td>✅ 部分樹蔭</td>
+        <td><a class="source-link" href="https://taiwantour.net/taipei-trip/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>內湖溪畔公園，平地散步，夏天可戲水。周邊有多家咖啡廳可休息。全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="市區步道">
+        <td class="place-name">湖山步道（北投）</td>
+        <td><span class="region-tag">台北市北投區</span></td>
+        <td><span class="type-tag">森林步道 / 生態</span></td>
+        <td><span class="diff-easy">輕鬆（平緩林間步道）</span></td>
+        <td>✅ 林蔭充足</td>
+        <td><a class="source-link" href="https://taiwantour.net/taipei-trip/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>北投山區親子步道，林蔭涼爽。可搭配北投溫泉或地熱谷同日遊。全年皆宜，夏天也舒適。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="平溪十分老街">
+        <td class="place-name">十分老街</td>
+        <td><span class="region-tag">新北市平溪區</span></td>
+        <td><span class="type-tag">老街 / 天燈體驗</span></td>
+        <td><span class="diff-easy">輕鬆（全平地老街）</span></td>
+        <td>⚠️ 建築遮蔭（無大樹）</td>
+        <td><a class="source-link" href="https://taiwantour.net/taipei-trip/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>鐵道旁老街，可放天燈。平地好走，建築遮蔭但非樹蔭。建議平日人少。可搭配望古瀑布同日遊。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="陽明山竹子湖">
+        <td class="place-name">陽明山竹子湖繡球花</td>
+        <td><span class="region-tag">台北市北投區</span></td>
+        <td><span class="type-tag">景點 / 花田 / 季節限定</span></td>
+        <td><span class="diff-medium">緩坡（花園梯田地形，一般遊客可應對）</span></td>
+        <td>⚠️ 花圃無遮蔭，親水步道有樹蔭</td>
+        <td><a class="source-link" href="https://www.travel.taipei/zh-tw" target="_blank">台北旅遊網 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>竹子湖路一帶，多間花園可選：高家、大梯田花卉農園（竹子湖路33號附近）等。花期5月下旬至6月下旬，紫、粉、白色繡球花夢幻。入場費約100-150元可折抵消費。建議平日搭公車小9至竹子湖站，避開假日車潮。怕熱注意：花圃無遮蔭，上午霧氣涼爽較宜，戴帽備防曬。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">野人花園 Savage Garden</td>
+        <td><span class="region-tag">台北市士林區</span></td>
+        <td><span class="type-tag">咖啡廳 / 景觀玻璃屋 / 陽明山</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>菁山路131巷13-1號（陽明山山區，需開車或搭車）。250元入場含飲料，不限時。純白溫室玻璃屋被植栽包圍，陽明山林間秘境，夜景也美。寵物友善，免費停車。全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">不想上班只好喝拿鐵</td>
+        <td><span class="region-tag">台北市內湖區</span></td>
+        <td><span class="type-tag">咖啡廳 / 文字造型鬆餅</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>江南街116巷2號，捷運港墘站2號出口步行8-10分鐘。招牌文字鬆餅（印有上班族心聲），飲品好喝，不限時。內科園區人氣店。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="市區步道">
+        <td class="place-name">四獸山步道</td>
+        <td><span class="region-tag">台北市信義區</span></td>
+        <td><span class="type-tag">郊山步道 / 城市展望</span></td>
+        <td><span class="diff-medium">緩坡（石階中低難度）</span></td>
+        <td>⚠️ 登山路林蔭，觀景台無遮蔭</td>
+        <td><a class="source-link" href="https://hiking.biji.co/index.php?q=trail&act=detail&id=59" target="_blank">健行筆記 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>象山・虎山・豹山・獅山四座郊山，步道起點多，捷運象山站即達。石階緩坡，途中視野台北101為主景。觀景台無遮蔭，建議秋冬或清晨前往。可搭配松山文創同日遊。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="市區步道">
+        <td class="place-name">糴米古道</td>
+        <td><span class="region-tag">台北市信義區</span></td>
+        <td><span class="type-tag">古道 / 林蔭步道</span></td>
+        <td><span class="diff-easy">輕鬆（石板路低難度）</span></td>
+        <td>✅ 樹蔭濃密</td>
+        <td><a class="source-link" href="https://hiking.biji.co/index.php?q=trail&act=detail&id=1271" target="_blank">健行筆記 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>信義區吳興街附近，昔日居民挑米運貨的古道，全程樹蔭濃密，石板路面輕鬆好走，是四獸山周邊最舒適的林蔭步道。可與虎山溪步道串連一日遊。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="市區步道">
+        <td class="place-name">富陽自然生態公園</td>
+        <td><span class="region-tag">台北市大安區</span></td>
+        <td><span class="type-tag">生態公園 / 親山步道</span></td>
+        <td><span class="diff-easy">輕鬆（入門級，全程平緩）</span></td>
+        <td>✅ 林蔭充足</td>
+        <td><a class="source-link" href="https://hiking.biji.co/index.php?q=trail&act=detail&id=340" target="_blank">健行筆記 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>大安區富陽街，捷運麟光站步行10分鐘，市區內即可親近自然的生態綠洲。原軍事用地活化，物種豐富。全程林蔭，難度極低，是台北最適合女主角的親山步道首選。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="市區步道">
+        <td class="place-name">龍船岩・開眼山步道</td>
+        <td><span class="region-tag">台北市內湖區</span></td>
+        <td><span class="type-tag">岩壁步道 / 挑戰型</span><span class="type-tag-solo">🧍 獨行路線</span></td>
+        <td><span class="diff-hard">爬山（需拉繩，危險路段）</span></td>
+        <td>✅ 有林蔭</td>
+        <td><a class="source-link" href="https://hiking.biji.co/index.php?q=trail&act=detail&id=3205" target="_blank">健行筆記 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>內湖龍船岩為台北知名岩壁地形，路段需拉繩攀岩，有危險性。⚠️ 不適合怕爬山的人，適合男主角單獨挑戰。若要同遊建議只走好走路段至開眼山觀景台眺望大台北，避開岩壁段。</textarea></td>
+      </tr>
+      <tr class="area-header" data-lat="25.0552168" data-lng="121.5196301"><td colspan="8"><span class="area-title">🏙️ 中山・雙連・小巨蛋</span><span class="area-desc">雙連朝市・赤峰街文青・Fly Cafe・コメダ珈琲・格沐斯・Ctrl+F・羅得奧</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">雙連朝市</td>
+        <td><span class="region-tag">台北市中山區</span></td>
+        <td><span class="type-tag">傳統早市 / 在地生活</span></td>
+        <td><span class="diff-easy">輕鬆（300公尺平地街道）</span></td>
+        <td>⚠️ 無特定遮蔭，晴天早涼</td>
+        <td><a class="source-link" href="https://www.taipeinavi.com/shop/194/" target="_blank">台北ナビ ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>捷運雙連站1號出口即到。早市約07:00-14:30，越早越熱鬧。魯肉飯、肉包、糯米飯、玉米等在地早餐，客層以附近居民為主，人情味十足。平日人少更舒適。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">赤峰街文青散步</td>
+        <td><span class="region-tag">台北市大同區</span></td>
+        <td><span class="type-tag">文青街道 / 選物咖啡</span></td>
+        <td><span class="diff-easy">輕鬆（平地巷弄）</span></td>
+        <td>⚠️ 巷弄建築半遮蔭</td>
+        <td><a class="source-link" href="https://travel.yam.com/article/138168" target="_blank">輕旅行 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>捷運中山站4號出口步行約3分鐘。老屋改建的選物店、咖啡廳、手作品牌聚集。推薦：Miss V Bakery Cafe（49巷22號）、弌弌咖啡（47巷18號2樓）。平日逛街最舒適。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">Fly Cafe 敦北店（蒼蠅哥）</td>
+        <td><span class="region-tag">台北市松山區</span></td>
+        <td><span class="type-tag">咖啡廳 / 肉桂捲 / 早午餐</span></td>
+        <td><span class="diff-easy">輕鬆（室內咖啡廳）</span></td>
+        <td>✅ 室內，大片窗景木質空間</td>
+        <td><a class="source-link" href="https://niniyeh.com/fly-cafe/" target="_blank">部落格評測 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>敦化北路165巷1號，捷運小巨蛋站1號出口步行約8-10分鐘。08:00-18:00，不限時、有Wi-Fi插座。必點：蒼蠅哥肉桂捲（$160/顆，每日限量）、西西里咖啡（咖啡加檸檬汁，建議點冰的）。三角窗大片窗景，早上來最悠閒。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">コメダ珈琲（客美多咖啡）</td>
+        <td><span class="region-tag">台北市中山區</span></td>
+        <td><span class="type-tag">咖啡廳 / 日式連鎖 / 早餐文化</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>南京東路二段204號，捷運南京松江站5號出口。名古屋百年老店台灣首店。招牌：點咖啡送烤吐司，超大份量早餐文化體驗。07:30-21:00，全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">格沐斯咖啡</td>
+        <td><span class="region-tag">台北市中山區</span></td>
+        <td><span class="type-tag">咖啡廳 / 老派虹吸咖啡 / 早午餐</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>松江路362巷28號，捷運行天宮站4號出口。開業十多年的老派虹吸咖啡廳，自烘咖啡豆，葡式蛋塔、手工鹹派、咖哩豬排飯都好吃。週二至日07:30-18:30（週一休）。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">Ctrl+F Brunch &amp; Cafe</td>
+        <td><span class="region-tag">台北市中山區</span></td>
+        <td><span class="type-tag">咖啡廳 / 早午餐 / 工業風</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>雙城街54號，捷運圓山站附近。珍珠奶茶布蕾必點，工業風設計，寵物友善。10:00-18:00（週一休）。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">羅得奧商行（Après la Mousson）</td>
+        <td><span class="region-tag">台北市松山區</span></td>
+        <td><span class="type-tag">咖啡廳 / 玻璃屋 / 甜點</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>富錦街370號，捷運松山機場站步行可達。民生社區玻璃屋咖啡館，韓風工業風，必吃大人版抹茶生乳捲。11:00-18:00（週一休）。</textarea></td>
+      </tr>
+      <tr class="area-header" data-lat="25.0421376" data-lng="121.5062818"><td colspan="8"><span class="area-title">🎭 西門・萬華</span><span class="area-desc">紅樓・中山堂・西本願寺・蜂大咖啡・FLUX・妳有咖啡・永安棧下午茶</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">西門紅樓</td>
+        <td><span class="region-tag">台北市萬華區</span></td>
+        <td><span class="type-tag">古蹟 / 文創市集</span></td>
+        <td><span class="diff-easy">輕鬆（全平地）</span></td>
+        <td>✅ 室內展館 + 半戶外廣場</td>
+        <td><a class="source-link" href="https://andyventure.com/taiwan-taipei-ximending/" target="_blank">冒險安迪 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>捷運西門站出口旁，百年八角紅磚建築。室內常設創意展覽與文創攤位，廣場假日有手作市集。搭配西門徒步區散步，全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">台北市中山堂</td>
+        <td><span class="region-tag">台北市萬華區</span></td>
+        <td><span class="type-tag">古蹟 / 展覽</span></td>
+        <td><span class="diff-easy">輕鬆（全平地）</span></td>
+        <td>✅ 室內為主</td>
+        <td><a class="source-link" href="https://andyventure.com/taiwan-taipei-ximending/" target="_blank">冒險安迪 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>延平南路98號，日治時代歷史建築。不定期有藝文展演，環境莊嚴典雅。緊鄰西門徒步區，可一起安排。免費入場（展覽視情況）。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">西本願寺鐘樓廣場</td>
+        <td><span class="region-tag">台北市萬華區</span></td>
+        <td><span class="type-tag">古蹟公園 / 散步</span></td>
+        <td><span class="diff-easy">輕鬆（小型公園平地）</span></td>
+        <td>⚠️ 部分樹蔭</td>
+        <td><a class="source-link" href="https://andyventure.com/taiwan-taipei-ximending/" target="_blank">冒險安迪 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>中華路二段與長沙街交口，日治時代佛寺遺跡改公園，保留鐘樓與樹輪館。規模小巧，散步片刻即可。西門紅樓旁步行可到。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">蜂大咖啡</td>
+        <td><span class="region-tag">台北市萬華區</span></td>
+        <td><span class="type-tag">老字號咖啡廳 / 早餐</span></td>
+        <td><span class="diff-easy">輕鬆（室內用餐）</span></td>
+        <td>✅ 室內座位</td>
+        <td><a class="source-link" href="https://andyventure.com/taiwan-taipei-ximending/" target="_blank">冒險安迪 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>成都路42號，1956年創立的60年老店。早餐套餐約130元，古典咖啡廳氛圍。西門徒步區散步前的早餐首選，開店早（約07:00）。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">老天祿滷味（伴手禮）</td>
+        <td><span class="region-tag">台北市萬華區</span></td>
+        <td><span class="type-tag">伴手禮 / 滷味老店</span></td>
+        <td><span class="diff-easy">輕鬆（站買即走）</span></td>
+        <td>⚠️ 騎樓遮蔭</td>
+        <td><a class="source-link" href="https://andyventure.com/taiwan-taipei-ximending/" target="_blank">冒險安迪 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>峨嵋街10號，1949年創立老店。滷豬耳、鴨翅、豆干是招牌，真空包裝可帶走當伴手禮。西門散步時必買。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">妳有咖啡 Neo Cafe</td>
+        <td><span class="region-tag">台北市萬華區</span></td>
+        <td><span class="type-tag">咖啡廳 / 不限時</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>武昌街二段83之9號2樓，捷運西門站6號出口。12:30-21:45。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">永安棧精品酒店下午茶</td>
+        <td><span class="region-tag">台北市萬華區</span></td>
+        <td><span class="type-tag">咖啡廳 / 精品酒店下午茶</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>中華路一段150號，捷運西門站附近。精品酒店附設咖啡廳，提供咖啡、鬆餅等下午茶，西門町繁華地段，氣氛優雅。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">FLUX</td>
+        <td><span class="region-tag">台北市萬華區</span></td>
+        <td><span class="type-tag">咖啡廳 / 口袋三明治 / 藝術風</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>貴陽街二段7號，西門町附近。口袋三明治、沙拉盤，清新咖啡館，生活極致藝術感的空間設計。11:00-20:00（週日10:00-19:00）。</textarea></td>
+      </tr>
+      <tr class="area-header" data-lat="25.0168175" data-lng="121.5384571"><td colspan="8"><span class="area-title">🌸 古亭・東門・永康・台大</span><span class="area-desc">永康街商圈・青田街日式老屋・台大黃金雨・框影咖啡・月半咖啡</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">永康街商圈散步</td>
+        <td><span class="region-tag">台北市大安區</span></td>
+        <td><span class="type-tag">商圈散步 / 美食聚集</span></td>
+        <td><span class="diff-easy">輕鬆（全平地巷弄）</span></td>
+        <td>⚠️ 行道樹 + 建築半遮蔭</td>
+        <td><a class="source-link" href="https://www.klook.com/zh-TW/blog/tip-youbike-halfday-yungkang-street-taipei/" target="_blank">Klook ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>捷運東門站5號出口即到。平地巷弄，美食密度極高。必吃：鼎泰豐（信義路二段94號）、思慕昔芒果冰（永康街15號）、天津蔥抓餅。全年皆宜，夏天吃冰最舒服。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">青田街日式老屋散步</td>
+        <td><span class="region-tag">台北市大安區</span></td>
+        <td><span class="type-tag">日式宿舍群 / 歷史散步</span></td>
+        <td><span class="diff-easy">輕鬆（平地巷弄）</span></td>
+        <td>✅ 行道樹林蔭充足</td>
+        <td><a class="source-link" href="https://beri.tw/qingtian/" target="_blank">莓姬貝利 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>捷運東門站步行約10分鐘。日治時代台大教授宿舍群，老樟樹成蔭靜謐迷人。必訪：青田七六（青田街76號，台北市定古蹟，可喝茶）、青田茶館。全年皆宜，夏天也舒適。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">台大校園阿勃勒（黃金雨）</td>
+        <td><span class="region-tag">台北市大安區</span></td>
+        <td><span class="type-tag">景點 / 校園花景 / 季節限定</span></td>
+        <td><span class="diff-easy">輕鬆（校園全平地）</span></td>
+        <td>✅ 行道樹遮蔭充足</td>
+        <td><a class="source-link" href="https://www.travel.taipei/zh-tw" target="_blank">台北旅遊網 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>台大正門：羅斯福路四段1號，捷運公館站步行約5分鐘。花期約5月中旬至6月，花瓣飄落如黃金雨，正逢畢業季浪漫。男生宿舍外長興街一帶最密集。開放校園免費入場，全天可賞。⚠️ 花期約2週，需把握時機。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">框影咖啡 The Who Cafe（永康店）</td>
+        <td><span class="region-tag">台北市大安區</span></td>
+        <td><span class="type-tag">咖啡廳 / 貓咪咖啡 / 拉花</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>麗水街2-1號2樓，捷運東門站5號出口步行可達。招牌立體貓咪臉拉花，有店貓療癒，不限時。11:00-21:00。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">月半咖啡 Dwaco Coffee</td>
+        <td><span class="region-tag">台北市大安區</span></td>
+        <td><span class="type-tag">咖啡廳 / 貨櫃咖啡 / 戶外庭院</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>永康街47巷30號，捷運東門站5號出口。白色貨櫃造型，有戶外小庭院，提供插座Wi-Fi，不限時。蛋沙拉三明治好吃。</textarea></td>
+      </tr>
+      <tr class="area-header" data-lat="25.0561728" data-lng="121.5102161"><td colspan="8"><span class="area-title">🏮 大稻埕・迪化街</span><span class="area-desc">百年老街・永樂市場・城隍廟・碼頭夕陽・書店・甜點</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">迪化街老街散步</td>
+        <td><span class="region-tag">台北市大同區</span></td>
+        <td><span class="type-tag">百年老街 / 南北貨</span></td>
+        <td><span class="diff-easy">輕鬆（全平地）</span></td>
+        <td>✅ 騎樓全程遮蔭</td>
+        <td><a class="source-link" href="https://almablog.tw/blog/post/2025-dihua-street" target="_blank">艾瑪部落格 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>捷運北門站步行約10分鐘。紅磚巴洛克老建築，騎樓連續遮蔭，夏天也舒適。南北貨、茶葉、中藥、布料齊全。年節前人潮最盛，平日悠閒。全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">永樂市場（布料 ＋ 熟食）</td>
+        <td><span class="region-tag">台北市大同區</span></td>
+        <td><span class="type-tag">傳統市場 / 美食</span></td>
+        <td><span class="diff-easy">輕鬆（全室內）</span></td>
+        <td>✅ 室內市場</td>
+        <td><a class="source-link" href="https://almablog.tw/blog/post/2025-dihua-street" target="_blank">艾瑪部落格 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>迪化街一段21號。一樓：林合發油飯、煎粿、土魠魚羹等古早味小吃；二樓：布料、刺繡、手工藝材料。室內全天候，雨天備案。全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">台北霞海城隍廟</td>
+        <td><span class="region-tag">台北市大同區</span></td>
+        <td><span class="type-tag">廟宇 / 月老祈福</span></td>
+        <td><span class="diff-easy">輕鬆（室內廟宇）</span></td>
+        <td>✅ 室內廟宇</td>
+        <td><a class="source-link" href="https://almablog.tw/blog/post/2025-dihua-street" target="_blank">艾瑪部落格 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>迪化街一段61號，全台最靈驗月老廟之一。室內小巧，交趾陶裝飾精細，參拜後可買平安符。廟外有傳統小吃攤。迪化街散步中途順遊。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">大稻埕碼頭 ＋ 貨櫃市集</td>
+        <td><span class="region-tag">台北市大同區</span></td>
+        <td><span class="type-tag">河濱市集 / 夕陽景觀</span></td>
+        <td><span class="diff-easy">輕鬆（全平地河濱）</span></td>
+        <td>❌ 無遮蔭（夕陽後涼爽）</td>
+        <td><a class="source-link" href="https://www.funliday.com/posts/dadaocheng-spots/" target="_blank">Funliday ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>民生西路底五號水門（延平河濱公園內）。五彩貨櫃、手作小物、創意美食。傍晚夕陽最美、氣候涼爽。夏天建議下午4點後前往，避開正午日曬。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">郭怡美書店</td>
+        <td><span class="region-tag">台北市大同區</span></td>
+        <td><span class="type-tag">獨立書店 / 不限時咖啡</span></td>
+        <td><span class="diff-easy">輕鬆（室內三層樓）</span></td>
+        <td>✅ 全室內（有電梯）</td>
+        <td><a class="source-link" href="https://www.funliday.com/posts/dadaocheng-spots/" target="_blank">Funliday ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>迪化街一段129號，三層樓老宅改建獨立書店，藏書逾2萬冊。一樓咖啡廳不限時，有電梯，適合慢慢坐。逛完迪化街疲累時的絕佳休憩點。全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">芙稻菓室</td>
+        <td><span class="region-tag">台北市大同區</span></td>
+        <td><span class="type-tag">甜點 / 台灣食材</span></td>
+        <td><span class="diff-easy">輕鬆（室內用餐）</span></td>
+        <td>✅ 室內座位</td>
+        <td><a class="source-link" href="https://www.funliday.com/posts/dadaocheng-spots/" target="_blank">Funliday ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>延平北路二段25號。無麩質舒芙蕾鬆餅、台灣食材創意甜點、特色茶飲。迪化街散步後的甜點中繼站，全年皆宜。</textarea></td>
+      </tr>
+      <tr class="area-header"><td colspan="8"><span class="area-title">🏘️ 大同・後車站</span><span class="area-desc">波赫士咖啡・初二咖啡・角公園老宅</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">波赫士領地精品咖啡館（昌吉店）</td>
+        <td><span class="region-tag">台北市大同區</span></td>
+        <td><span class="type-tag">咖啡廳 / 早午餐 / 甜點</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>昌吉街22號，捷運民權西路站步行可達。挑高寬敞大片落地窗木質空間，必點巨人版提拉米蘇、千層蛋糕。平日不限時，早午餐、下午茶皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">初二咖啡館</td>
+        <td><span class="region-tag">台北市大同區</span></td>
+        <td><span class="type-tag">咖啡廳 / 夜間咖啡</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>涼州街106號2樓，後車站附近。平日18:00-24:00，假日15:00-24:00，夜貓子咖啡廳選擇。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">角公園咖啡 Triangle Garden Cafe</td>
+        <td><span class="region-tag">台北市大同區</span></td>
+        <td><span class="type-tag">咖啡廳 / 老宅 / 不限時 / 有貓</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>太原路131號2樓，後車站附近，80年老屋改建。不限時、有插座Wi-Fi、有店貓。捷運中山站步行約15分鐘。10:00-18:00（週一至五），週末至21:00。</textarea></td>
+      </tr>
+      <tr class="area-header"><td colspan="8"><span class="area-title">🏙️ 松山・信義・南港</span><span class="area-desc">BEAN U植物咖啡・小青苑・莉莉安可頌・2730老宅・皮皮千層</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">BEAN U Plant Cafe</td>
+        <td><span class="region-tag">台北市信義區</span></td>
+        <td><span class="type-tag">咖啡廳 / 植物系蔬食 / 早午餐</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>忠孝東路四段553巷22弄6-1號，捷運國父紀念館站附近（松菸文創園區旁）。台北蔬食咖啡廳，招牌繽紛豆乳優格碗，寵物友善，不限時。全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">小青苑 Cyan Cafe</td>
+        <td><span class="region-tag">台北市信義區</span></td>
+        <td><span class="type-tag">咖啡廳 / 綠意手沖 / 復古</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>基隆路一段147巷，捷運市政府站附近。滿室綠意植栽配復古傢俱，手沖咖啡，怪獸玩偶擺飾獨特氛圍。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">莉莉安可頌烘焙專門店 Liliane Bakery</td>
+        <td><span class="region-tag">台北市松山區</span></td>
+        <td><span class="type-tag">咖啡廳 / 可頌 / 三層老宅</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>八德路三段12巷63弄40號。粉紅色獨棟三層樓老宅，台北最美可頌店，多種口味可頌、戚風蛋糕、千層蛋糕。不限時，寵物友善。10:00-22:00。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">2730 Cafe 貳柒參零咖啡館</td>
+        <td><span class="region-tag">台北市大安區</span></td>
+        <td><span class="type-tag">咖啡廳 / 老宅 / 有貓</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>延吉街288號，捷運信義安和站附近。復古老宅有店貓，不限時。平日12:00-22:00，週末11:30-22:00（週三休）。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">皮皮手作千層蛋糕 P.P Mille Crepes</td>
+        <td><span class="region-tag">台北市南港區</span></td>
+        <td><span class="type-tag">咖啡廳 / 千層蛋糕 / 英式木屋</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>東新街116-3號，台北高人氣千層蛋糕專賣店，英式質感木屋空間。一片135元起，CP值完勝LADY M。生日蛋糕可預訂。11:00-20:00（五六日至20:30）。</textarea></td>
+      </tr>
+      <tr class="area-header" data-lat="25.1860871" data-lng="121.5256236"><td colspan="8"><span class="area-title">🌳 士林・大直</span><span class="area-desc">第二人生咖啡・藍儂說黑糖拿鐵・穆勒老宅</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">第二人生咖啡館士林店 Second Life Coffee Plus</td>
+        <td><span class="region-tag">台北市士林區</span></td>
+        <td><span class="type-tag">咖啡廳 / 早午餐 / 蛋糕</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>美德街74號，捷運士林站附近。不限時、有插座Wi-Fi，價格平實，早午餐蛋糕甜點都好吃，寵物友善。全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">藍儂說 Then Espresso</td>
+        <td><span class="region-tag">台北市士林區</span></td>
+        <td><span class="type-tag">咖啡廳 / 黑糖拿鐵 / 平價</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>文林路110巷13號，靠近士林夜市/劍潭站。台北第一黑糖咖啡，平價外帶銅板咖啡，15:00-21:00。可免費續加黑糖粉。士林夜市逛街前後的好選擇。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">穆勒咖啡館 Cafe Muller</td>
+        <td><span class="region-tag">台北市中山區</span></td>
+        <td><span class="type-tag">咖啡廳 / 自烘咖啡 / 文藝空間</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>北安路595巷33號，捷運大直站附近（實踐大學商圈）。自家烘焙公平貿易咖啡，文藝知性氛圍，重乳酪蛋糕推薦。⚠️ 網路有一則資料標注「已停業轉讓」，建議前往前先電話確認（02-2532-9028）。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">猴崁古道・水圳步道環狀路線</td>
+        <td><span class="region-tag">台北市北投區（陽明山）</span></td>
+        <td><span class="type-tag">古道 / 水圳步道 / 瀑布</span></td>
+        <td><span class="diff-easy">輕鬆（坡度和緩，親子友善）</span></td>
+        <td>✅ 全程林蔭濃密，水圳潺潺涼意</td>
+        <td><a class="source-link" href="https://pearrr-tw.com/%E5%8F%B0%E5%8C%97%E5%8C%97%E6%8A%95%EF%BD%9C%E7%8C%B4%E5%B4%81%E5%8F%A4%E9%81%93%E3%80%81%E5%A4%A7%E5%B1%AF%E7%80%91%E5%B8%83%E3%80%81%E9%9D%92%E6%98%A5%E5%B6%BA%E6%AD%A5%E9%81%93%E4%BA%A4%E9%80%9A/" target="_blank">梨子的上山下海 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>北投陽明山，從雷隱橋出發走猴崁古道→猴崁水圳步道→湖田國小步道→大屯瀑布→草山觀瀑吊橋（新建）→環狀回雷隱橋，約1.9km全程約45分鐘。沿百年水圳而行，全程林蔭潺水聲，途經百年土地公廟、日治滾水頭遺跡。大屯瀑布清涼消暑，夏天首選。難度極低，女主角也輕鬆完成。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">天母水管路步道</td>
+        <td><span class="region-tag">台北市士林區</span></td>
+        <td><span class="type-tag">歷史步道 / 林蔭爬坡</span><span class="type-tag-solo">🧍 獨行路線</span></td>
+        <td><span class="diff-hard">爬山（1300石階上坡）</span></td>
+        <td>✅ 全程樹蔭</td>
+        <td><a class="source-link" href="https://hiking.biji.co/index.php?q=trail&act=detail&id=88" target="_blank">健行筆記 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>士林天母，沿舊水管修建的歷史步道，1300多個石階連接天母與紗帽山麓，全程大樹遮蔭。⚠️ 1300階全上坡對膝蓋負擔重，適合男主角挑戰；女主角建議只走平緩下段或改走天母古道平緩段。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">頂山石梯嶺步道</td>
+        <td><span class="region-tag">台北市士林區（陽明山）</span></td>
+        <td><span class="type-tag">山脊步道 / 展望</span></td>
+        <td><span class="diff-medium">緩坡（6-7km，初階～中等）</span></td>
+        <td>⚠️ 柳杉林段有蔭，草原稜線段無遮蔭</td>
+        <td><a class="source-link" href="https://hiking.biji.co/index.php?q=trail&act=detail&id=396" target="_blank">健行筆記 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>陽明山頂山至石梯嶺，山脊稜線展望極佳，天晴可眺望大屯山群峰。途中柳杉林段涼爽，稜線草原段無遮蔭。距離6-7km體力消耗中等，建議秋冬涼爽季前往，避開夏天無蔭稜線。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">小觀音山步道</td>
+        <td><span class="region-tag">台北市北投區（陽明山）</span></td>
+        <td><span class="type-tag">火山步道 / 火口湖</span><span class="type-tag-solo">🧍 獨行路線</span></td>
+        <td><span class="diff-hard">爬山（中等難度，需體力）</span></td>
+        <td>⚠️ 遮蔭不連續，火口區無蔭</td>
+        <td><a class="source-link" href="https://hiking.biji.co/index.php?q=trail&act=detail&id=189" target="_blank">健行筆記 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>陽明山小觀音山，台灣少見大型破火口地形，景觀震撼。中等難度，火口邊緣步道體力消耗偏高，遮蔭不連續。⚠️ 夏天建議避開，秋冬前往體驗台灣最大火口湖壯觀地景。適合男主角主導。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">二子坪步道</td>
+        <td><span class="region-tag">台北市北投區（陽明山）</span></td>
+        <td><span class="type-tag">生態步道 / 無障礙</span></td>
+        <td><span class="diff-easy">輕鬆（無障礙，輪椅可行）</span></td>
+        <td>✅ 全程林蔭</td>
+        <td><a class="source-link" href="https://hiking.biji.co/index.php?q=trail&act=detail&id=162" target="_blank">健行筆記 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>陽明山二子坪，無障礙步道可供輪椅通行，全程林蔭涼爽，步道盡頭有水生池塘景觀。難度極低是陽明山最適合女主角的步道。春夏可看繡球花，秋天芒草。搭108公車陽明山總站轉車可達。</textarea></td>
+      </tr>
+      <tr class="area-header" data-lat="24.8377918" data-lng="121.2566130"><td colspan="8"><span class="area-title">🍑 桃園</span><span class="area-desc">龍潭三坑・觀音燈塔・復興天空步道・新屋永安漁港・海螺文化館・懷石料理・青竹咖啡</span></td></tr>
+      <tr data-status="待去" data-cluster="龍潭・大溪">
+        <td class="place-name">三坑自然生態公園</td>
+        <td><span class="region-tag">桃園市龍潭區</span></td>
+        <td><span class="type-tag">生態公園 / 客家老街</span></td>
+        <td><span class="diff-easy">輕鬆（全平地）</span></td>
+        <td>✅ 樹蔭充足</td>
+        <td><a class="source-link" href="https://taiwantour.net/taoyuan-attractions-map/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>龍潭客家聚落旁生態公園，樹蔭充足適合全年。可步行到三坑老街喝擂茶。非常適合銀髮族輕鬆散步。大嵙崁自行車道的起點也在此，可停車取 YouBike。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="龍潭・大溪">
+        <td class="place-name">大嵙崁自行車道</td>
+        <td><span class="region-tag">桃園市大溪區／龍潭區</span></td>
+        <td><span class="type-tag">景點 / 自行車道 / 河濱</span></td>
+        <td><span class="diff-easy">輕鬆（全平路，約8.5km）</span></td>
+        <td>☀️ 遮蔭極少（沿河岸開闊地）</td>
+        <td><a class="source-link" href="https://news.pts.org.tw/article/791840" target="_blank">公視新聞 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>2026年1月剛全線通車的新車道，全長約8.46km，沿大漢溪左岸從三坑（龍潭端）騎至大溪橋，沿途可遠眺石門水庫壩區。路面平緩好騎，起點有 YouBike 可租（第一小時免費）。可串聯三坑老街、大溪老街一日遊。⚠️ 無遮蔭，夏天日曬強烈，建議秋冬或清晨出發。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="觀音・新屋海岸">
+        <td class="place-name">白沙岬燈塔</td>
+        <td><span class="region-tag">桃園市觀音區</span></td>
+        <td><span class="type-tag">燈塔 / 海岸景觀</span></td>
+        <td><span class="diff-easy">輕鬆（平地步行）</span></td>
+        <td>❌ 無遮蔭</td>
+        <td><a class="source-link" href="https://taiwantour.net/taoyuan-attractions-map/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>台灣第二高燈塔，可入內參觀。平地好走但無遮蔭，夏天避開正午。秋冬涼爽時前往最佳。可搭配觀音蓮花季同日遊。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="觀音・新屋海岸">
+        <td class="place-name">觀音蓮花休閒農業區</td>
+        <td><span class="region-tag">桃園市觀音區</span></td>
+        <td><span class="type-tag">景點 / 蓮花田 / 季節限定</span></td>
+        <td><span class="diff-easy">輕鬆（平地田區）</span></td>
+        <td>⚠️ 田區無遮蔭</td>
+        <td><a class="source-link" href="https://travel.tycg.gov.tw/zh-tw/travel/attraction/483" target="_blank">桃園觀光 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>藍埔里金華路31號，遊客中心週三至日08:30-17:30（週一二公休）。2026桃園蓮花季：7/4-8/30，09:00-17:00。大王蓮、荷花、各式蓮花品種。有DIY體驗（剝蓮子、手作荷葉飯、乾燥花等）。⚠️ 田區日曬強，建議早上前往、午前離開。可搭配白沙岬燈塔或永安漁港同日遊。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="復興山區">
+        <td class="place-name">小烏來天空步道</td>
+        <td><span class="region-tag">桃園市復興區</span></td>
+        <td><span class="type-tag">景觀步道 / 瀑布</span></td>
+        <td><span class="diff-easy">輕鬆（玻璃平台步道）</span></td>
+        <td>❌ 無遮蔭</td>
+        <td><a class="source-link" href="https://taiwantour.net/taoyuan-attractions-map/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>玻璃懸空步道可俯瞰小烏來瀑布，步道平緩輕鬆但無遮蔭。需收費，建議秋冬前往。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">樹園子（日式懷石無菜單）</td>
+        <td><span class="region-tag">桃園市觀音區</span></td>
+        <td><span class="type-tag">景觀餐廳 / 懷石料理</span></td>
+        <td><span class="diff-easy">輕鬆（室內用餐）</span></td>
+        <td>✅ 室內落地窗＋庭園</td>
+        <td><a class="source-link" href="https://dribs-drabs.com/taoyuan-treegarden/" target="_blank">部落格 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>新華路一段1076-1號，(03)487-0220。日式禪風庭園老宅，榻榻米座位，無菜單當季懷石10道。$1680/人（含服務費）。午11:30-14:30、晚17:30-20:30。純預約制，提前告知忌口食材。可搭配白沙岬燈塔同日遊。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">鵲起 Omakase・邸家</td>
+        <td><span class="region-tag">桃園市龍潭區</span></td>
+        <td><span class="type-tag">日式 Omakase / 主廚發辦</span></td>
+        <td><span class="diff-easy">輕鬆（室內用餐）</span></td>
+        <td>✅ 室內座位</td>
+        <td><a class="source-link" href="https://www.opentable.com/restaurant/profile/268805" target="_blank">OpenTable ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>龍華路401號。日式 Omakase 主廚發辦料理，座位數少、需提前預約。價格與菜單請直接詢問店家。可搭配三坑自然生態公園同日遊（車程約10分鐘）。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">coraz coffee 青竹咖啡</td>
+        <td><span class="region-tag">桃園市大園區</span></td>
+        <td><span class="type-tag">咖啡廳 / 早午餐</span></td>
+        <td><span class="diff-easy">輕鬆（室內用餐）</span></td>
+        <td>✅ 室內＋戶外綠意座位</td>
+        <td><a class="source-link" href="https://travelwithlinlin.com/coraz-coffee/" target="_blank">部落格 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>大勇路20號，0912-175-087。白色系寧靜空間，寵物友善，18個座位。必點：炸豬排沖繩飯糰、藍莓乳酪貝果。10:30-18:00，週一公休。假日建議早到，平日較悠閒。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="復興山區">
+        <td class="place-name">新溪口吊橋</td>
+        <td><span class="region-tag">桃園市復興區</span></td>
+        <td><span class="type-tag">吊橋 / 峽谷景觀</span></td>
+        <td><span class="diff-medium">⚠️ 看入口：溪口部落側輕鬆（5分鐘）；角板山側需爬千階</span></td>
+        <td>⚠️ 部分樹蔭</td>
+        <td><a class="source-link" href="https://bunnyann.tw/xinxikou/" target="_blank">部落格 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>全台最長懸索橋303公尺，橫跨大漢溪谷。【重要】導航設「溪口部落市集廣場」，停車後步行約5分鐘到橋頭，難度低。切勿從角板山入口，來回需爬1000多階，不建議。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">鹿點咖啡 Luna 桃園店</td>
+        <td><span class="region-tag">桃園市桃園區</span></td>
+        <td><span class="type-tag">咖啡廳 / 老宅日系</span></td>
+        <td><span class="diff-easy">輕鬆（室內用餐）</span></td>
+        <td>✅ 室內三層樓老宅</td>
+        <td><a class="source-link" href="https://www.walkerland.com.tw/article/view/379185" target="_blank">窩客島 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>成功路三段175號，桃園神社旁步行2-3分鐘。老宅改建日系，2樓巨大月亮造景必拍。不限時、有插座。推薦：龍貓芝麻起司蛋糕、單品咖啡。早午餐限週末。無訂位，平日較悠閒。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="觀音・新屋海岸">
+        <td class="place-name">永安海螺文化館</td>
+        <td><span class="region-tag">桃園市新屋區</span></td>
+        <td><span class="type-tag">景點 / 建築打卡 / 文化展覽</span></td>
+        <td><span class="diff-easy">輕鬆（平地＋緩坡小山丘）</span></td>
+        <td>⚠️ 室內冷氣充足，戶外遮蔭有限</td>
+        <td><a class="source-link" href="https://travel.tycg.gov.tw/zh-tw/travel/attraction/1637" target="_blank">桃園觀光 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>新港路85號。2022年開幕的純白海螺造型建築，獲國際建築獎肯定，是桃園近年最夯打卡點。免門票。一樓：漁村客家文化展覽＋AR互動體驗＋海螺咖啡；二樓：半戶外觀景台可俯瞰永安漁港與台灣海峽夕陽。戶外有九層風鈴藝術地景。週一休館，09:00-17:00。夏天建議以室內展覽為主。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="觀音・新屋海岸">
+        <td class="place-name">永安漁港</td>
+        <td><span class="region-tag">桃園市新屋區</span></td>
+        <td><span class="type-tag">景點 / 漁港 / 海鮮市場</span></td>
+        <td><span class="diff-easy">輕鬆（觀海橋有陡梯需注意）</span></td>
+        <td>☀️ 遮蔭有限（開放海景空間）</td>
+        <td><a class="source-link" href="https://travel.tycg.gov.tw/zh-tw/travel/attraction/314" target="_blank">桃園觀光 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>中山西路三段1165號，全台唯一以客家族群為主體的漁港。觀光漁市可現買現煮，觀海橋360度環視港景。⚠️ 觀海橋為全階梯設計較陡，注意膝蓋。與海螺文化館步行可達，建議合併半日遊：海螺館拍照吹冷氣→漁港觀景→漁市海鮮午餐。秋冬最適合，夏天傍晚五點後涼爽些。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="龍潭・大溪">
+        <td class="place-name">大溪老茶廠</td>
+        <td><span class="region-tag">桃園市大溪區</span></td>
+        <td><span class="type-tag">文化茶廠 / 室內參觀</span></td>
+        <td><span class="diff-easy">輕鬆（室內全平地）</span></td>
+        <td>✅ 室內冷氣</td>
+        <td><a class="source-link" href="https://www.daciitea.com/" target="_blank">大溪老茶廠官網 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>復興路二段732巷80號（海拔600m山區，需開車）。日治時代磚造老茶廠，展示製茶過程與歷史，紅茶飲品可品嚐。門票150元可折抵100元消費。可搭配大溪老街同日遊。建議春秋前往，山路彎曲建議導航。</textarea></td>
+      </tr>
+      <tr class="area-header" data-lat="24.7534198" data-lng="121.7569845"><td colspan="8"><span class="area-title">🌾 宜蘭</span><span class="area-desc">幾米廣場・梅花湖・蘭陽博物館・外澳沙灘・斑比山丘・東澳粉鳥林・南方澳漁港</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">幾米廣場</td>
+        <td><span class="region-tag">宜蘭市</span></td>
+        <td><span class="type-tag">文創廣場 / 打卡景點</span></td>
+        <td><span class="diff-easy">輕鬆（全平地）</span></td>
+        <td>⚠️ 部分遮蔭</td>
+        <td><a class="source-link" href="https://taiwantour.net/yilan-map/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>宜蘭車站旁，幾米繪本雕塑裝置藝術。平地好走，可搭火車前往免開車。可串聯宜蘭市區美食。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="冬山">
+        <td class="place-name">梅花湖風景區</td>
+        <td><span class="region-tag">宜蘭縣冬山鄉</span></td>
+        <td><span class="type-tag">湖景 / 環湖步道</span></td>
+        <td><span class="diff-easy">輕鬆（平緩環湖步道）</span></td>
+        <td>✅ 部分樹蔭</td>
+        <td><a class="source-link" href="https://taiwantour.net/yilan-map/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>環湖步道約3公里，平緩好走，湖景優美。可租天鵝踏船。全年皆宜，秋冬宜蘭多雨需注意天氣。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="頭城">
+        <td class="place-name">蘭陽博物館</td>
+        <td><span class="region-tag">宜蘭縣頭城鎮</span></td>
+        <td><span class="type-tag">室內博物館 / 文化</span></td>
+        <td><span class="diff-easy">輕鬆（全室內）</span></td>
+        <td>✅ 全室內冷氣</td>
+        <td><a class="source-link" href="https://taiwantour.net/yilan-map/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>頭城烏石港旁，建築本身即為地標。全室內空調，雨天備案首選。介紹宜蘭地理與人文歷史，全年皆宜。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="頭城">
+        <td class="place-name">外澳沙灘</td>
+        <td><span class="region-tag">宜蘭縣頭城鎮</span></td>
+        <td><span class="type-tag">海灘 / 觀浪</span></td>
+        <td><span class="diff-easy">輕鬆（平坦沙灘）</span></td>
+        <td>❌ 無遮蔭</td>
+        <td><a class="source-link" href="https://taiwantour.net/yilan-map/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>頭城沙灘，可看龜山島。可搭火車至外澳站直達。無遮蔭，秋冬宜蘭觀浪最美；夏天防曬或避開正午。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="冬山">
+        <td class="place-name">斑比山丘</td>
+        <td><span class="region-tag">宜蘭縣冬山鄉</span></td>
+        <td><span class="type-tag">動物農場 / 親子</span></td>
+        <td><span class="diff-easy">輕鬆（平地農場）</span></td>
+        <td>⚠️ 部分遮蔭</td>
+        <td><a class="source-link" href="https://taiwantour.net/yilan-map/" target="_blank">領隊Sky ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>冬山鄉梅花鹿互動農場，平地好走。適合帶孫子同遊。需預約，建議事先查詢開放時間與票價。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="蘇澳">
+        <td class="place-name">東澳灣・粉鳥林漁港（台版下龍灣）</td>
+        <td><span class="region-tag">宜蘭縣蘇澳鎮</span></td>
+        <td><span class="type-tag">景點 / 秘境海灣 / 海岸</span></td>
+        <td><span class="diff-easy">輕鬆（階梯1分鐘即到沙灘）</span></td>
+        <td>☀️ 無遮蔭（開闊海灣）</td>
+        <td><a class="source-link" href="https://www.welcometw.com/%E6%9D%B1%E6%BE%B3%E7%B2%89%E9%B3%A5%E6%9E%97/" target="_blank">好好玩FUNIT ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>東澳村，可搭火車至東澳站步行約35分鐘，或搭122公車。湛藍海灣如台版下龍灣，沙灘入口有彩繪牆，走階梯1分鐘即達。⚠️ 海象危險，嚴禁游泳戲水，岸上拍照賞景即可。秋冬春季最舒適，夏天無遮蔭需防曬。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">南方澳漁港</td>
+        <td><span class="region-tag">宜蘭縣蘇澳鎮</span></td>
+        <td><span class="type-tag">景點 / 漁港 / 在地美食</span></td>
+        <td><span class="diff-easy">輕鬆（平地漁港）</span></td>
+        <td>⚠️ 遮蔭有限</td>
+        <td><a class="source-link" href="https://www.klook.com/zh-TW/blog/suao-one-day-trip-yilan/" target="_blank">Klook ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>台灣三大漁業重鎮之一，漁獲豐富。第一漁市約下午2點拍賣，第二漁市約下午3-5點。可搭配祝大漁物產館、豆腐岬同日遊。全年皆宜，秋冬鯖魚季更豐盛。</textarea></td>
+      </tr>
+      <tr data-status="待去" data-cluster="蘇澳">
+        <td class="place-name">祝大漁物產文創館</td>
+        <td><span class="region-tag">宜蘭縣蘇澳鎮</span></td>
+        <td><span class="type-tag">體驗 / 文創館 / 伴手禮</span></td>
+        <td><span class="diff-easy">輕鬆（室內平地）</span></td>
+        <td>✅ 室內冷氣</td>
+        <td><a class="source-link" href="https://bjsmile.tw/da-u/" target="_blank">bjsmile ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>江夏路52-2號，南方澳大橋旁。蘇澳漁會將第三漁獲拍賣場改建，全國唯一360度12公尺3D海底隧道，免門票。1樓賣鯖魚罐頭、小魚乾、嬌澳蝦餅等漁港伴手禮。全天09:00-17:00，週一至日全年開放。與南方澳漁港步行可達。</textarea></td>
+      </tr>
+      <tr class="area-header" data-lat="25.0156920" data-lng="121.9445761"><td colspan="8"><span class="area-title">🌊 東北角・福隆・貢寮</span><span class="area-desc">三貂角燈塔・桃源谷・福隆海灘・便當・舊草嶺隧道・榕情步道</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">三貂角燈塔</td>
+        <td><span class="region-tag">新北市貢寮區</span></td>
+        <td><span class="type-tag">景點 / 燈塔 / 海景</span></td>
+        <td><span class="diff-easy">輕鬆（步道約700m緩坡）</span></td>
+        <td>☀️ 無遮蔭（開闊海景區）</td>
+        <td><a class="source-link" href="https://www.necoast-nsa.gov.tw/Articles.aspx?a=335&l=1" target="_blank">東北角風管處 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>台灣本島最東端，白色希臘風格燈塔，270度無敵太平洋海景，旁有極東觀景台。建議春秋早上前往，夏天烈日無遮蔭；冬季東北季風強、多雨不建議。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">桃源谷大草原</td>
+        <td><span class="region-tag">新北市貢寮區</span></td>
+        <td><span class="type-tag">景點 / 草原 / 步道</span></td>
+        <td><span class="diff-medium">緩坡（內寮線單程約1km，爬升30分鐘）</span></td>
+        <td>⚠️ 前段林蔭、草原全無遮蔭</td>
+        <td><a class="source-link" href="https://hiking.biji.co/index.php?q=trail&act=detail&id=170" target="_blank">健行筆記 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>360度草原景觀，天晴可遠眺龜山島，有牛群漫步。建議走最短的內寮線，秋冬（10-2月）涼爽最適合。夏天草原烈日無遮蔭、高溫不宜。大溪線為爬山路線勿選。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">福隆海水浴場</td>
+        <td><span class="region-tag">新北市貢寮區</span></td>
+        <td><span class="type-tag">景點 / 海灘 / 沙灘</span></td>
+        <td><span class="diff-easy">輕鬆（平地沙灘）</span></td>
+        <td>☀️ 無遮蔭（開闊沙灘）</td>
+        <td><a class="source-link" href="https://newtaipei.travel/zh-tw/attractions/detail/109679" target="_blank">新北觀光 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>金黃沙灘約3公里長，夏季（5-9月）開放游泳。5-6月沙雕藝術季、7月海洋音樂祭。搭火車可達，記得吃福隆便當。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">福隆便當</td>
+        <td><span class="region-tag">新北市貢寮區</span></td>
+        <td><span class="type-tag">美食 / 便當 / 鐵路餐食</span></td>
+        <td><span class="diff-easy">輕鬆（火車站取餐）</span></td>
+        <td>✅ 室內 / 站台</td>
+        <td><a class="source-link" href="https://newtaipei.travel/zh-tw/attractions/detail/109679" target="_blank">新北觀光 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>福隆火車站名產，全年皆可，搭火車至福隆站即可購買。是東北角行程必嚐的在地美食。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">舊草嶺隧道</td>
+        <td><span class="region-tag">新北市貢寮區</span></td>
+        <td><span class="type-tag">景點 / 自行車 / 歷史隧道</span></td>
+        <td><span class="diff-easy">輕鬆（平地，2167m舊鐵路隧道）</span></td>
+        <td>✅ 隧道內全遮蔭、沿線有植被</td>
+        <td><a class="source-link" href="https://www.necoast-nsa.gov.tw/Attraction-Content.aspx?a=197&l=1" target="_blank">東北角風管處 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>原鐵路隧道改建，全長2167公尺，平地好走。平日可步行通過，假日限自行車。春秋最適合，可連接福隆、馬崗方向。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">榕情步道</td>
+        <td><span class="region-tag">新北市貢寮區</span></td>
+        <td><span class="type-tag">景點 / 河濱步道</span></td>
+        <td><span class="diff-easy">輕鬆（平地河濱）</span></td>
+        <td>✅ 榕樹林蔭遮蔭佳</td>
+        <td><a class="source-link" href="https://newtaipei.travel/zh-tw" target="_blank">新北觀光 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option>
+            <option>已去</option>
+            <option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>沿雙溪河畔的榕樹林蔭步道，全年適合，夏天遮蔭涼快。可與龍門吊橋連走，是福隆行程中最適合我們的輕鬆路段。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">坪溪古道</td>
+        <td><span class="region-tag">新北市貢寮區</span></td>
+        <td><span class="type-tag">古道 / 溯溪</span></td>
+        <td><span class="diff-easy">輕鬆緩坡（需踩石溯溪）</span></td>
+        <td>✅ 全程綠蔭溪谷</td>
+        <td><a class="source-link" href="https://hiking.biji.co/index.php?q=trail&act=detail&id=477" target="_blank">健行筆記 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>貢寮坪溪，昔日三貂堡居民越嶺古道，全程溪谷綠蔭，需多次踩石過溪，夏天消暑踏水樂趣十足。建議穿防滑水鞋，夏天最佳季節。可搭配福隆海灘同日遊，是東北角行程的最佳步道選擇。</textarea></td>
+      </tr>
+      <tr class="area-header"><td colspan="8"><span class="area-title">🏘️ 永和・板橋・三重</span><span class="area-desc">E61黑糖拿鐵・Merci系列・貓欸・NEDA・象座・五円</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">壹陸壹（E61）咖啡場所</td>
+        <td><span class="region-tag">新北市永和區</span></td>
+        <td><span class="type-tag">咖啡廳 / 自烘咖啡 / 站著喝</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>安樂路200號，捷運永安市場站附近。超人氣排隊站著喝咖啡，黑糖拿鐵必點、甘願站著喝。15:00-20:00（週日週一休）。職人自烘豆，平價高品質。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">MATTER CAFE</td>
+        <td><span class="region-tag">新北市板橋區</span></td>
+        <td><span class="type-tag">咖啡廳 / 早午餐 / 乾燥花</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>文化路一段316號，捷運新埔站2號出口。夢幻舒芙蕾與乾燥花氛圍，插座網路，09:00-20:00。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">KOYA Coffee</td>
+        <td><span class="region-tag">新北市板橋區</span></td>
+        <td><span class="type-tag">咖啡廳 / 清新風格 / 早午餐</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>文化路二段125巷56號，捷運江子翠站2號出口。清新好拍，有插座Wi-Fi。週二至五10:00-17:00，假日9:30-17:00。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">Merci vielle</td>
+        <td><span class="region-tag">新北市板橋區</span></td>
+        <td><span class="type-tag">咖啡廳 / 老宅古物 / 法式甜點</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>府中路50號2樓，捷運府中站附近（慈惠宮對面巷弄）。古物收藏老宅咖啡廳，丹麥吐司每桌必點，法式復古氛圍。13:00-21:00（週二休）。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">貓欸 Camulet</td>
+        <td><span class="region-tag">新北市板橋區</span></td>
+        <td><span class="type-tag">咖啡廳 / 貓咪餐廳 / 主題餐廳</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>文化路一段270巷3弄6號，捷運新埔站步行3分鐘。11隻店貓陪吃飯，貓咪天空走廊，貓耳麵、貓頭鬆餅必點。需提前訂位（難搶）。11:00-21:00（週一休）。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">Merci créme</td>
+        <td><span class="region-tag">新北市板橋區</span></td>
+        <td><span class="type-tag">咖啡廳 / 老宅甜點 / 法式</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>漢生東路43巷34號，捷運板橋站附近。獨棟三層老宅復古咖啡廳，法式甜點外帶，歐式復古風情改造。11:00-20:00。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">NEDA COFFEE</td>
+        <td><span class="region-tag">新北市三重區</span></td>
+        <td><span class="type-tag">咖啡廳 / 有貓 / 不限時</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>六張街21號，捷運菜寮站附近。有可愛店貓陪伴，不限時咖啡館，工作好去處。08:00-18:00（週二休）。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">WM 我想喝咖啡</td>
+        <td><span class="region-tag">新北市三重區</span></td>
+        <td><span class="type-tag">咖啡廳 / 黑糖拿鐵 / 拉花</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>新北大道一段46巷18弄17號。特別黑糖拿鐵搭配絕美拉花，安靜悠閒。11:30-19:30（週三休）。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">㒭咖啡 Koon Coffee Roasting Studio</td>
+        <td><span class="region-tag">新北市三重區</span></td>
+        <td><span class="type-tag">咖啡廳 / 自家烘焙 / 手沖</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>重新路四段242-2號。自家烘焙工作室，手沖單品咖啡有獨特風味，隱藏版抹茶起司蛋糕好吃。09:00-18:00（週一休）。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">象座咖啡</td>
+        <td><span class="region-tag">新北市三重區</span></td>
+        <td><span class="type-tag">咖啡廳 / 隱密老宅 / 二樓</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>重新路二段46-8號2樓，捷運台北橋站附近。隱密二樓咖啡館，有插座網路，三和夜市附近，安靜不打擾。10:00-18:00（週六日休）。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">五円・ご緣</td>
+        <td><span class="region-tag">新北市三重區</span></td>
+        <td><span class="type-tag">美食 / 日式飯糰 / 下午茶甜點</span></td>
+        <td><span class="diff-easy">輕鬆（室內）</span></td>
+        <td>✅ 室內空間</td>
+        <td><a class="source-link" href="#" target="_blank">部落格評測 ↗</a></td>
+        <td><select class="status-select status-todo" onchange="updateStatus(this)"><option selected>待去</option><option>已去</option><option>不適合</option></select></td>
+        <td class="notes"><textarea>正義北路314巷27號，捷運三重國小站。日式飯糰定食、布丁奶酪、月見富士山，彷彿置身日本的小清新日式套餐，IG網美打卡店。12:00-20:30。</textarea></td>
+      </tr>
+      <!-- ── 花蓮 ── -->
+      <tr class="area-header" data-lat="24.1717336" data-lng="121.6556882"><td colspan="8"><span class="area-title">🏔️ 花蓮</span><span class="area-desc">崇德礫灘・清水斷崖・大山大海</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">崇德礫灘</td>
+        <td><span class="region-tag">花蓮縣秀林鄉</span></td>
+        <td><span class="type-tag">景點 / 秘境礫石海灘 / 海岸</span></td>
+        <td><span class="diff-easy">輕鬆（崇德站出站步行約10分鐘）</span></td>
+        <td>☀️ 無遮蔭（開闊海灘）</td>
+        <td><a class="source-link" href="https://tour-hualien.hl.gov.tw/TourContent.aspx?n=242&s=1183" target="_blank">花蓮觀光資訊網 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>崇德車站（區間車停靠，班次少，出發前查時刻表）出站後跟導引標示步行約10分鐘。月牙灣礫石海灘，一側是清水斷崖、太平洋，壯觀震撼。可日出、黃昏、觀星。自駕可從台9線178.2K入口進入。⚠️ 無遮蔭，夏日酷熱，建議清晨或傍晚前往。勿游泳。</textarea></td>
+      </tr>
+      <!-- ── 嘉義 ── -->
+      <tr class="area-header" data-lat="23.5324503" data-lng="120.8050533"><td colspan="8"><span class="area-title">🌲 嘉義・阿里山</span><span class="area-desc">二萬坪・樹抱石巨木・黑森林</span></td></tr>
+      <tr data-status="待去">
+        <td class="place-name">二萬坪樹抱石巨木（夫妻神木）</td>
+        <td><span class="region-tag">嘉義縣阿里山</span></td>
+        <td><span class="type-tag">景點 / 巨木步道 / 奇景</span></td>
+        <td><span class="diff-medium">緩坡（阿里山森林步道，需搭阿里山小火車或開車）</span></td>
+        <td>✅ 原始杉林全程遮蔭</td>
+        <td><a class="source-link" href="https://recreation.forest.gov.tw/Trail/RT?tr_id=095" target="_blank">台灣山林悠遊網 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>阿里山二萬坪步道，全程高大密集杉木黑森林遮蔭，涼爽舒適。「夫妻神木」為兩棵千年紅檜，樹根包覆直徑逾5公尺巨石（樹抱石），大自然奇景令人讚嘆。需先上阿里山（開車或搭阿里山公路客運），再從二萬坪站出發。距台北較遠，建議安排住一晚。</textarea></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="add-row">📝 之後有新景點，直接告訴 Claude 加入即可</div>
+</div>
+
+</div><!-- /view-list -->
+
+<div id="view-map">
+  <div class="map-note">📍 地圖以「地區」為單位標記，同區內若景點分散在很遠的鄉鎮（如桃園、宜蘭、新北散步）會拆成多個標記，共35個點；純美食/咖啡的3個地區未標。滑鼠移到圖釘上會列出主要景點，細節請到清單查看。座標為街道等級的近似位置，實際前往請以地址／導航為準。</div>
+  <div id="leaflet-map"></div>
+</div>
+
+<footer>
+  <p>清單由 Claude 協助管理 ｜ 規劃行程前請再次確認天氣與最新開放資訊</p>
+</footer>
+
+<script>
+// ── 篩選狀態 ──
+const F = { status: 'all', region: 'all', type: 'all', diff: 'all' };
+let searchTerm = '';
+
+// ── 區塊收合狀態（未手動點過的區塊，依「是否還有待去」自動收合） ──
+const manualCollapse = new Map(); // secId -> true(收合) / false(展開)
+let mapInstance = null;
+let mapMarkerRows = [];
+
+// ── 類型分類 ──
+function classifyType(t) {
+  if (/獨行路線/.test(t)) return '獨行路線';
+  if (/咖啡|茶坊|茶館|茶室|Cafe|Tea|下午茶|書店/.test(t)) return '咖啡茶館';
+  if (/體驗|DIY|藍染|陶藝|台車|Railbike|溫泉|湯屋/.test(t)) return '體驗活動';
+  if (/餐廳|美食|小吃|甜點|冰淇淋|伴手禮|滷味|料理|早午餐|早市|麵食|台菜|日式|懷石|Omakase|海鮮|鴨肉|豆花|芋圓/.test(t)) return '美食餐廳';
+  return '景點步道';
+}
+
+// ── 地區分類 ──
+function classifyRegion(r) {
+  if (/台北市/.test(r)) return '台北市';
+  if (/新北市/.test(r)) return '新北市';
+  if (/基隆/.test(r))   return '基隆';
+  if (/桃園/.test(r))   return '桃園';
+  if (/宜蘭/.test(r))   return '宜蘭';
+  return '其他';
+}
+
+// ── 取得某區塊標題列之後、下一個標題列之前的所有景點列 ──
+function getSectionRows(header) {
+  const rows = [];
+  let sib = header.nextElementSibling;
+  while (sib && !sib.classList.contains('area-header')) {
+    if (sib.hasAttribute('data-status')) rows.push(sib);
+    sib = sib.nextElementSibling;
+  }
+  return rows;
+}
+
+// ── 區塊預設一律收合，除非使用者點開過 ──
+function isCollapsed(header) {
+  const id = header.dataset.secId;
+  return manualCollapse.has(id) ? manualCollapse.get(id) : true;
+}
+
+function toggleSection(header) {
+  manualCollapse.set(header.dataset.secId, !isCollapsed(header));
+  applyCollapse();
+}
+
+function navigateToSection(header) {
+  manualCollapse.set(header.dataset.secId, false); // 強制展開
+  applyCollapse();
+  header.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function applyCollapse() {
+  document.querySelectorAll('tr.area-header').forEach(header => {
+    const collapsed = isCollapsed(header);
+    header.classList.toggle('collapsed', collapsed);
+    getSectionRows(header).forEach(row => row.classList.toggle('sec-collapsed', collapsed));
+  });
+}
+
+// ── 區塊內排序：景點/步道/體驗活動在前，美食/咖啡在後 ──
+function sortSectionRows() {
+  document.querySelectorAll('tr.area-header').forEach(header => {
+    const rows = getSectionRows(header);
+    const keyed = rows.map(row => {
+      const name = (row.querySelector('.place-name') || {}).textContent || '';
+      const typeTx = Array.from(row.querySelectorAll('.type-tag, .type-tag-solo')).map(el => el.textContent).join(' ');
+      const t = classifyType(typeTx);
+      const isFood = (t === '美食餐廳' || t === '咖啡茶館') && !MAP_FORCE_BIG.has(name);
+      return { row, key: isFood ? 1 : 0 };
+    });
+    keyed.sort((a, b) => a.key - b.key);
+    let anchor = header;
+    keyed.forEach(({ row }) => { anchor.after(row); anchor = row; });
+  });
+}
+
+// ── 初始化區塊：加上收合點擊、章節符號、地區快速跳轉列 ──
+function initSections() {
+  const headers = document.querySelectorAll('tr.area-header');
+  const navInner = document.getElementById('quick-nav-inner');
+  headers.forEach((header, i) => {
+    header.dataset.secId = 'sec' + i;
+    const titleEl = header.querySelector('.area-title');
+    const chevron = document.createElement('span');
+    chevron.className = 'area-chevron';
+    chevron.textContent = '▾';
+    titleEl.prepend(chevron);
+    header.addEventListener('click', () => toggleSection(header));
+
+    const navBtn = document.createElement('button');
+    navBtn.textContent = titleEl.textContent.replace('▾', '').trim();
+    navBtn.addEventListener('click', () => navigateToSection(header));
+    navInner.appendChild(navBtn);
+  });
+  applyCollapse();
+}
+
+// ── 分頁切換（清單／地圖） ──
+function switchView(view) {
+  const isList = view === 'list';
+  document.getElementById('view-list').style.display = isList ? '' : 'none';
+  document.getElementById('view-map').style.display = isList ? 'none' : 'block';
+  document.getElementById('quick-nav').style.display = isList ? '' : 'none';
+  document.getElementById('tab-list').classList.toggle('active', isList);
+  document.getElementById('tab-map').classList.toggle('active', !isList);
+  if (!isList && !mapInstance) initMap();
+  if (!isList && mapInstance) setTimeout(() => mapInstance.invalidateSize(), 50);
+}
+
+// ── 自動分類會誤判為美食/咖啡，但實際是逛街/散步景點的例外名單 ──
+const MAP_FORCE_BIG = new Set(['雙連朝市', '赤峰街文青散步', '永安漁港']);
+
+// ── 同一區塊內距離太遠，改用分群座標（key 對應 tr 的 data-cluster） ──
+const CLUSTER_COORDS = {
+  '龍潭・大溪': [24.8340, 121.2920],
+  '觀音・新屋海岸': [25.0150, 121.0440],
+  '復興山區': [24.7907, 121.3751],
+  '北海岸・三芝': [25.2820, 121.5076],
+  '五股觀音山': [25.1170, 121.4317],
+  '新店・石碇': [24.9343, 121.6440],
+  '平溪・雙溪・汐止': [25.0258, 121.7391],
+  '市區步道': [25.0364, 121.5875],
+  '陽明山竹子湖': [25.1716, 121.5347],
+  '平溪十分老街': [25.0426, 121.7766],
+  '頭城': [24.8688, 121.8327],
+  '冬山': [24.6432, 121.7330],
+  '蘇澳': [24.5823, 121.8661]
+};
+
+// ── 地圖檢視初始化：一區一個標記，彈出視窗列出該區主要景點（不含美食/咖啡） ──
+function initMap() {
+  mapInstance = L.map('leaflet-map').setView([24.85, 121.6], 9);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors',
+    maxZoom: 19
+  }).addTo(mapInstance);
+
+  document.querySelectorAll('tr.area-header[data-lat]').forEach(header => {
+    const title = header.querySelector('.area-title').textContent.replace('▾', '').trim();
+
+    const bigSpots = getSectionRows(header).filter(row => {
+      const name = (row.querySelector('.place-name') || {}).textContent || '';
+      if (MAP_FORCE_BIG.has(name)) return true; // 逛街/市集/漁港類，雖含「咖啡」「海鮮」等字樣但非純美食
+      const typeTx = Array.from(row.querySelectorAll('.type-tag, .type-tag-solo')).map(el => el.textContent).join(' ');
+      const t = classifyType(typeTx);
+      return t !== '美食餐廳' && t !== '咖啡茶館';
+    });
+    if (bigSpots.length === 0) return;
+
+    // 依 data-cluster 分組；沒有 cluster 的就用區塊本身座標當一組
+    const groups = new Map(); // clusterName -> rows[]
+    bigSpots.forEach(row => {
+      const cluster = row.dataset.cluster || '__default__';
+      if (!groups.has(cluster)) groups.set(cluster, []);
+      groups.get(cluster).push(row);
+    });
+
+    groups.forEach((rows, cluster) => {
+      let lat, lng, pinTitle;
+      if (cluster === '__default__') {
+        lat = parseFloat(header.dataset.lat); lng = parseFloat(header.dataset.lng);
+        pinTitle = title;
+      } else {
+        const coords = CLUSTER_COORDS[cluster];
+        if (!coords) return;
+        [lat, lng] = coords;
+        pinTitle = `${title}｜${cluster}`;
+      }
+      if (isNaN(lat) || isNaN(lng)) return;
+
+      const idx = mapMarkerRows.length;
+      mapMarkerRows.push(header);
+
+      const itemsHtml = rows.map(row => `<li>${(row.querySelector('.place-name') || {}).textContent || ''}</li>`).join('');
+      const popupHtml = `<b>${pinTitle}</b>` +
+        `<ul style="margin:4px 0 6px 18px; padding:0;">${itemsHtml}</ul>` +
+        `<a class="map-popup-link" href="#" onclick="focusListRow(${idx});return false;">查看整區清單 ↗</a>`;
+
+      const marker = L.marker([lat, lng]).addTo(mapInstance).bindPopup(popupHtml, { maxWidth: 260 });
+      let closeTimer = null;
+      marker.on('mouseover', () => { clearTimeout(closeTimer); marker.openPopup(); });
+      marker.on('mouseout', () => { closeTimer = setTimeout(() => marker.closePopup(), 250); });
+      marker.on('popupopen', e => {
+        const el = e.popup.getElement();
+        el.addEventListener('mouseenter', () => clearTimeout(closeTimer));
+        el.addEventListener('mouseleave', () => { closeTimer = setTimeout(() => marker.closePopup(), 250); });
+      });
+    });
+  });
+}
+
+// ── 從地圖跳回清單並展開該區 ──
+function focusListRow(idx) {
+  const header = mapMarkerRows[idx];
+  if (!header) return;
+  switchView('list');
+  navigateToSection(header);
+}
+
+// ── 主篩選邏輯 ──
+function applyFilters() {
+  const rows = document.querySelectorAll('#list-body tr');
+  let count = 0;
+
+  rows.forEach(row => {
+    if (!row.hasAttribute('data-status')) { return; }
+
+    const status   = row.dataset.status || '';
+    const regionTx = (row.querySelector('.region-tag')  || {}).textContent || '';
+    const typeTx   = Array.from(row.querySelectorAll('.type-tag, .type-tag-solo')).map(el => el.textContent).join(' ');
+    const nameTx   = (row.querySelector('.place-name')  || {}).textContent || '';
+    const notesTx  = (row.querySelector('textarea')     || {}).value       || '';
+    const shadeTx  = row.cells[4] ? row.cells[4].textContent : '';
+
+    const region = classifyRegion(regionTx);
+    const type   = classifyType(typeTx);
+    const diff   = row.querySelector('.diff-medium, .diff-hard') ? '緩坡注意' : '輕鬆';
+
+    const statusOk = F.status === 'all' || status === F.status;
+    const regionOk = F.region === 'all' || region === F.region;
+    const typeOk   = F.type   === 'all' || type   === F.type;
+    const diffOk   = F.diff   === 'all' || diff   === F.diff;
+    const searchOk = !searchTerm ||
+      [nameTx, regionTx, typeTx, notesTx, shadeTx].some(s => s.includes(searchTerm));
+
+    const show = statusOk && regionOk && typeOk && diffOk && searchOk;
+    row.style.display = show ? '' : 'none';
+    if (show) count++;
+  });
+
+  document.getElementById('result-count').textContent = `共 ${count} 筆`;
+
+  // Hide area headers where all rows in the group are hidden
+  document.querySelectorAll('tr.area-header').forEach(header => {
+    let sibling = header.nextElementSibling;
+    let hasVisible = false;
+    while (sibling && !sibling.classList.contains('area-header')) {
+      if (sibling.hasAttribute('data-status') && sibling.style.display !== 'none') {
+        hasVisible = true;
+        break;
+      }
+      sibling = sibling.nextElementSibling;
+    }
+    header.style.display = hasVisible ? '' : 'none';
+  });
+}
+
+// ── 篩選按鈕點擊 ──
+document.querySelectorAll('.filter-bar[data-group]').forEach(bar => {
+  bar.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      bar.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      F[bar.dataset.group] = btn.dataset.val;
+      applyFilters();
+    });
+  });
+});
+
+// ── 搜尋框 ──
+document.getElementById('search-input').addEventListener('input', e => {
+  searchTerm = e.target.value.trim();
+  document.getElementById('clear-btn').style.display = searchTerm ? '' : 'none';
+  applyFilters();
+});
+
+function clearSearch() {
+  document.getElementById('search-input').value = '';
+  searchTerm = '';
+  document.getElementById('clear-btn').style.display = 'none';
+  applyFilters();
+}
+
+// ── 重設所有篩選 ──
+function resetAll() {
+  clearSearch();
+  document.querySelectorAll('.filter-bar[data-group]').forEach(bar => {
+    bar.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    bar.querySelector('[data-val="all"]').classList.add('active');
+    F[bar.dataset.group] = 'all';
+  });
+  applyFilters();
+}
+
+// ── 狀態下拉異動 ──
+function updateStatus(select) {
+  const row = select.closest('tr');
+  row.dataset.status = select.value;
+  select.className = 'status-select ' +
+    (select.value === '待去' ? 'status-todo' : select.value === '已去' ? 'status-done' : 'status-skip');
+  applyFilters();
+  applyCollapse();
+}
+
+// ── 備註 textarea 自動撐高 ──
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+document.querySelectorAll('td.notes textarea').forEach(el => {
+  autoResize(el);
+  el.addEventListener('input', () => autoResize(el));
+});
+
+// ── 初始化（預設顯示地圖檢視） ──
+sortSectionRows();
+initSections();
+applyFilters();
+initMap();
+</script>
+
+</body>
+</html>
