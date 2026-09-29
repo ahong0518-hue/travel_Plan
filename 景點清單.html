@@ -851,6 +851,34 @@ tr[data-status].sec-collapsed { display: none !important; }
         </td>
         <td class="notes"><textarea>緊鄰老街，國寶級廟宇，雕刻精細堪稱「東方藝術殿堂」。參觀免費，老街出口步行即到。全年皆宜。</textarea></td>
       </tr>
+      <tr data-status="待去">
+        <td class="place-name">醉月咖啡 Drunk Moon Cafe</td>
+        <td><span class="region-tag">新北市三峽區</span></td>
+        <td><span class="type-tag">咖啡茶館 / 秘境景觀咖啡</span></td>
+        <td><span class="diff-easy">輕鬆（有專屬停車場，免走山路）</span></td>
+        <td>✅ 室內為主，大片落地窗</td>
+        <td><a class="source-link" href="https://duringmyjourney.com/drunk-moon-cafe/" target="_blank">旅途中 ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>中山路831號，鳶山山腳下，遠眺大漢溪與鶯歌市景，行星燈飾＋藤蔓外觀，很有網美感。飲品$190起、低消一杯；招牌韓式馬卡龍$180。週日–四10:00–20:30、週五六10:00–21:30、週一公休。無大眾運輸，可開車（有停車場）或從恩主公醫院搭計程車上山。可與鳶山步道同區安排（營業時間、價位以店家公告為準，出發前請再確認）。</textarea></td>
+      </tr>
+      <tr data-status="待去">
+        <td class="place-name">三峽鳶山步道（鳶山岩／彩壁）</td>
+        <td><span class="region-tag">新北市三峽區</span></td>
+        <td><span class="type-tag">景點步道 / 郊山健行</span></td>
+        <td><span class="diff-hard">爬山（中等，山徑樹根青苔、部分需拉繩）</span></td>
+        <td>✅ 往彩壁路段林蔭茂密</td>
+        <td><a class="source-link" href="https://www.adifferenttraveler.com/yuan-shan-hiking-trail/" target="_blank">A Different Traveler ↗</a></td>
+        <td>
+          <select class="status-select status-todo" onchange="updateStatus(this)">
+            <option selected>待去</option><option>已去</option><option>不適合</option>
+          </select>
+        </td>
+        <td class="notes"><textarea>登山口在鳶山大鐘旁，附近有免費停車位。登山口→鳶山岩約5分鐘（270度視野），→彩壁來回約2小時（含長春嶺、三角點；三角點為台灣小百岳第19號）。原始山徑，路況偏難，非平路緩坡，符合「不爬山」偏好的話建議只走到鳶山岩。4–5月油桐花季，天晴可遠眺台北101，也可看夜景。大眾運輸可從三峽老街步行約30分鐘。</textarea></td>
+      </tr>
       <tr class="area-header" data-lat="24.8186137" data-lng="121.4497278"><td colspan="8"><span class="area-title">🍁 滿月圓</span><span class="area-desc">國家森林遊樂區・楓紅・瀑布步道</span></td></tr>
       <tr data-status="待去">
         <td class="place-name">滿月圓國家森林遊樂區</td>
@@ -2915,8 +2943,9 @@ const CLUSTER_COORDS = {
 // ── 地圖檢視初始化：一區一個標記，彈出視窗列出該區主要景點（不含美食/咖啡） ──
 function initMap() {
   mapInstance = L.map('leaflet-map').setView([24.85, 121.6], 9);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors',
+  // OSM 官方圖磚會擋沒有 Referer 的請求（file:// 開檔）、CARTO 需 API key，改用 Esri 街道圖（免 key）
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri &mdash; Esri, HERE, Garmin, OpenStreetMap contributors',
     maxZoom: 19
   }).addTo(mapInstance);
 
